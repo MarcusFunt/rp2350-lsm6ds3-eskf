@@ -71,8 +71,8 @@
     },
     "bundle_b_comparator": {
       "path": "tools/compare_pr2_bundle_b.py",
-      "sha256": "7d70fd60e96f1f0d2a91c8314cf164f47214c1ee2e6b5636c62682679db07a55",
-      "note": "Post-confirmation diagnostic parser revision restores the missing NEES-coverage slot in the frozen Bundle B writer rows; it does not affect the PR2 confirmation evaluator."
+      "sha256": "01ccf3743369bb8caddef0f133a9b2fcc92f7ea448d279e6c359d4b91ccd877d9",
+      "note": "Post-confirmation diagnostic parser revision restores the missing NEES-coverage slot in the frozen Bundle B writer rows and checks paired availability denominators; it does not affect the PR2 confirmation evaluator."
     },
     "bundle_b_runner": {
       "path": "tools/run_pr2_bundle_b_comparison.sh",

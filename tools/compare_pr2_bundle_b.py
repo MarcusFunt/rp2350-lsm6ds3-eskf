@@ -49,6 +49,11 @@ def main():
     base, cand = load(baseline), load(candidate)
     if base.keys() != cand.keys():
         raise ValueError("baseline and candidate Bundle B keys differ")
+    for key in base:
+        if (base[key]["expected"], base[key]["valid"]) != (
+            cand[key]["expected"], cand[key]["valid"]
+        ):
+            raise ValueError(f"availability denominator differs between builds: {key}")
     fields = [*KEYS]
     for metric in METRICS:
         fields.extend((f"baseline_{metric}", f"candidate_{metric}"))
