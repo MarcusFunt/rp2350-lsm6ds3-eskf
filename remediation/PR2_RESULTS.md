@@ -12,8 +12,8 @@
 - Corrected the gravity accelerometer-bias Jacobian to use the measured unit-vector tangent projector at finite innovation. The old predicted-direction projector matched only at zero residual.
 - Guarded external stationary hints against current accel-norm, gyro, and accel-step contradictions; zero dwell now requires at least one consistent sample.
 - Clarified that `Health` represents alignment/continuity/numeric/input status and `control_state_valid()` represents freshness/availability. Neither certifies accuracy, observability, or control suitability.
-- Added independent FP64 reset and finite-innovation Jacobian checks; quaternion sign, gravity tangent, tilted heading, false-hint, zero-dwell, changing-bias, slow-yaw, and repeated-reinitialization regressions.
-- Added paired comparison and diagnostic tools. PR 2 v3 corrects the Bundle B scenario metadata from the immutable v2 configuration; the actual Bundle B run set was `static`, `slow_yaw`, `lateral_accel`, `maneuver`, `vibration`, and `timing_jitter`.
+- Added an independent FP64 reset oracle and a production-precision finite-difference Jacobian regression; also quaternion sign, gravity tangent, tilted heading, false-hint, zero-dwell, changing-bias, slow-yaw, and repeated-reinitialization regressions.
+- Added paired comparison and diagnostic tools. PR 2 v3 corrects the Bundle B scenario metadata from the immutable v2 configuration; the actual Bundle B run set was `static`, `slow_yaw`, `lateral_accel`, `maneuver`, `vibration`, and `timing_jitter`. The Bundle B parser now restores the missing NEES-coverage slot before parsing its optional tail.
 
 ## Verification
 
@@ -50,7 +50,19 @@ Revision 1 was compared on the same 192 development streams (seeds `101–116`),
 
 The seed-101 representative traces are diagnostic examples, not population estimates. In `lateral_accel_0p2g`, `IMU_ONLY`, `LegacyHeuristic`, combined noise, externally verified static startup, and calibration off, the candidate accepted 55 gravity updates during the 2–8 s acceleration and rejected 36 during 8–12 s recovery. Candidate tilt grew from `0.040°` at 2 s to `14.265°` at 8 s and `20.045°` at 12 s, with `15.048°` tilt RMS; software health remained `Nominal`. The final estimated gyro-bias error components were approximately `(-0.00248, 0.02554, -0.02111) rad/s`. Across this trace, tilt error correlated with gyro-bias error at `r=-0.584` for x, `-0.241` for y, and `-0.596` for z. This indicates coupling, not proof of a unique cause. Accepted gravity NIS had mean `1.440` and maximum `11.375`; rejected-update NIS and vector innovations are not serialized by the frozen trace writer.
 
+Pure-roll yaw RMS was also decomposed across the three development noise modes (16 `IMU_ONLY/UNKNOWN`, calibration-off trials each):
+
+| Noise mode | Conservative, parent→candidate | LegacyHeuristic, parent→candidate |
+|---|---:|---:|
+| Accelerometer only | 0.948855°→0.951234° | 1.543296°→1.540070° |
+| Gyroscope only | 0.104864°→0.104934° | 0.104864°→0.104934° |
+| Combined | 0.530858°→0.530171° | 1.143947°→1.143849° |
+
+These seed means localize this recreated roll-only yaw drift mainly to cases containing accelerometer noise; they do not identify its cause or reproduce the unavailable historical trace.
+
 In seed-101 pure roll, 11/11 synthetic heading updates were accepted (mean NIS `1.480`, maximum `6.671`). Yet aided candidate tilt/yaw RMS was `1.633°/2.108°`, versus `0.121°/0.236°` for IMU-only. Accepted NIS alone does not explain the degradation. The trace also shows `Nominal` health and 2,001/2,001 valid outputs in both cases.
+
+The revised candidate also received the separately labeled Bundle B development comparison on seed `20261111` (five trials per scenario, six checked-in scenarios, both startup-bias settings). Availability did not change. Mean yaw-RMS deltas were `−0.001206°` for Conservative with startup bias off and `+0.000801°` with verified startup bias on; LegacyHeuristic deltas were `+1.319452°` and `+1.155979°`, with maximum individual increases `18.755675°` and `13.331922°`. Paired outputs are [startup bias off](../benchmarks/reports/pr2_revision1_bundle_b_no_startup_bias_protocol_v3.csv) and [verified startup bias](../benchmarks/reports/pr2_revision1_bundle_b_verified_startup_bias_protocol_v3.csv); hashes and generator/comparator provenance are in the revision-1 manifest.
 
 ## Confirmation records
 
@@ -71,7 +83,7 @@ tools/run_pr2_comparison.sh \
 
 The validator passed: 192 streams, 460,800 identical 40-byte records (18,432,000 bytes), 3,456 paired rows, 2,001 expected samples per row (6,915,456 total), no incomplete or stale rows, and zero paired availability or final-health differences. Shared input SHA-256 is `465b24049f99c9efd14dfe07b4c3f52913d5ce83cf5c63848a77e8987c9ac597`.
 
-The revision-1 results are [the paired report](../benchmarks/reports/pr2_revision1_confirmation_comparison_protocol_v3.csv), [shared raw samples](../benchmarks/reports/pr2_revision1_confirmation_imu_samples_protocol_v3.bin), and [sample index](../benchmarks/reports/pr2_revision1_confirmation_sample_index_protocol_v3.csv). Their hashes and full seed/config provenance are in [the revision-1 manifest](../benchmarks/manifests/pr2_candidate_revision1_protocol_v3.json). Source and evaluator code did not change after freeze.
+The revision-1 results are [the paired report](../benchmarks/reports/pr2_revision1_confirmation_comparison_protocol_v3.csv), [shared raw samples](../benchmarks/reports/pr2_revision1_confirmation_imu_samples_protocol_v3.bin), and [sample index](../benchmarks/reports/pr2_revision1_confirmation_sample_index_protocol_v3.csv). Their hashes and full seed/config provenance are in [the revision-1 manifest](../benchmarks/manifests/pr2_candidate_revision1_protocol_v3.json). The estimator core and PR 2 confirmation evaluator did not change after freeze. After confirmation, the Bundle B-only parser was corrected to restore the missing NEES-coverage field; the revision-1 Bundle B development comparison was generated separately and did not affect the confirmation run.
 
 | Mode, 192 trials each | PR 1 parent | Revision-1 candidate | Availability / final-health differences |
 |---|---:|---:|---:|

@@ -36,11 +36,12 @@
     "eskf15_hpp_sha256": "0bbd516252edbc4a58799bc52bf80b17dada9bc8daade13f50b0657ba02bf05a",
     "changes": "Gravity accelerometer-bias Jacobian uses the measured unit-vector projector for finite innovations; zero static dwell is clamped to one consistent sample so a contradictory sample cannot make the heuristic stationary flag true.",
     "selection_basis": [
-      "Independent nonzero-innovation FP64 finite-difference regression",
+      "Independent finite-difference regression for the finite-innovation gravity bias Jacobian (production-precision model outputs)",
       "PR2 development seeds 101-116",
       "Bundle A/B/C host and sanitizer checks"
     ],
-    "no_confirmation_observations_used_for_selection": true
+    "no_parameter_tuning_against_confirmation_results": true,
+    "revision_trigger": "A fresh mathematical review found a finite-innovation gravity bias-Jacobian mismatch and a zero-dwell stationarity bypass; the v2 confirmation remains preserved and exposed."
   },
   "protocol_config": {
     "path": "benchmarks/scenarios/pr2_confirmation_protocol_v3.json",
@@ -67,6 +68,15 @@
     "diagnostics": {
       "path": "tools/pr2_development_diagnostics.py",
       "sha256": "f012f670abc85bbc159c7baed7a549ad8f892d437c8f8d18332e05c9fefd35ca"
+    },
+    "bundle_b_comparator": {
+      "path": "tools/compare_pr2_bundle_b.py",
+      "sha256": "7d70fd60e96f1f0d2a91c8314cf164f47214c1ee2e6b5636c62682679db07a55",
+      "note": "Post-confirmation diagnostic parser revision restores the missing NEES-coverage slot in the frozen Bundle B writer rows; it does not affect the PR2 confirmation evaluator."
+    },
+    "bundle_b_runner": {
+      "path": "tools/run_pr2_bundle_b_comparison.sh",
+      "sha256": "53e6247ad035f7f36f7320ed401d10495c82a9bcd97b41e9fd133eb107f6b3a9"
     }
   },
   "development": {
@@ -255,7 +265,57 @@
     "manifest_sha256_before_run": "1ae6d356adbb7d8dcd76b69a65398a666519f7a350c705230bbf60ed2e4e483f",
     "candidate_freeze_sha": "55eed3252e3e2af72bd61be66aa14501d9f17399"
   },
-  "post_confirmation_validation": {
+  "known_confirmation_coverage_gap": "The four-core-scenario seed matrix does not assert a false runtime stationary hint or static_min_samples=0. Those guards have targeted deterministic regressions; no held-out scenario presently covers them.",
+  "bundle_b_development_revision1": {
+    "status": "PASS",
+    "generated_after_confirmation_for_development_diagnostics_only": true,
+    "seed": 20261111,
+    "trials_per_scenario": 5,
+    "scenarios": [
+      "static",
+      "slow_yaw",
+      "lateral_accel",
+      "maneuver",
+      "vibration",
+      "timing_jitter"
+    ],
+    "scenario_generator": {
+      "path": "tools/benchmark_bundle_b.cpp",
+      "sha256": "463dd9405186cbb182576f10c234b7f0b96e3114e775df3ce657792221d09108"
+    },
+    "startup_bias_modes": [
+      "OFF",
+      "externally verified ON"
+    ],
+    "paired_rows_per_startup_mode": 90,
+    "availability_differences": 0,
+    "reports": {
+      "startup_bias_off": {
+        "path": "benchmarks/reports/pr2_revision1_bundle_b_no_startup_bias_protocol_v3.csv",
+        "sha256": "832bc56f41e0f57dd85fee576d920b076bba13dbbb1110079e1893200544e791"
+      },
+      "verified_startup_bias": {
+        "path": "benchmarks/reports/pr2_revision1_bundle_b_verified_startup_bias_protocol_v3.csv",
+        "sha256": "853784a2184a391183d9eadd8eb973b358d15738604ad365a3a26033c2661208"
+      }
+    },
+    "mean_yaw_rms_delta_deg": {
+      "Conservative": {
+        "startup_bias_off": -0.001206,
+        "verified_startup_bias": 0.000801
+      },
+      "LegacyHeuristic": {
+        "startup_bias_off": 1.319452,
+        "verified_startup_bias": 1.155979
+      }
+    },
+    "maximum_LegacyHeuristic_yaw_rms_increase_deg": {
+      "startup_bias_off": 18.755675,
+      "verified_startup_bias": 13.331922
+    },
+    "raw_input_capture": "NOT_RETAINED; parent and candidate run the same checked generator and seed; runner verifies source equality"
+  },
+  "pre_confirmation_candidate_validation": {
     "host_and_sanitizer_suites": {
       "bundle_a_host": "PASS",
       "bundle_a_sanitizers": "PASS",
@@ -270,6 +330,5 @@
       "reason": "arm-none-eabi-g++ unavailable and PICO_SDK_PATH unset"
     },
     "physical_validation": "BLOCKED_HARDWARE; no Pico 2 or LSM6DS3 device run"
-  },
-  "known_confirmation_coverage_gap": "The four-core-scenario seed matrix does not assert a false runtime stationary hint or static_min_samples=0. Those guards have targeted deterministic regressions; no held-out scenario presently covers them."
+  }
 }

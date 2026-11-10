@@ -14,6 +14,8 @@ benchmarks/reports/pr2_bundle_b_verified_startup_bias_protocol_v2.csv -text -dif
 benchmarks/reports/pr2_confirmation_comparison_protocol_v2.csv -text -diff
 benchmarks/reports/pr2_revision1_confirmation_comparison_protocol_v3.csv -text -diff
 benchmarks/reports/pr2_revision1_confirmation_sample_index_protocol_v3.csv text eol=lf
+benchmarks/reports/pr2_revision1_bundle_b_no_startup_bias_protocol_v3.csv -text -diff
+benchmarks/reports/pr2_revision1_bundle_b_verified_startup_bias_protocol_v3.csv -text -diff
 benchmarks/reports/pr2_revision1_development_comparison_protocol_v2.csv -text -diff
 benchmarks/reports/pr2_revision1_development_diagnostic_traces_protocol_v2.csv -text -diff
 benchmarks/reports/pr2_revision1_development_diagnostics_protocol_v2.json text eol=lf

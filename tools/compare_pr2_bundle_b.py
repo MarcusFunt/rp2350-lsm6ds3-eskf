@@ -21,12 +21,11 @@ def load(path):
             if len(raw) == len(header):
                 row = dict(zip(header, raw))
             elif len(raw) == len(header)-1 and raw[2] in ("eskf_legacy", "mahony"):
-                # The frozen Bundle B writer omits the empty bias field for
-                # non-EKF models, shifting its two trailing gravity counters.
-                row = dict(zip(header[:14], raw[:14]))
-                row["gyro_bias_error_rps"] = ""
-                row["gravity_applied"] = raw[14]
-                row["gravity_suppressed"] = raw[15]
+                # When NEES has no samples, the frozen writer omits the
+                # coverage field. Restore that missing slot before parsing the
+                # optional tail so NIS, bias, and gravity counters stay aligned.
+                repaired = raw[:12] + [""] + raw[12:]
+                row = dict(zip(header, repaired))
             else:
                 raise ValueError(f"malformed Bundle B row in {path}: {len(raw)} columns")
             rows.append(row)
