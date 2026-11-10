@@ -26,6 +26,11 @@ struct ReadResult {
     uint16_t fifo_pattern=0;
     bool truncated=false; // remaining complete records must be read on next call
 };
+inline uint8_t snapshot_capacity(uint16_t snapshot_frames,uint16_t processed_frames) {
+    if(processed_frames>=snapshot_frames) return 0;
+    const uint16_t remaining=static_cast<uint16_t>(snapshot_frames-processed_frames);
+    return static_cast<uint8_t>(remaining<32u?remaining:32u);
+}
 // Reconstruct the nominal timestamps for one ordered chunk from a single
 // FIFO status snapshot. The newest snapshotted frame is anchored at anchor_us;
 // any frames acquired after that snapshot must be left for the next edge.

@@ -36,3 +36,18 @@ PR 2 is stacked on PR 1 commit `b749a8aa0e40718ab7b163cad29d9c550b088265`. The l
 | ESKF/acquisition latency and stack high-water | `NOT_MEASURED_ON_DEVICE` | Requires the Pico 2, the original LSM6DS3, and workload instrumentation. |
 
 The fixed covariance reset evaluates trigonometric coefficients for nonzero correction vectors, and the finite-innovation gravity Jacobian normalizes the measured direction; no embedded timing or flash/RAM impact is claimed. The software checks ran under host GCC 11.4.0 in WSL2 and do not establish target deadlines or hardware reliability.
+
+## PR 4A status — FIFO acquisition and reconstructed timestamps
+
+PR4A is stacked on PR3 base `a9e58286eb320687ae53959052c466a5da18feaa`. It changes the opt-in FIFO drain in `main.cpp` and adds fixed-size FIFO timestamp/capacity helpers. The direct-register DMA branch remains the default. Host measurements below are test-run evidence only, not RP2350 resource measurements.
+
+| Configuration / metric | PR 1 reference | PR4A result | Status |
+|---|---:|---:|---|
+| Direct-register `.text/.data/.bss` | `79,092/0/25,552 B` at `c397fec` | Pending pinned ARM CI output | `NOT_MEASURED_LOCALLY` |
+| FIFO `.text/.data/.bss` | Not emitted | Pending pinned ARM CI output | `NOT_MEASURED_LOCALLY` |
+| Binary FIFO `.text/.data/.bss` | Not emitted | Pending pinned ARM CI output | `NOT_MEASURED_LOCALLY` |
+| Compiler stack-use estimates | Not recorded | `-fstack-usage` not yet enabled | `NOT_RECORDED` |
+| FIFO drain and ESKF duration | No board measurements | No Pico 2/LSM6DS3 available | `NOT_MEASURED_ON_DEVICE` |
+| DRDY-to-publication latency, queue peaks/drops, FIFO age | No board measurements | Telemetry counters are present; no physical capture | `BLOCKED_HARDWARE` |
+
+The CI cross-build now prints `arm-none-eabi-size` for direct, FIFO, and binary-FIFO variants. The unchanged PR 1 size is a historical comparison point, not a measured PR4A baseline. No host binary size is substituted. The FIFO timestamp helper uses a 208 Hz integer period model; its code-size and stack impact await the pinned target build. See [PR4A status](PR4A_STATUS.md) and [hardware validation](HARDWARE_VALIDATION.md).
