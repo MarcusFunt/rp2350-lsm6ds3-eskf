@@ -1,6 +1,6 @@
 {
   "protocol": "pr2_confirmation_protocol_v3",
-  "status": "FROZEN_NOT_RUN",
+  "status": "CONFIRMATION_V3_EXECUTED_ONCE_PAIRING_AND_DENOMINATORS_PASS_OVERALL_GATE_OPEN",
   "revision": 1,
   "parent": {
     "branch": "test/eskf-remediation-pr1",
@@ -140,8 +140,8 @@
     }
   },
   "confirmation_v3": {
-    "status": "FROZEN_UNEXECUTED",
-    "run_count": 0,
+    "status": "PASS_PAIRING_DENOMINATOR_AND_COMPLETENESS; OVERALL_PR2_GATE_OPEN",
+    "run_count": 1,
     "seeds": [
       3001,
       3002,
@@ -176,11 +176,100 @@
     "expected_metric_rows": 3456,
     "expected_samples_per_row": 2001,
     "expected_total_metric_samples": 6915456,
-    "run_command": "tools/run_pr2_comparison.sh /mnt/c/Users/marcu/rp2350-eskf-pr1 /mnt/c/Users/marcu/rp2350-eskf-pr2 confirmation_v3 /tmp/pr2-confirmation-v3-3001-3016"
+    "run_command": "tools/run_pr2_comparison.sh /mnt/c/Users/marcu/rp2350-eskf-pr1 /mnt/c/Users/marcu/rp2350-eskf-pr2 confirmation_v3 /tmp/pr2-confirmation-v3-3001-3016",
+    "evaluation_checkout_sha": "1078d7339e08edab620ef88ee07483c7e4a671c0",
+    "paired_input_sha256": "465b24049f99c9efd14dfe07b4c3f52913d5ce83cf5c63848a77e8987c9ac597",
+    "sample_bytes": 18432000,
+    "paired_report": {
+      "path": "benchmarks/reports/pr2_revision1_confirmation_comparison_protocol_v3.csv",
+      "sha256": "5d8a9fcf8eeb532436fbd01fd45b7015fd32307ab1ae490437f60b8625d23cae"
+    },
+    "sample_index": {
+      "path": "benchmarks/reports/pr2_revision1_confirmation_sample_index_protocol_v3.csv",
+      "sha256": "030bc95a89d52825089c605946c2831b721484e56020ea521409a226694fc5d9"
+    },
+    "shared_input_artifact": {
+      "path": "benchmarks/reports/pr2_revision1_confirmation_imu_samples_protocol_v3.bin",
+      "sha256": "465b24049f99c9efd14dfe07b4c3f52913d5ce83cf5c63848a77e8987c9ac597"
+    },
+    "availability_differences": 0,
+    "final_health_differences": 0,
+    "incomplete_rows_baseline": 0,
+    "incomplete_rows_candidate": 0,
+    "stale_rows_candidate": 0,
+    "candidate_source_or_evaluator_changed_after_freeze": false,
+    "selected_mode_results": {
+      "Conservative_IMU_ONLY_UNKNOWN": {
+        "trials": 192,
+        "mean_tilt_rms_deg_parent_to_candidate": [
+          0.100345,
+          0.100342
+        ],
+        "mean_yaw_rms_deg_parent_to_candidate": [
+          0.541742,
+          0.541823
+        ],
+        "availability_and_health_differences": 0
+      },
+      "LegacyHeuristic_IMU_ONLY_UNKNOWN": {
+        "trials": 192,
+        "mean_tilt_rms_deg_parent_to_candidate": [
+          3.962734,
+          3.728872
+        ],
+        "mean_yaw_rms_deg_parent_to_candidate": [
+          1.818205,
+          2.025161
+        ],
+        "mean_final_gyro_bias_error_rad_s_parent_to_candidate": [
+          0.006159,
+          0.007627
+        ],
+        "maximum_yaw_rms_increase_deg": 7.89165
+      },
+      "pure_roll_combined_Conservative_candidate_only_UNKNOWN": {
+        "trials": 16,
+        "IMU_ONLY_mean_tilt_yaw_rms_deg": [
+          0.183151,
+          0.914459
+        ],
+        "TRUSTED_AIDED_mean_tilt_yaw_rms_deg": [
+          3.089862,
+          1.732602
+        ],
+        "TRUSTED_AIDED_total_accepted_rejected": [
+          176,
+          0
+        ]
+      }
+    },
+    "overall_gate": "BLOCKED_FOR_DEPENDENT_COMPLETION_CLAIMS_BY_OPEN_LEGACY_YAW_BIAS_AND_SYNTHETIC_HEADING_AID_FINDINGS"
   },
   "environment": {
     "compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
     "python": "3.10.12",
     "platform": "WSL2 Linux x86_64"
-  }
+  },
+  "preregistration": {
+    "commit_sha": "1078d7339e08edab620ef88ee07483c7e4a671c0",
+    "manifest_sha256_before_run": "1ae6d356adbb7d8dcd76b69a65398a666519f7a350c705230bbf60ed2e4e483f",
+    "candidate_freeze_sha": "55eed3252e3e2af72bd61be66aa14501d9f17399"
+  },
+  "post_confirmation_validation": {
+    "host_and_sanitizer_suites": {
+      "bundle_a_host": "PASS",
+      "bundle_a_sanitizers": "PASS",
+      "bundle_b_host": "PASS",
+      "bundle_b_sanitizers": "PASS",
+      "bundle_c_host": "PASS",
+      "bundle_c_sanitizers": "PASS",
+      "evidence_directory": "remediation/evidence/pr2_revision1_bundle_*_*.log"
+    },
+    "rp2350_arm_cross_build": {
+      "status": "NOT_RUN",
+      "reason": "arm-none-eabi-g++ unavailable and PICO_SDK_PATH unset"
+    },
+    "physical_validation": "BLOCKED_HARDWARE; no Pico 2 or LSM6DS3 device run"
+  },
+  "known_confirmation_coverage_gap": "The four-core-scenario seed matrix does not assert a false runtime stationary hint or static_min_samples=0. Those guards have targeted deterministic regressions; no held-out scenario presently covers them."
 }

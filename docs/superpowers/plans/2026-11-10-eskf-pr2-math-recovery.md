@@ -78,7 +78,7 @@
 
 - [x] **Step 1: Add tests for quaternion `q` versus `-q`, tilted yaw finite differences, gravity Jacobian tangency/rank-two behavior, changing bias with and without trusted heading, slow yaw, and repeated reset/reinitialization.** Each test must assert availability separately from accuracy and keep yaw/position observability limitations explicit.
 - [x] **Step 2: Run new tests first and inspect any failure.** Expected: existing finite-difference math remains within established tolerances; any failure is investigated before changing code.
-- [x] **Step 3: Make only test-supported fixes, each with a new RED→GREEN cycle.** Do not convert a physical ambiguity into a software accuracy claim. No estimator change was justified by the audit tests; the exact reset and false-hint guard remain the only PR 2 algorithm changes.
+- [x] **Step 3: Make only test-supported fixes, each with a new RED→GREEN cycle.** Do not convert a physical ambiguity into a software accuracy claim. The initial audit supported the exact reset and false-hint guard. A later independent branch review found a finite-innovation gravity bias-Jacobian mismatch and a zero-dwell stationarity bypass; both received targeted RED→GREEN regressions and are included in revision 1.
 - [x] **Step 4: Run the full A/B/C host and sanitizer suites.** Expected: all six commands pass.
 - [x] **Step 5: Commit the audit tests and root-cause updates.** Committed in candidate freeze `60b967b`.
 
@@ -86,8 +86,10 @@
 
 **Files:**
 - Create: `benchmarks/scenarios/pr2_confirmation_protocol_v2.json`
+- Create: `benchmarks/scenarios/pr2_confirmation_protocol_v3.json` for the revised candidate's disjoint confirmation set
 - Create: `tools/pr2_confirmation.cpp` and a reproducible runner/validator if needed
 - Create: `benchmarks/manifests/pr2_candidate_protocol_v2.json`
+- Create: `benchmarks/manifests/pr2_candidate_revision1_protocol_v3.json`
 - Create: `benchmarks/reports/pr2_candidate_comparison_protocol_v2.csv`
 - Create: `remediation/PR2_RESULTS.md`
 - Modify: `remediation/ROOT_CAUSE_MATRIX.md`, `remediation/RESOURCE_BUDGETS.md`
@@ -100,5 +102,7 @@
 - [x] **Step 2: Compare candidates only on development inputs and the existing six Bundle B scenarios.** Report paired availability, tilt/yaw/p95/max, bias, aid counts, and health for all relevant modes; select one candidate without looking at confirmation results. PR 1 development and Bundle B seed `20261111` comparisons are recorded; candidate selection is the independently validated exact-reset/stationarity-guard source. Legacy and synthetic-heading trade-offs remain open and disclosed.
 - [x] **Step 3: Commit the candidate SHA and evaluator before acceptance.** Candidate/evaluator freeze is `60b967b0d1e8480bade505dbe3beb788ee442da9`; pre-registered manifest committed as `a76736b` with confirmation status `NOT_RUN`.
 - [x] **Step 4: Run the new confirmation set once against the frozen PR 1 parent and candidate using identical raw inputs.** Validate sample hashes and expected denominators. Do not tune on this set. If results guide a revision, mark it exposed and require a new disjoint set. One run completed: 3,456 rows, identical sample hash, all denominators/availability reconciled; Legacy and synthetic-aid trade-offs remain open.
+- [x] **Revision follow-up after independent review:** preserve the original 2001–2016 result as exposed. Correct the finite-innovation gravity bias Jacobian and zero-dwell hint bypass based on deterministic math/recovery regressions and development data. Commit the revised candidate/evaluator at `55eed3252e3e2af72bd61be66aa14501d9f17399`; preregister seeds `3001–3016` before execution.
+- [x] **Revision-1 confirmation:** run seeds `3001–3016` exactly once with identical parent/candidate inputs. Pairing and denominator validation pass for 3,456 rows and 460,800 40-byte records; the overall gate remains OPEN for LegacyHeuristic yaw/bias, synthetic heading-aid degradation, and false-hint/zero-dwell confirmation gaps.
 - [x] **Step 5: Run all six A/B/C host/sanitizer checks and available target builds.** Report branch ARM cross-build as `NOT_RUN` if the pinned SDK/toolchain remains unavailable; do not substitute the base CI result. All six host/sanitizer commands pass; ARM cross-build is `NOT_RUN` (`arm-none-eabi-g++`/`PICO_SDK_PATH` unavailable).
-- [x] **Step 6: Finalize PR 2 root-cause, resource, and stacked-branch handoff documents; commit the result.** `PR2_RESULTS.md`, updated root-cause matrix, resources, paired development/confirmation artifacts and manifest are finalized locally; the overall PR 2 gate remains OPEN for documented severe findings.
+- [x] **Step 6: Finalize PR 2 root-cause, resource, and stacked-branch handoff documents; commit the result.** `PR2_RESULTS.md`, the required `ROOT_CAUSES.md`, updated root-cause matrix, resources, paired development and both confirmation artifacts/manifests are finalized locally; the overall PR 2 gate remains OPEN for documented severe findings and confirmation-coverage gaps.

@@ -1,4 +1,4 @@
-# Resource budgets — PR 1 snapshot
+# Resource budgets — PR 1 baseline and PR 2 status
 
 ## Firmware baseline evidence
 
@@ -26,7 +26,7 @@ Before any firmware optimization or resource claim, measure all direct/FIFO/bina
 
 ## PR 2 branch status
 
-PR 2 is stacked on PR 1 commit `b749a8aa0e40718ab7b163cad29d9c550b088265`. This branch changes the ESKF reset Jacobian and adds one conflict diagnostic counter; it does not change sensor transport or firmware scheduling. A target-resource delta is **not measured**. The PR 1 CI size numbers above belong to `c397fec`, not this branch.
+PR 2 is stacked on PR 1 commit `b749a8aa0e40718ab7b163cad29d9c550b088265`. The latest candidate/evaluator freeze is `55eed3252e3e2af72bd61be66aa14501d9f17399`. This branch changes the ESKF covariance reset and gravity bias Jacobians, guards contradictory external stationary hints, and adds one conflict diagnostic counter; it does not change sensor transport or firmware scheduling. A target-resource delta is **not measured**. The PR 1 CI size numbers above belong to `c397fec`, not this branch.
 
 | PR 2 metric | Status | Evidence / limitation |
 |---|---|---|
@@ -35,4 +35,4 @@ PR 2 is stacked on PR 1 commit `b749a8aa0e40718ab7b163cad29d9c550b088265`. This 
 | Heap/dynamic-allocation audit | `NOT_RUN` | PR 2 adds no estimator-owned dynamic allocation by inspection, but a complete target/link audit was not executed. |
 | ESKF/acquisition latency and stack high-water | `NOT_MEASURED_ON_DEVICE` | Requires the Pico 2, the original LSM6DS3, and workload instrumentation. |
 
-The fixed covariance reset evaluates trigonometric coefficients for nonzero correction vectors; no embedded timing or flash/RAM impact is claimed. The software checks ran under host GCC 11.4.0 in WSL2 and do not establish target deadlines or hardware reliability.
+The fixed covariance reset evaluates trigonometric coefficients for nonzero correction vectors, and the finite-innovation gravity Jacobian normalizes the measured direction; no embedded timing or flash/RAM impact is claimed. The software checks ran under host GCC 11.4.0 in WSL2 and do not establish target deadlines or hardware reliability.
