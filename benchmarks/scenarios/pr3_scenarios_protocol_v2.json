@@ -1,0 +1,269 @@
+{
+  "protocol": "pr3_statistics_benchmarks",
+  "protocol_version": 2,
+  "status": "FROZEN_SPEC_READY",
+  "supersedes_protocol_version": 1,
+  "protocol_revision_reason": "PR3 v2 preregisters the paired bootstrap method and exact independent RNG stream derivation before any held-out or final-confirmation run.",
+  "base_commit": "cde0fe81c1cc64c6706acaabbced9d65d6ca059d",
+  "historical_figure_reconstruction": "NOT_VERIFIED; these definitions are new synthetic approximations and do not claim byte-for-byte reproduction of the historical SVG plots",
+  "frames": {
+    "world": "right-handed world frame, +Z up, gravity vector [0,0,-9.80665] m/s^2",
+    "body": "right-handed sensor body frame, +X forward, +Y left, +Z up",
+    "orientation": "q_world_from_body maps body coordinates to world coordinates",
+    "angular_rate": "body-frame rad/s",
+    "linear_acceleration": "world-frame m/s^2, excluding gravity",
+    "specific_force_equation": "f_body = R_world_from_body(q)^T * (a_world - gravity_world)"
+  },
+  "truth_integration": {
+    "orientation": "q[i] = normalize(q[i-1] * Exp(omega_body(t_mid) * dt_s))",
+    "velocity": "v[i] = v[i-1] + a_world(t_mid) * dt_s",
+    "position": "p[i] = p[i-1] + v[i-1] * dt_s + 0.5 * a_world(t_mid) * dt_s^2",
+    "initial_position_m": [0.0, 0.0, 0.0],
+    "initial_velocity_m_s": [0.0, 0.0, 0.0],
+    "initial_orientation": "identity"
+  },
+  "sampling": {
+    "timestamp_unit": "integer_microseconds",
+    "epoch_us": 1000000,
+    "sample_index_starts_at": 1,
+    "duration_s": 16.0,
+    "evaluation_window_s_inclusive": [2.0, 16.0],
+    "fixed_expected_grid": "Select nominal sample indices i with 2.0 <= i/rate_hz <= 16.0 before any timestamp perturbation; score every selected index and account for missing outputs explicitly.",
+    "minimum_allowed_inter_sample_dt_us": 4700,
+    "rate_modes": [
+      {
+        "id": "uniform_200hz",
+        "nominal_rate_hz": 200,
+        "timestamp_rule": "epoch_us + floor(sample_index * 1000000 / nominal_rate_hz)"
+      },
+      {
+        "id": "uniform_208hz",
+        "nominal_rate_hz": 208,
+        "timestamp_rule": "epoch_us + floor(sample_index * 1000000 / nominal_rate_hz)"
+      },
+      {
+        "id": "irregular_208hz",
+        "nominal_rate_hz": 208,
+        "timestamp_rule": "nominal_timestamp_us + round(amplitude_us * sin(2*pi*frequency_hz*sample_index/nominal_rate_hz + phase_rad))",
+        "jitter": {
+          "amplitude_us": 150,
+          "frequency_hz": 2.3,
+          "phase_rad": 0.0
+        }
+      }
+    ],
+    "scenario_jitter_composes_additively_with_rate_mode_jitter": true
+  },
+  "noise_model": {
+    "white_noise_spectrum": "flat two-sided PSD with square-root density q = sqrt(S2); ideal rectangular anti-alias bandwidth [-fs/2,+fs/2]",
+    "sample_variance_rule": "variance_per_axis = q^2 * sample_rate_hz; sample_std = q * sqrt(sample_rate_hz)",
+    "accelerometer_density_m_s2_per_sqrt_hz": 0.0015,
+    "gyroscope_density_rad_s_per_sqrt_hz": 0.00025,
+    "density_source": "illustrative PR1/PR2 synthetic values, not measured or certified LSM6DS3 characteristics",
+    "random_generator": "std::mt19937 with std::normal_distribution<float>(0,1). Derive each uint32 stream seed by 32-bit FNV-1a over the seed ID in little-endian byte order, then 0xFF-delimited UTF-8 scenario ID, rate-mode ID, stress-mode ID, split ID, and stream label. Use stream label imu for sensor draws and independent_heading for the independent aid. Record compiler and standard-library versions; byte identity is guaranteed only for the recorded toolchain.",
+    "bias_random_walk": {
+      "model": "independent zero-mean Brownian increments per axis",
+      "accelerometer_walk_m_s2_per_sqrt_s": 0.00008,
+      "gyroscope_walk_rad_s_per_sqrt_s": 0.00003,
+      "increment_std_rule": "walk_density * sqrt(actual_dt_seconds)"
+    },
+    "initial_bias_m_s2_and_rad_s": {
+      "accelerometer": [0.018, -0.012, 0.024],
+      "gyroscope": [0.008, -0.006, 0.018]
+    }
+  },
+  "stress_transforms": {
+    "nominal": {
+      "accelerometer_white_noise_multiplier": 1.0,
+      "gyroscope_white_noise_multiplier": 1.0,
+      "bias_random_walk_multiplier": 1.0,
+      "measurement_disturbance_multiplier": 1.0,
+      "timestamp_jitter_multiplier": 1.0,
+      "truth_trajectory_multiplier": 1.0
+    },
+    "stress": {
+      "accelerometer_white_noise_multiplier": 3.0,
+      "gyroscope_white_noise_multiplier": 3.0,
+      "bias_random_walk_multiplier": 2.0,
+      "measurement_disturbance_multiplier": 2.0,
+      "timestamp_jitter_multiplier": 2.0,
+      "truth_trajectory_multiplier": 1.0
+    },
+    "meaning": "Stress changes sensor uncertainty, additive disturbance and timestamp jitter only; truth motion stays identical to nominal. No covariance inflation or estimator tuning is permitted as a stress workaround."
+  },
+  "factors": {
+    "sensor_input": ["IMU_ONLY", "IMU_WITH_SYNTHETIC_HEADING"],
+    "startup_knowledge": ["UNKNOWN", "EXTERNALLY_VERIFIED_STATIC", "TRUTH_ORACLE_STATIC"],
+    "startup_gyro_bias_calibration": ["OFF", "ON"],
+    "runtime_aid": ["NONE", "INDEPENDENT_MEASUREMENT", "SIMULATOR_ORACLE"],
+    "independent_measurement_definition": "Separate synthetic 1 Hz heading measurement with an independently seeded noise stream; this is an experiment model, not a claim of installed magnetometer hardware.",
+    "truth_oracle_definition": "Simulator truth supplied as an explicitly labeled reference measurement; never present as a guaranteed upper bound.",
+    "startup_calibration_logging": "Record requested mode, success/failure, sample count, actual startup sample interval, and the exact estimate/bias state supplied to the estimator."
+  },
+  "estimator_variants": ["eskf_conservative", "eskf_legacy", "eskf_confirmed_only", "mahony", "gyro_only"],
+  "scenarios": [
+    {
+      "id": "static",
+      "approximation_status": "NEW_APPROXIMATION_NOT_VERIFIED_AGAINST_HISTORICAL_SVG",
+      "description": "Stationary truth for the full 16-second trial.",
+      "truth_profile": {
+        "kind": "piecewise_constant",
+        "segments": [
+          {"start_s": 0.0, "end_s": 16.0, "body_rate_rad_s": [0.0, 0.0, 0.0], "world_acceleration_m_s2": [0.0, 0.0, 0.0]}
+        ]
+      }
+    },
+    {
+      "id": "slow_yaw",
+      "approximation_status": "NEW_APPROXIMATION_NOT_VERIFIED_AGAINST_HISTORICAL_SVG",
+      "description": "Constant slow body-Z yaw after a two-second stationary startup.",
+      "truth_profile": {
+        "kind": "piecewise_constant",
+        "segments": [
+          {"start_s": 0.0, "end_s": 2.0, "body_rate_rad_s": [0.0, 0.0, 0.0], "world_acceleration_m_s2": [0.0, 0.0, 0.0]},
+          {"start_s": 2.0, "end_s": 16.0, "body_rate_rad_s": [0.0, 0.0, 0.035], "world_acceleration_m_s2": [0.0, 0.0, 0.0]}
+        ]
+      }
+    },
+    {
+      "id": "lateral_accel",
+      "approximation_status": "NEW_APPROXIMATION_NOT_VERIFIED_AGAINST_HISTORICAL_SVG",
+      "description": "Sustained 0.17 g world-X acceleration, followed by zero acceleration; velocity is not forcibly reset.",
+      "truth_profile": {
+        "kind": "piecewise_constant",
+        "segments": [
+          {"start_s": 0.0, "end_s": 2.0, "body_rate_rad_s": [0.0, 0.0, 0.0], "world_acceleration_m_s2": [0.0, 0.0, 0.0]},
+          {"start_s": 2.0, "end_s": 12.0, "body_rate_rad_s": [0.0, 0.0, 0.0], "world_acceleration_m_s2": [1.6671305, 0.0, 0.0]},
+          {"start_s": 12.0, "end_s": 16.0, "body_rate_rad_s": [0.0, 0.0, 0.0], "world_acceleration_m_s2": [0.0, 0.0, 0.0]}
+        ]
+      }
+    },
+    {
+      "id": "maneuver",
+      "approximation_status": "NEW_APPROXIMATION_NOT_VERIFIED_AGAINST_HISTORICAL_SVG",
+      "description": "Multi-axis sinusoidal angular rate and world acceleration matching the explicit PR2 Bundle B development approximation.",
+      "truth_profile": {
+        "kind": "harmonic_after_start",
+        "motion_start_s": 2.0,
+        "body_rate_base_rad_s": [0.0, 0.0, 0.35],
+        "body_rate_terms": [
+          {"axis": 0, "amplitude": 0.35, "angular_frequency_rad_s": 1.3, "phase_rad": 0.0},
+          {"axis": 1, "amplitude": 0.27, "angular_frequency_rad_s": 0.7, "phase_rad": 1.5707963267948966},
+          {"axis": 2, "amplitude": 0.12, "angular_frequency_rad_s": 0.8, "phase_rad": 0.0}
+        ],
+        "world_acceleration_base_m_s2": [0.0, 0.0, 0.0],
+        "world_acceleration_terms": [
+          {"axis": 0, "amplitude": 0.75, "angular_frequency_rad_s": 1.2, "phase_rad": 0.0},
+          {"axis": 1, "amplitude": 0.65, "angular_frequency_rad_s": 0.9, "phase_rad": 1.5707963267948966},
+          {"axis": 2, "amplitude": 0.25, "angular_frequency_rad_s": 1.8, "phase_rad": 0.0}
+        ]
+      }
+    },
+    {
+      "id": "vibration",
+      "approximation_status": "NEW_APPROXIMATION_NOT_VERIFIED_AGAINST_HISTORICAL_SVG",
+      "description": "Low-frequency body motion plus deterministic high-frequency additive measurement disturbance.",
+      "truth_profile": {
+        "kind": "harmonic_after_start",
+        "motion_start_s": 2.0,
+        "body_rate_base_rad_s": [0.0, 0.0, 0.25],
+        "body_rate_terms": [
+          {"axis": 0, "amplitude": 0.2, "angular_frequency_rad_s": 0.8, "phase_rad": 0.0},
+          {"axis": 1, "amplitude": 0.15, "angular_frequency_rad_s": 1.1, "phase_rad": 0.0}
+        ],
+        "world_acceleration_base_m_s2": [0.0, 0.0, 0.0],
+        "world_acceleration_terms": [
+          {"axis": 0, "amplitude": 0.2, "angular_frequency_rad_s": 0.5, "phase_rad": 0.0},
+          {"axis": 1, "amplitude": 0.3, "angular_frequency_rad_s": 1.1, "phase_rad": 1.5707963267948966}
+        ]
+      },
+      "measurement_disturbances": {
+        "accelerometer_specific_force_terms": [
+          {"axis": 0, "amplitude": 0.4, "frequency_hz": 43.0, "phase_rad": 0.0},
+          {"axis": 1, "amplitude": -0.12, "frequency_hz": 43.0, "phase_rad": 0.0},
+          {"axis": 2, "amplitude": 0.08, "frequency_hz": 43.0, "phase_rad": 0.0}
+        ],
+        "gyroscope_rate_terms": [
+          {"axis": 0, "amplitude": 0.012, "frequency_hz": 31.0, "phase_rad": 0.0}
+        ]
+      }
+    },
+    {
+      "id": "timing_jitter",
+      "approximation_status": "NEW_APPROXIMATION_NOT_VERIFIED_AGAINST_HISTORICAL_SVG",
+      "description": "The maneuver truth with a deterministic timestamp perturbation; it models metadata jitter, not a measured RP2350 interrupt distribution.",
+      "truth_profile_ref": "maneuver",
+      "timestamp_jitter": {"amplitude_us": 150, "frequency_hz": 2.3, "phase_rad": 0.0}
+    },
+    {
+      "id": "stop_start",
+      "approximation_status": "NEW_APPROXIMATION_NOT_VERIFIED_AGAINST_HISTORICAL_SVG",
+      "description": "Two accelerate/brake cycles with explicit stationary intervals.",
+      "truth_profile": {
+        "kind": "piecewise_constant",
+        "segments": [
+          {"start_s": 0.0, "end_s": 2.0, "body_rate_rad_s": [0.0, 0.0, 0.0], "world_acceleration_m_s2": [0.0, 0.0, 0.0]},
+          {"start_s": 2.0, "end_s": 4.0, "body_rate_rad_s": [0.0, 0.0, 0.25], "world_acceleration_m_s2": [0.6, 0.0, 0.0]},
+          {"start_s": 4.0, "end_s": 6.0, "body_rate_rad_s": [0.0, 0.0, 0.25], "world_acceleration_m_s2": [-0.6, 0.0, 0.0]},
+          {"start_s": 6.0, "end_s": 8.0, "body_rate_rad_s": [0.0, 0.0, 0.0], "world_acceleration_m_s2": [0.0, 0.0, 0.0]},
+          {"start_s": 8.0, "end_s": 10.0, "body_rate_rad_s": [0.0, 0.0, -0.25], "world_acceleration_m_s2": [-0.6, 0.0, 0.0]},
+          {"start_s": 10.0, "end_s": 12.0, "body_rate_rad_s": [0.0, 0.0, -0.25], "world_acceleration_m_s2": [0.6, 0.0, 0.0]},
+          {"start_s": 12.0, "end_s": 16.0, "body_rate_rad_s": [0.0, 0.0, 0.0], "world_acceleration_m_s2": [0.0, 0.0, 0.0]}
+        ]
+      }
+    },
+    {
+      "id": "compound_motion",
+      "approximation_status": "NEW_APPROXIMATION_NOT_VERIFIED_AGAINST_HISTORICAL_SVG",
+      "description": "Distinct multi-axis rotating and translating trajectory with simultaneous sinusoidal components.",
+      "truth_profile": {
+        "kind": "harmonic_after_start",
+        "motion_start_s": 2.0,
+        "body_rate_base_rad_s": [0.0, 0.0, 0.1],
+        "body_rate_terms": [
+          {"axis": 0, "amplitude": 0.35, "angular_frequency_rad_s": 0.6, "phase_rad": 0.0},
+          {"axis": 1, "amplitude": 0.25, "angular_frequency_rad_s": 0.4, "phase_rad": 0.4},
+          {"axis": 2, "amplitude": 0.25, "angular_frequency_rad_s": 0.25, "phase_rad": 1.0}
+        ],
+        "world_acceleration_base_m_s2": [0.0, 0.0, 0.0],
+        "world_acceleration_terms": [
+          {"axis": 0, "amplitude": 0.5, "angular_frequency_rad_s": 0.8, "phase_rad": 0.0},
+          {"axis": 1, "amplitude": 0.4, "angular_frequency_rad_s": 0.6, "phase_rad": 1.2},
+          {"axis": 2, "amplitude": 0.25, "angular_frequency_rad_s": 1.2, "phase_rad": 0.3}
+        ]
+      }
+    }
+  ],
+  "seeds": {
+    "seed_generator": "Contiguous unsigned 32-bit seed IDs; sensor and independent-aid RNG streams use separate labels. Estimator implementations are deterministic and use no RNG.",
+    "development": {"first_seed": 4001, "last_seed": 4100, "status": "FROZEN_RANGE"},
+    "held_out": {"first_seed": 5001, "last_seed": 5100, "status": "FROZEN_RANGE"},
+    "final_confirmation": {"first_seed": 6001, "last_seed": 6100, "status": "FROZEN_RANGE"},
+    "ci_golden_seeds": [4001, 4002, 4003, 4004],
+    "ci_golden_status": "FROZEN_SEEDS",
+    "rule": "Do not tune against held_out or final_confirmation. If a confirmation set informs any revision, preserve it as exposed and allocate a new disjoint range before the next frozen run."
+  },
+  "logging_tiers": {
+    "all_trials": ["seed", "scenario", "stress_mode", "rate_mode", "sensor_input", "startup_knowledge", "startup_gyro_bias_calibration", "runtime_aid", "estimator_variant", "commit_sha", "config_sha256", "input_sha256", "expected", "produced", "valid", "missing", "stale", "rejected", "unavailable_duration_s", "fault_count", "reset_count", "recovery_time_s", "tilt_rms_p95_max_deg", "attitude_error_summary", "position_error_summary", "bias_error_summary", "NEES_summary", "NIS_summary", "health_end", "complete_run"],
+    "selected_diagnostics": ["integer_timestamp_us", "truth", "estimate", "accel_bias", "gyro_bias", "update_decisions", "innovations", "selected_covariance_diagonals_and_cross_blocks", "control_suitability"],
+    "failure_oracle_only": ["full_15_state_covariance", "raw_imu_stream", "calibrated_imu_stream"],
+    "shared_input_storage": "Store one truth/IMU/aiding record stream per trial and reference it from paired estimator rows."
+  },
+  "failure_scoring": {
+    "expected_denominator_is_fixed": true,
+    "missing_required_state_or_covariance": "trial failure; never drop from the summary",
+    "nonfinite_mandatory_metric": "trial failure and CI failure",
+    "optional_metric_missing_before_first_update": "encode null plus a reason",
+    "conditional_error": "report alongside availability and use a common-valid-window paired comparison when valid masks differ",
+    "accuracy_does_not_substitute_for_availability": true
+  },
+  "paired_comparison": {
+    "same_per_trial_inputs_and_timestamps": true,
+    "paired_interval_method": "Paired percentile bootstrap over trial-level differences, resampling paired seeds with replacement; 10,000 replicates; PRNG seed 20261110; report the 2.5th and 97.5th percentiles as a 95% confidence interval for the mean difference. This is not an individual-run bound.",
+    "paired_interval_confidence": 0.95,
+    "paired_interval_replicates": 10000,
+    "paired_interval_seed": 20261110,
+    "mean_interval_is_not_an_individual_run_bound": true,
+    "pr2_gate_status": "OPEN; preserve and report LegacyHeuristic yaw/bias regressions, synthetic-heading-aid degradation, and held-out false-hint/zero-dwell gaps"
+  }
+}

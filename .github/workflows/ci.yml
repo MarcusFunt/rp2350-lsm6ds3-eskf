@@ -21,6 +21,16 @@ jobs:
         run: |
           python3 tests/test_pr3_scenario_protocol.py
           python3 tools/validate_pr3_scenario_protocol.py benchmarks/scenarios/pr3_scenarios_protocol_v1.json
+          python3 tools/validate_pr3_scenario_protocol.py benchmarks/scenarios/pr3_scenarios_protocol_v2.json
+          python3 tests/test_pr3_scenario_codegen.py
+          python3 tools/pr3_generate_scenario_header.py benchmarks/scenarios/pr3_scenarios_protocol_v2.json "$RUNNER_TEMP/pr3_scenario_protocol.hpp"
+          c++ -std=c++17 -Wall -Wextra -Wpedantic -Werror -I"$RUNNER_TEMP" tests/test_pr3_protocol_runtime.cpp -o "$RUNNER_TEMP/test_pr3_protocol_runtime"
+          "$RUNNER_TEMP/test_pr3_protocol_runtime"
+          c++ -std=c++17 -Wall -Wextra -Wpedantic -Werror -I"$RUNNER_TEMP" tests/test_pr3_tilt_nees.cpp -o "$RUNNER_TEMP/test_pr3_tilt_nees"
+          "$RUNNER_TEMP/test_pr3_tilt_nees"
+          python3 tools/run_pr3_benchmarks.py --split development --first-seed 4001 --last-seed 4001 --scenarios static --rate-modes uniform_208hz --stress-modes nominal --profiles baseline --output-dir "$RUNNER_TEMP/pr3-smoke"
+          PR3_INPUT_GENERATOR="$RUNNER_TEMP/pr3-smoke/build/pr3_generate_inputs" python3 tests/test_pr3_generator.py
+          PR3_INPUT_GENERATOR="$RUNNER_TEMP/pr3-smoke/build/pr3_generate_inputs" PR3_EVALUATOR="$RUNNER_TEMP/pr3-smoke/build/pr3_evaluate_stream" python3 tests/test_pr3_evaluator.py
       - name: Sanitized regression tests
         env:
           BUNDLE_A_SANITIZERS: '1'

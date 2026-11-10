@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PROTOCOL = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v1.json"
+PROTOCOL = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v2.json"
 VALIDATOR = ROOT / "tools" / "validate_pr3_scenario_protocol.py"
 
 
@@ -65,6 +65,18 @@ class Pr3ScenarioProtocolTests(unittest.TestCase):
         self.assertIn("two-sided PSD", document["noise_model"]["white_noise_spectrum"])
         self.assertIn("startup_knowledge", document["factors"])
         self.assertIn("runtime_aid", document["factors"])
+        self.assertEqual(document["protocol_version"], 2)
+        self.assertIn("paired percentile bootstrap", document["paired_comparison"]["paired_interval_method"].lower())
+
+    def test_protocol_v1_remains_valid_as_superseded_evidence(self):
+        result = subprocess.run(
+            [sys.executable, str(VALIDATOR), str(ROOT / "benchmarks/scenarios/pr3_scenarios_protocol_v1.json")],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_validator_rejects_missing_required_scenario(self):
         document = json.loads(PROTOCOL.read_text(encoding="utf-8"))

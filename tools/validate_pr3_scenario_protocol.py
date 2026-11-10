@@ -96,7 +96,7 @@ def _validate_profile(profile, duration_s, context):
         _fail(f"{context}.kind must be piecewise_constant or harmonic_after_start")
 
 
-def _validate_seeds(seeds):
+def _validate_seeds(seeds, protocol_version):
     if not isinstance(seeds, dict):
         _fail("seeds must be an object")
     ranges = []
@@ -109,8 +109,9 @@ def _validate_seeds(seeds):
             _fail(f"seeds.{split} must have a valid inclusive range")
         if last - first + 1 < 100:
             _fail(f"seeds.{split} must contain at least 100 seeds")
-        if value.get("status") != "FROZEN_UNRUN":
-            _fail(f"seeds.{split} must remain FROZEN_UNRUN until its declared run")
+        expected_status = "FROZEN_RANGE" if protocol_version == 2 else "FROZEN_UNRUN"
+        if value.get("status") != expected_status:
+            _fail(f"seeds.{split} must have status {expected_status}")
         ranges.append((split, first, last))
     for i, (left_name, left_first, left_last) in enumerate(ranges):
         for right_name, right_first, right_last in ranges[i + 1 :]:
@@ -123,17 +124,22 @@ def _validate_seeds(seeds):
         for seed in golden
     ):
         _fail("ci_golden_seeds must be nonempty and a subset of development")
-    if seeds.get("ci_golden_status") != "FROZEN_SEEDS_ONLY_NO_OUTPUTS_YET":
-        _fail("ci_golden_status must disclose that golden output files are not generated yet")
+    expected_golden_status = "FROZEN_SEEDS" if protocol_version == 2 else "FROZEN_SEEDS_ONLY_NO_OUTPUTS_YET"
+    if seeds.get("ci_golden_status") != expected_golden_status:
+        _fail(f"ci_golden_status must be {expected_golden_status}")
 
 
 def validate_protocol(document):
     if not isinstance(document, dict):
         _fail("protocol root must be an object")
-    if document.get("protocol") != "pr3_statistics_benchmarks" or document.get("protocol_version") != 1:
-        _fail("protocol identifier/version must be pr3_statistics_benchmarks/1")
-    if document.get("status") != "FROZEN_SPEC_UNRUN":
-        _fail("protocol status must remain FROZEN_SPEC_UNRUN before runs")
+    version = document.get("protocol_version")
+    if document.get("protocol") != "pr3_statistics_benchmarks" or version not in (1, 2):
+        _fail("protocol identifier/version must be pr3_statistics_benchmarks/1 or /2")
+    expected_status = "FROZEN_SPEC_READY" if version == 2 else "FROZEN_SPEC_UNRUN"
+    if document.get("status") != expected_status:
+        _fail(f"protocol status must be {expected_status}")
+    if version == 2 and (document.get("supersedes_protocol_version") != 1 or not document.get("protocol_revision_reason")):
+        _fail("protocol v2 must identify the superseded protocol and revision reason")
     if (
         not isinstance(document.get("base_commit"), str)
         or len(document["base_commit"]) != 40
@@ -192,6 +198,8 @@ def validate_protocol(document):
     for key in ("accelerometer_density_m_s2_per_sqrt_hz", "gyroscope_density_rad_s_per_sqrt_hz"):
         if not _number(noise.get(key)) or noise[key] < 0:
             _fail(f"noise_model.{key} must be nonnegative and finite")
+    if not isinstance(noise.get("random_generator"), str) or "std::mt19937" not in noise["random_generator"]:
+        _fail("noise_model.random_generator must declare the pinned deterministic standard-library generator")
     walk = noise.get("bias_random_walk")
     if not isinstance(walk, dict) or "sqrt(actual_dt_seconds)" not in walk.get("increment_std_rule", ""):
         _fail("bias random walk must define increments using each actual dt")
@@ -297,11 +305,17 @@ def validate_protocol(document):
                 f"minimum_allowed_inter_sample_dt_us for {mode['id']} (bound {guaranteed_min_dt} us)"
             )
 
-    _validate_seeds(document.get("seeds"))
+    _validate_seeds(document.get("seeds"), version)
     if not isinstance(document.get("logging_tiers"), dict) or not isinstance(document.get("failure_scoring"), dict):
         _fail("logging_tiers and failure_scoring contracts are required")
-    if not isinstance(document.get("paired_comparison"), dict) or document["paired_comparison"].get("same_per_trial_inputs_and_timestamps") is not True:
+    paired = document.get("paired_comparison")
+    if not isinstance(paired, dict) or paired.get("same_per_trial_inputs_and_timestamps") is not True:
         _fail("paired comparison must require identical per-trial inputs and timestamps")
+    method = paired.get("paired_interval_method")
+    if not isinstance(method, str) or not method.strip():
+        _fail("paired_comparison.paired_interval_method must be preregistered")
+    if version == 2 and ("paired percentile bootstrap" not in method.lower() or paired.get("paired_interval_confidence") != 0.95 or paired.get("paired_interval_replicates") != 10000 or paired.get("paired_interval_seed") != 20261110):
+        _fail("PR3 protocol v2 must freeze the 95% paired bootstrap method, 10,000 replicates, and seed 20261110")
     return document
 
 
