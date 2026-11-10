@@ -130,6 +130,8 @@ struct Settings {
 
 };
 
+// Operational status only: alignment, continuity and numeric/input faults.
+// Nominal does not certify attitude accuracy, observability or control safety.
 enum class Health : uint8_t { Aligning=0, Nominal=1, Degraded=2, Fault=3 };
 
 struct AidingStamp {
@@ -173,6 +175,7 @@ public:
         external_stationary_confirmed_=false;
         gravity_suppressed_updates_=0;
         gravity_applied_updates_=0;
+        external_stationary_conflicts_=0;
         init_last_accel_={};
         health_=Health::Aligning;
         last_nis_=NAN;
@@ -333,15 +336,21 @@ public:
         // The independent stationarity hint may come from e.g. a verified
         // stationary calibration rig. The normal IMU heuristic cannot prove
         // stationary motion during a sustained translational acceleration.
+        // External stationarity is trusted only when the current IMU sample
+        // does not visibly contradict it. This catches large acceleration,
+        // rapid rotation and discontinuities; it cannot detect a constant
+        // in-tolerance acceleration, which remains physically ambiguous.
+        const bool external_stationary_consistent=external_stationary_confirmed_ && candidate;
+        if(external_stationary_confirmed_ && !candidate) ++external_stationary_conflicts_;
         const bool allow_gravity = (config_.gravity_policy==GravityPolicy::ConfirmedOnly) ?
-            external_stationary_confirmed_ : (stationary_ || external_stationary_confirmed_);
+            external_stationary_consistent : (stationary_ || external_stationary_consistent);
         if (allow_gravity && ++aid_count_ >= config_.aid_every_samples) {
             aid_count_=0;
             // A true external confirmation permits gravity realignment even
             // when the estimate has large roll/pitch error. Without one,
             // reject large innovations rather than following apparent gravity.
             correct_gravity_direction(imu.accel_mps2,an,step);
-            if (config_.heuristic_zero_rate && (stationary_ || external_stationary_confirmed_))
+            if (config_.heuristic_zero_rate && (stationary_ || external_stationary_consistent))
                 correct_zero_angular_rate(imu.gyro_rps,config_.zero_rate_sigma);
         }
         if (!allow_gravity) aid_count_=0;
@@ -420,6 +429,7 @@ public:
     bool startup_bias_calibrated() const { return startup_bias_calibrated_; }
     uint32_t gravity_applied_updates() const { return gravity_applied_updates_; }
     uint32_t gravity_suppressed_updates() const { return gravity_suppressed_updates_; }
+    uint32_t external_stationary_conflicts() const { return external_stationary_conflicts_; }
     bool imu_stationary_candidate() const { return stationary_; }
     uint32_t rejected_updates() const { return rejected_updates_; }
     uint32_t accepted_updates() const { return accepted_updates_; }
@@ -434,6 +444,8 @@ public:
     uint64_t last_received_timestamp_us() const { return last_time_us_; }
     Health health() const { return health_; }
     bool reset_required() const { return reset_required_; }
+    // True means the state is initialized, current and not fault-latched.
+    // It is an availability/freshness contract, not an accuracy guarantee.
     bool control_state_valid() const {
         return initialized_ && !reset_required_ && health_!=Health::Fault
             && state_time_us_==last_time_us_;
@@ -818,5 +830,6 @@ private:
     Vec3 init_gyro_sum_{},init_gyro_sq_sum_{};
     bool startup_bias_calibrated_=false,external_stationary_confirmed_=false;
     uint32_t gravity_suppressed_updates_=0,gravity_applied_updates_=0;
+    uint32_t external_stationary_conflicts_=0;
 };
 } // namespace inertial

@@ -58,11 +58,11 @@
 - Consumes: `GravityPolicy`, `set_external_stationary_confirmed`, `gravity_applied_updates`, `gravity_suppressed_updates`, state/health diagnostics.
 - Produces: `external_stationary_conflicts()` diagnostic and a per-sample consistency gate: a trusted stationary assertion is usable only while the sample passes configured accel norm, gyro, and accel-step stationarity bounds.
 
-- [ ] **Step 1: Write failing regressions.** Cover (a) a false hint during obvious 0.4 g lateral acceleration and during fast rotation does not apply gravity updates and increments a conflict counter; (b) a wrong initial tilt remains unresolved in `IMU_ONLY`; (c) the same wrong tilt recovers with a genuinely confirmed static interval; (d) 0.2 g sustained acceleration inside the existing norm tolerance remains explicitly ambiguous; (e) reset and three repeated stop/start cycles clear state and diagnostics.
-- [ ] **Step 2: Run the focused regressions and verify RED.** Run: `g++ -std=c++17 -UNDEBUG -O2 -Wall -Wextra -Wpedantic -Werror tests/test_pr2_recovery.cpp -o /tmp/test_pr2_recovery && /tmp/test_pr2_recovery`. Expected: the false-hint assertion fails against the PR 1 parent because the current implementation bypasses IMU consistency checks whenever the external flag is true.
-- [ ] **Step 3: Implement the smallest safe consistency gate.** Do not infer stationarity from a constant in-tolerance acceleration; only suppress aiding when the current sample visibly contradicts the assertion. Keep the assertion separate from startup knowledge and runtime heading aid.
-- [ ] **Step 4: Run the focused regressions and Bundle B/C.** Expected: obvious conflicts are counted and suppress aiding; confirmed static recovery passes; IMU-only ambiguity is retained; all B/C tests pass.
-- [ ] **Step 5: Document health semantics.** `Health` describes alignment, data continuity, and numeric execution; `control_state_valid()` describes freshness/availability. Neither certifies attitude accuracy, observability, or control safety. Add this contract beside the public API and in PR 2 results.
+- [x] **Step 1: Write failing regressions.** Covered obvious 0.4 g and fast-rotation hint conflicts, wrong initial tilt without/with verified static recovery, and in-tolerance constant acceleration.
+- [x] **Step 2: Run the focused regressions and verify RED.** The PR 1 parent failed on the first false-hint assertion: gravity updates were applied despite 0.4 g lateral acceleration.
+- [x] **Step 3: Implement the smallest safe consistency gate.** A supplied hint is usable only when the current sample passes configured accel-norm, gyro, and accel-step bounds. Conflicts are counted; constant in-tolerance acceleration remains ambiguous.
+- [x] **Step 4: Run the focused regressions and Bundle B/C.** All focused regressions and normal Bundle B/C suites passed; confirmed recovery works and ambiguity remains explicit.
+- [x] **Step 5: Document health semantics.** `Health` tracks alignment, continuity, and numeric/input faults; `control_state_valid()` indicates freshness/availability. Neither certifies accuracy, observability, or control safety. This is now stated beside the public API.
 - [ ] **Step 6: Commit the recovery guard, tests, and contract.**
 
 ### Task 3: Bias, yaw-gauge, sign, and lifecycle audit
