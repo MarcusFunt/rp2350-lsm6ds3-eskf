@@ -1,0 +1,12 @@
+/build/
+/build-*/
+/.cache/
+*.o
+*.a
+*.elf
+*.uf2
+*.bin
+*.map
+__pycache__/
+*.pyc
+.DS_Store

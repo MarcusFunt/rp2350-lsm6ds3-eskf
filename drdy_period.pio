@@ -1,0 +1,35 @@
+; Monitor LSM6DS3 DRDY rising edges with a hardware clocked PIO state machine.
+; GPIO is configured as both IN pin 0 and JMP pin by the C++ code.
+;
+; Counter X starts at 0xffffffff and decrements every two PIO cycles while
+; waiting for the next rising edge. The captured (~X) is a count of half-us
+; iterations (when the state machine runs at 4 MHz). Fixed branch/transfer
+; overhead contributes a small, stable offset; this is NOT an absolute UTC
+; timestamp or a nanosecond-accurate clock capture.
+;
+; The first captured count is not a valid inter-edge interval.
+; If the FIFO fills, "push noblock" drops events rather than halting timing.
+
+.program drdy_period
+.wrap_target
+    wait 0 pin 0       ; first make sure input is deasserted
+    mov x, ~null       ; 0xffffffff
+wait_for_rise:
+    jmp pin captured   ; one cycle
+    jmp x-- wait_for_rise
+    mov x, ~null       ; long silence counter overflow recovery
+    jmp wait_for_rise
+captured:
+    mov isr, x
+    push noblock
+    mov x, ~null
+wait_for_fall:
+    jmp pin still_high
+    jmp x-- wait_for_rise
+    mov x, ~null
+    jmp wait_for_rise
+still_high:
+    jmp x-- wait_for_fall
+    mov x, ~null
+    jmp wait_for_fall
+.wrap
