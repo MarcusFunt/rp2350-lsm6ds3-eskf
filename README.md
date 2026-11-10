@@ -177,3 +177,14 @@ python3 tools/summarize_bundle_b.py benchmarks/bundle_b_no_startup_bias.csv --js
 ```
 
 The simulator explicitly models sensor noise, bias random walk, a period of verified-stationary startup, synthetic motion and specific force, vibration and +-150 us timing-label perturbations. Its simplified timing jitter does not represent measured hardware. It reports causal attitude errors, missing estimates, gravity innovation statistics and **2-DOF horizontal-attitude NEES** (yaw is a gauge). The gravity pseudo-measurement shares the same sensor data as propagation; the usual independent Gaussian NIS/NEES chi-squared coverage assumptions do not exactly apply. See [BENCHMARK_B.md](BENCHMARK_B.md) for matched results and caveats.
+
+## Bundle C (2026-11-10) — hardware-independent sensor interfaces
+
+See [BUNDLE_C.md](BUNDLE_C.md) for the full design, assumptions, tests and limitations.
+
+- **Calibration:** `calibration.hpp` defines versioned, sensor-to-body matrix corrections and optional temperature compensation. The shipped firmware uses identity calibration (`calibration_id=0`) because no real IMU calibration exists.
+- **External measurement contract:** `aiding.hpp` provides timebase, frame, provenance, covariance and source ID checks. It deliberately refuses estimates that reuse correlated IMU data as independent evidence. Delayed replay is not implemented yet.
+- **Mockable LSM6DS3 FIFO:** `lsm6ds3_fifo.hpp` implements explicit six-word patterns, overrun/pattern recovery and batched reads through an abstract register bus. Build the experimental FIFO firmware using `-DRP2350_USE_FIFO=ON`; this is **OFF** by default until physical testing.
+- **Binary log and replay:** `binary_log.hpp` and `tools/binary_log_tool.cpp` provide CRC-protected versioned capture/replay. `-DRP2350_STREAM_BINARY_LOG=ON` enables a debug USB stream only; it can block and is not a lossless production logger.
+
+Host regression: `./tools/run_bundle_c_checks.sh`, optionally `BUNDLE_C_SANITIZERS=1 ./tools/run_bundle_c_checks.sh`.

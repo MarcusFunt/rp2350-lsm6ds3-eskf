@@ -9,7 +9,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 pico_sdk_init()
 
-add_executable(rp2350_lsm6ds3_fusion main.cpp eskf15.hpp)
+add_executable(rp2350_lsm6ds3_fusion main.cpp eskf15.hpp calibration.hpp aiding.hpp lsm6ds3_fifo.hpp binary_log.hpp)
 pico_generate_pio_header(rp2350_lsm6ds3_fusion
     ${CMAKE_CURRENT_LIST_DIR}/drdy_period.pio)
 
@@ -33,4 +33,18 @@ pico_add_extra_outputs(rp2350_lsm6ds3_fusion)
 option(RP2350_STREAM_RAW_CSV "Emit every raw IMU sample over USB CDC (debug only)" OFF)
 if(RP2350_STREAM_RAW_CSV)
     target_compile_definitions(rp2350_lsm6ds3_fusion PRIVATE RP2350_STREAM_RAW_CSV=1)
+endif()
+
+# FIFO path is opt-in until validated with the physical LSM6DS3 and PIO timing.
+option(RP2350_USE_FIFO "Use original LSM6DS3 hardware FIFO (experimental)" OFF)
+if(RP2350_USE_FIFO)
+    target_compile_definitions(rp2350_lsm6ds3_fusion PRIVATE RP2350_USE_FIFO=1)
+endif()
+# Debug-only binary USB stream; may stall acquisition, not flight-safe logging.
+option(RP2350_STREAM_BINARY_LOG "Stream CRC-protected binary IMU records over USB" OFF)
+if(RP2350_STREAM_BINARY_LOG)
+    if(RP2350_STREAM_RAW_CSV)
+        message(FATAL_ERROR "Binary logging and CSV streaming are mutually exclusive")
+    endif()
+    target_compile_definitions(rp2350_lsm6ds3_fusion PRIVATE RP2350_STREAM_BINARY_LOG=1)
 endif()

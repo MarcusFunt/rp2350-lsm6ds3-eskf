@@ -23,3 +23,13 @@ This project is an experimental 15-state ESKF. Host tests and a Pico 2 ARM cross
 ## Still unverified
 
 No real Pico 2 or LSM6DS3 test has been performed. SPI electrical behavior, DMA/PIO timing, sensor noise coefficients, power, temperature, true maximum-latency performance, sensor calibration, live 6-DoF accuracy, and long-trajectory covariance consistency are not established. The noise settings are placeholders, and reset intentionally discards any previously estimated global/local pose.
+
+
+## Bundle C software-only checks (2026-11-10)
+
+- Calibration rotation, cross-axis/scale, temperature coefficients and invalid transform rejection: PASS (host).
+- Aiding contract: timestamp, timebase, calibration, frame, provenance and duplicate gates: PASS (host).
+- Mock FIFO: configuration, signed gyro/accel sequence, partial frame, pattern desynchronization, overrun flushing and bus-error propagation: PASS (host).
+- Binary logging: versioned LE header, 1,200-record roundtrip/replay, CRC, bad calibration and truncated-record rejection: PASS (host).
+- ASan/UBSan on new Bundle C tests: PASS (host).
+- Physical bus timing, sensor register semantics, actual IMU temperature compensation and end-to-end hardware fidelity: NOT TESTED.

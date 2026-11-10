@@ -19,6 +19,13 @@
 #include "hardware/sync.h"
 #include "drdy_period.pio.h"
 #include "eskf15.hpp"
+#include "calibration.hpp"
+#include "aiding.hpp"
+#include "lsm6ds3_fifo.hpp"
+#include "binary_log.hpp"
+#ifdef RP2350_STREAM_BINARY_LOG
+#include "pico/stdio_usb.h"
+#endif
 
 namespace {
 
@@ -44,7 +51,10 @@ constexpr uint8_t WHO_AM_I_ORIGINAL_LSM6DS3 = 0x69;
 // Epoch/timebase are transport metadata, not evidence of global synchronization.
 constexpr uint32_t SAMPLE_SOURCE_ID = 0x4c364433; // local label for original LSM6DS3
 constexpr uint32_t TIMEBASE_ID = 1; // PIO-relative periods, software-anchored to time_us_64()
-constexpr uint32_t CALIBRATION_VERSION = 0; // zero = not calibrated; set after real calibration
+constexpr uint32_t CALIBRATION_VERSION = 0; // 0: identity, not a measured calibration
+// Calibration must be version-controlled and checked against real data before
+// deployment. Identity is a placeholder, NOT a claim of calibrated accuracy.
+static const inertial::SensorCalibration g_calibration{};
 
 
 constexpr uint DMA_FRAME_BYTES = 13; // command + 12 gyro/accel data bytes
@@ -107,6 +117,11 @@ alignas(8) static uint32_t g_core1_stack[4096];
 static volatile uint32_t g_sample_dropped = 0;
 static volatile uint32_t g_read_count = 0;
 static volatile uint32_t g_unexpected_periods = 0;
+static volatile uint32_t g_calibration_failed = 0;
+static volatile uint32_t g_fifo_resets = 0;
+static volatile uint32_t g_fifo_bus_errors = 0;
+static volatile uint32_t g_fifo_backfilled = 0;
+static uint32_t g_fifo_sequence = 0;
 
 static int g_dma_rx = -1;
 static int g_dma_tx = -1;
@@ -132,6 +147,33 @@ uint8_t spi_read_reg(uint8_t reg) {
     spi_cs(false);
     return rx[1];
 }
+
+// The mockable FIFO driver has no Pico SDK dependency.
+// This adapter uses blocking SPI transfers at a bounded 32-frame maximum;
+// it is only built when FIFO mode is selected.
+#ifdef RP2350_USE_FIFO
+class PicoSpiRegisterBus final : public lsm6ds3::Bus {
+public:
+    bool write_reg(uint8_t reg,uint8_t value) override {
+        spi_write_reg(reg,value);
+        return true;
+    }
+    bool read_burst(uint8_t reg,uint8_t *data,std::size_t count) override {
+        if (!data || count==0 || count>384) return false;
+        uint8_t tx[385]{};
+        uint8_t rx[385]{};
+        tx[0]=static_cast<uint8_t>(reg|0x80);
+        spi_cs(true);
+        const int n=spi_write_read_blocking(spi0,tx,rx,count+1);
+        spi_cs(false);
+        if (n!=static_cast<int>(count+1)) return false;
+        for(std::size_t i=0;i<count;i++) data[i]=rx[i+1];
+        return true;
+    }
+};
+static PicoSpiRegisterBus g_fifo_bus;
+static lsm6ds3::Fifo g_fifo(g_fifo_bus);
+#endif
 
 void spi_init_bus() {
     spi_init(spi0, SPI_BAUD);
@@ -217,6 +259,31 @@ int16_t le_i16(const uint8_t *p) {
                                 (static_cast<uint16_t>(p[1]) << 8));
 }
 
+bool calibrate_sample(ImuSample &s) {
+    inertial::Imu raw{s.timestamp_us,{s.ax,s.ay,s.az},{s.gx,s.gy,s.gz}};
+    inertial::Imu calibrated{};
+    // Temperature cannot be assumed. It is not read by this firmware yet;
+    // calibration with temperature_compensation=true therefore rejects input.
+    if (!g_calibration.apply(raw,NAN,calibrated)) {
+        ++g_calibration_failed;
+        return false;
+    }
+    s.ax=calibrated.accel_mps2.x;s.ay=calibrated.accel_mps2.y;s.az=calibrated.accel_mps2.z;
+    s.gx=calibrated.gyro_rps.x;s.gy=calibrated.gyro_rps.y;s.gz=calibrated.gyro_rps.z;
+    return true;
+}
+#ifdef RP2350_USE_FIFO
+ImuSample decode_fifo_frame(const lsm6ds3::Frame &f,uint64_t timestamp_us,uint32_t sequence) {
+    constexpr float ACCEL_TO_MSS=0.000122f*G0;
+    constexpr float GYRO_TO_RADS=0.00875f*(PI_F/180.0f);
+    ImuSample s{};
+    s.timestamp_us=timestamp_us;s.sequence=sequence;
+    s.gx=f.gyro[0]*GYRO_TO_RADS;s.gy=f.gyro[1]*GYRO_TO_RADS;s.gz=f.gyro[2]*GYRO_TO_RADS;
+    s.ax=f.accel[0]*ACCEL_TO_MSS;s.ay=f.accel[1]*ACCEL_TO_MSS;s.az=f.accel[2]*ACCEL_TO_MSS;
+    return s;
+}
+#endif
+
 ImuSample decode_sample(const EdgeEvent &e) {
     // g_rx[0] is received during the register address command; ignore it.
     const uint8_t *b = g_rx + 1;
@@ -299,6 +366,35 @@ float clamp_f(float x, float lo, float hi) {
     return x < lo ? lo : (x > hi ? hi : x);
 }
 
+#ifdef RP2350_STREAM_BINARY_LOG
+void emit_binary_bytes(const uint8_t *data,std::size_t count) {
+    // DEBUG transport. USB CDC writes may stall and are NOT a lossless logger.
+    // Disable every text printf while binary mode is active.
+    if(!stdio_usb_connected()) return;
+    for(std::size_t i=0;i<count;i++) putchar_raw(data[i]);
+}
+void emit_binary_header() {
+    uint8_t bytes[imu_log::kHeaderSize]{};
+    imu_log::encode_header({SAMPLE_SOURCE_ID,TIMEBASE_ID,CALIBRATION_VERSION,208},bytes);
+    emit_binary_bytes(bytes,sizeof(bytes));
+}
+void emit_binary_sample(const ImuSample &s,bool timestamp_backfilled=false) {
+    uint8_t bytes[imu_log::kRecordSize]{};
+    imu_log::Record record{};
+    record.capture_us=s.timestamp_us;
+    record.publication_us=time_us_64();
+    record.sequence=s.sequence;
+    record.flags=
+#ifdef RP2350_USE_FIFO
+        1u |
+#endif
+        (timestamp_backfilled?2u:0u);
+    record.accel_mps2={s.ax,s.ay,s.az};record.gyro_rps={s.gx,s.gy,s.gz};
+    imu_log::encode_record(record,bytes);
+    emit_binary_bytes(bytes,sizeof(bytes));
+}
+#endif
+
 void core1_fusion() {
     // Static storage keeps the 15x15 covariance off the small default core stack.
     static inertial::Eskf15 filter;
@@ -367,7 +463,9 @@ void core1_fusion() {
 int main() {
     stdio_init_all();
     sleep_ms(1200); // USB CDC enumeration; does not require a serial host.
+#ifndef RP2350_STREAM_BINARY_LOG
     printf("RP2350 LSM6DS3 | PIO edge periods + SPI DMA + dual-core 15-state ESKF\n");
+#endif
 
 #ifdef PICO_DEFAULT_LED_PIN
     gpio_init(PICO_DEFAULT_LED_PIN);
@@ -377,11 +475,21 @@ int main() {
     queue_init(&g_sample_queue, sizeof(ImuSample), 64);
     queue_init(&g_estimate_queue, sizeof(FusionEstimate), 8);
     spi_init_bus();
+    if (!g_calibration.valid() || g_calibration.calibration_id!=CALIBRATION_VERSION)
+        panic("Invalid calibration version, axes or matrix");
     imu_init();
+#ifdef RP2350_USE_FIFO
+    if (!g_fifo.configure()) panic("FIFO configuration failed");
+#else
     dma_init_spi();
+#endif
     pio_init_drdy();
     multicore_launch_core1_with_stack(core1_fusion, g_core1_stack, sizeof(g_core1_stack));
+#ifdef RP2350_STREAM_BINARY_LOG
+    emit_binary_header(); // reader must be attached before boot/reset
+#else
     printf("WHO_AM_I=0x69; 208Hz gyro+accel; SPI 8MHz; data-ready=GP20; timebase=PIO+SW epoch; cal=0 (UNVERIFIED)\n");
+#endif
 #ifdef RP2350_STREAM_RAW_CSV
     printf("# CAUTION: 208Hz USB CSV output can cause missed frames; debug only\n");
     printf("# timebase=PIO_relative_software_epoch; calibration_id=0; frame=body_xyz; units=m/s2,rad/s\n");
@@ -396,37 +504,70 @@ int main() {
     bool have_estimate = false;
 
     while (true) {
-        EdgeEvent edge{};
-        if (pop_edge(edge)) {
-            last_edge_us = time_us_64();
-            // Direct sensor registers contain only the latest sample.
-            // If we are ever >1 ODR behind, discard stale edge events
-            // rather than labeling one register snapshot multiple times.
-            if (g_edge_read != g_edge_write) {
-                ++g_event_dropped;
-                continue;
-            }
-            const ImuSample sample = [&]() {
-                spi_read_sample_dma();
-                return decode_sample(edge);
-            }();
+        // Centralized dispatch for both legacy register DMA and FIFO acquisition.
+        // Avoid USB output in the critical path except when debug logging is selected.
+        auto dispatch_sample=[&](ImuSample &sample,bool backfilled) {
+            if(!calibrate_sample(sample)) return;
             ++g_read_count;
 #ifdef RP2350_STREAM_RAW_CSV
-            // Intentionally OFF by default: USB printing may stall the acquisition loop.
             printf("%llu,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g\n",
                    static_cast<unsigned long long>(sample.timestamp_us),
                    sample.ax,sample.ay,sample.az,sample.gx,sample.gy,sample.gz);
 #endif
-            if (previous_ts_us) {
-                const uint64_t interval = sample.timestamp_us - previous_ts_us;
-                if (interval < 3500 || interval > 6500) ++g_unexpected_periods;
+#ifdef RP2350_STREAM_BINARY_LOG
+            emit_binary_sample(sample,backfilled);
+#else
+            (void)backfilled;
+#endif
+            if(previous_ts_us){
+                if(sample.timestamp_us<=previous_ts_us){ ++g_unexpected_periods; return; }
+                const uint64_t interval=sample.timestamp_us-previous_ts_us;
+                if(interval<3500 || interval>6500) ++g_unexpected_periods;
             }
-            previous_ts_us = sample.timestamp_us;
-            if (last_sequence && sample.sequence != last_sequence + 1) {
-                // Gap tracking is implicit in the sequence shown in diagnostics.
+            previous_ts_us=sample.timestamp_us;
+            last_sequence=sample.sequence;
+            if(!queue_try_add(&g_sample_queue,&sample)) ++g_sample_dropped;
+        };
+        EdgeEvent edge{};
+        if (pop_edge(edge)) {
+            last_edge_us=time_us_64();
+            // With direct registers only the newest measurement is available.
+            // FIFO mode instead preserves unconsumed samples until overrun.
+            if (g_edge_read!=g_edge_write) {
+                ++g_event_dropped;
+                continue;
             }
-            last_sequence = sample.sequence;
-            if (!queue_try_add(&g_sample_queue, &sample)) ++g_sample_dropped;
+#ifdef RP2350_USE_FIFO
+            // Each status snapshot reports queued 16-bit words. Backfilled
+            // times are based on the *nominal* 208 Hz ODR, anchored to PIO DRDY.
+            // They are not independently hardware-timestamped measurements.
+            const uint64_t anchor_us=(edge.t_quarter_us+2u)/4u;
+            for(int burst=0;burst<8;burst++) {
+                lsm6ds3::Frame frames[32]{};
+                const auto batch=g_fifo.read(frames,32);
+                if(batch.result==lsm6ds3::Result::NoCompleteFrame) break;
+                if(batch.result!=lsm6ds3::Result::Ok) {
+                    if(batch.result==lsm6ds3::Result::BusError) ++g_fifo_bus_errors;
+                    else ++g_fifo_resets;
+                    break;
+                }
+                const unsigned pending=batch.fifo_words/6;
+                for(unsigned i=0;i<batch.frames;i++) {
+                    const uint64_t back_us=uint64_t(pending-1-i)*4808ull;
+                    if(anchor_us<=back_us) {++g_fifo_bus_errors;continue;}
+                    const uint64_t time_us=anchor_us-back_us;
+                    const bool reconstructed=back_us!=0;
+                    if(reconstructed) ++g_fifo_backfilled;
+                    auto sample=decode_fifo_frame(frames[i],time_us,++g_fifo_sequence);
+                    dispatch_sample(sample,reconstructed);
+                }
+                if(!batch.truncated) break;
+            }
+#else
+            spi_read_sample_dma();
+            auto sample=decode_sample(edge);
+            dispatch_sample(sample,false);
+#endif
         }
 
         FusionEstimate new_estimate{};
@@ -436,6 +577,7 @@ int main() {
         }
 
         const uint64_t now = time_us_64();
+#ifndef RP2350_STREAM_BINARY_LOG
         if (now - last_print_us >= 500'000) {
             last_print_us = now;
 #ifdef PICO_DEFAULT_LED_PIN
@@ -453,7 +595,7 @@ int main() {
                        "sigma_dtheta_body=(%.1f,%.1f,%.1f)deg static=%d "
                        "health=%u valid=%u reset_required=%u age_ms=%.1f max_fusion_us=%lu NIS=%.2f "
                        "updates=%lu/%lu gaps=%lu sat=%lu stale_aid=%lu "
-                       "read=%lu edge_drop=%lu sample_drop=%lu period_warn=%lu\n",
+                       "read=%lu edge_drop=%lu sample_drop=%lu period_warn=%lu fifo_reset=%lu fifo_bus=%lu backfilled=%lu cal_fail=%lu\n",
                        static_cast<unsigned long>(latest.sequence),
                        latest.roll_deg, latest.pitch_deg, latest.yaw_deg,
                        latest.a_norm_g,
@@ -475,7 +617,11 @@ int main() {
                        static_cast<unsigned long>(g_read_count),
                        static_cast<unsigned long>(g_event_dropped),
                        static_cast<unsigned long>(g_sample_dropped),
-                       static_cast<unsigned long>(g_unexpected_periods));
+                       static_cast<unsigned long>(g_unexpected_periods),
+                       static_cast<unsigned long>(g_fifo_resets),
+                       static_cast<unsigned long>(g_fifo_bus_errors),
+                       static_cast<unsigned long>(g_fifo_backfilled),
+                       static_cast<unsigned long>(g_calibration_failed));
             } else {
                 printf("Waiting for fusion data; reads=%lu, DRDY GPIO=%d\n",
                        static_cast<unsigned long>(g_read_count),
@@ -485,6 +631,7 @@ int main() {
                 printf("WARNING: no gyroscope DRDY events for >1 s\n");
             }
         }
+#endif
         tight_loop_contents();
     }
 }
