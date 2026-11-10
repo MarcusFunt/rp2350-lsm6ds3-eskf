@@ -332,7 +332,12 @@ public:
             gn<config_.static_gyro_limit &&
             step<config_.static_accel_step_limit;
         static_count_ = candidate ? static_count_+1 : 0;
-        stationary_ = static_count_ >= config_.static_min_samples;
+        // Treat a zero dwell setting as one consistent sample. A direct
+        // comparison with zero would make every sample, including an obvious
+        // motion contradiction, appear stationary.
+        const unsigned stationary_dwell=config_.static_min_samples ?
+            config_.static_min_samples : 1u;
+        stationary_ = static_count_ >= stationary_dwell;
         // The independent stationarity hint may come from e.g. a verified
         // stationary calibration rig. The normal IMU heuristic cannot prove
         // stationary motion during a sustained translational acceleration.
@@ -663,11 +668,13 @@ public:
             for(int j=0;j<kDim;j++) H[i][j]=0;
         }
         float Sh[3][3];skew(predicted,Sh);
-        const float h[3]={predicted.x,predicted.y,predicted.z};
+        const float u[3]={measured.x,measured.y,measured.z};
         for(int i=0;i<3;i++) for(int j=0;j<3;j++) {
             H[i][6+j]=Sh[i][j];
             // r = normalized(accel - ba) - h(q), and H = -dr/dx.
-            H[i][9+j]=((i==j?1.0f:0.0f)-h[i]*h[j])/magnitude;
+            // The bias derivative follows the measured direction, including
+            // at finite innovation; using h_pred is valid only at zero residual.
+            H[i][9+j]=((i==j?1.0f:0.0f)-u[i]*u[j])/magnitude;
         }
         return true;
     }

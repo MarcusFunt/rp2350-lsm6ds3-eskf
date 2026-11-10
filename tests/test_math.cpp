@@ -114,6 +114,33 @@ static void test_quaternion_sign_and_gravity_tangent() {
     assert(!Eskf15::heading_measurement_model(neg_vertical,0.0f,heading_rn,heading_Hn));
     std::puts("PASS quaternion sign invariance and rank-two gravity tangent model");
 }
+
+static void test_gravity_bias_jacobian_at_finite_innovation() {
+    const Quat q{};
+    const Vec3 bias{0.021f,-0.014f,0.009f};
+    const Vec3 measured_direction{0.15f,0.0f,std::sqrt(1.0f-0.15f*0.15f)};
+    const Vec3 accel=measured_direction*inertial::kGravity+bias;
+    float residual[3],H[3][kDim];
+    assert(Eskf15::gravity_measurement_model(q,accel,bias,residual,H));
+    assert(std::fabs(residual[0])>0.1f); // Exercise the nonlinear, nonzero-innovation case.
+    constexpr double eps=1e-3;
+    double max_bias_error=0.0;
+    for(int j=0;j<3;j++) {
+        Vec3 plus=bias,minus=bias;
+        if(j==0){plus.x+=eps;minus.x-=eps;}
+        if(j==1){plus.y+=eps;minus.y-=eps;}
+        if(j==2){plus.z+=eps;minus.z-=eps;}
+        float rp[3],rm[3],hp[3][kDim],hm[3][kDim];
+        assert(Eskf15::gravity_measurement_model(q,accel,plus,rp,hp));
+        assert(Eskf15::gravity_measurement_model(q,accel,minus,rm,hm));
+        for(int i=0;i<3;i++) {
+            const double numerical=-(static_cast<double>(rp[i])-rm[i])/(2.0*eps);
+            max_bias_error=std::max(max_bias_error,std::abs(numerical-H[i][9+j]));
+            assert(close(numerical,H[i][9+j],2e-4));
+        }
+    }
+    std::printf("PASS nonzero-innovation gravity bias Jacobian; max error=%.8f\n",max_bias_error);
+}
 int main(){
     std::mt19937 rng(0xC0FFEE);
     std::uniform_real_distribution<double> d(-1,1);
@@ -166,4 +193,5 @@ int main(){
     }
     printf("PASS independent finite differences: %d dynamics entries, max |A error|=%.6f, |Hgravity|=%.6f, |Hyaw|=%.6f\n",checks,max_motion_error,max_gravity_error,max_heading_error);
     test_quaternion_sign_and_gravity_tangent();
+    test_gravity_bias_jacobian_at_finite_innovation();
 }

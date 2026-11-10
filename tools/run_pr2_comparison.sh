@@ -10,13 +10,20 @@ PARENT=$(cd "$1" && pwd)
 CANDIDATE=$(cd "$2" && pwd)
 SPLIT=$3
 OUT=$(cd "$(dirname "$4")" && pwd)/$(basename "$4")
-CONFIG="$CANDIDATE/benchmarks/scenarios/pr2_confirmation_protocol_v2.json"
+case "$SPLIT" in
+  development|confirmation)
+    CONFIG="$CANDIDATE/benchmarks/scenarios/pr2_confirmation_protocol_v2.json"
+    ;;
+  confirmation_v3)
+    CONFIG="$CANDIDATE/benchmarks/scenarios/pr2_confirmation_protocol_v3.json"
+    ;;
+  *)
+    echo "split must be development, confirmation or confirmation_v3" >&2
+    exit 2
+    ;;
+esac
 CXX=${CXX:-g++}
 
-if [[ "$SPLIT" != development && "$SPLIT" != confirmation ]]; then
-  echo "split must be development or confirmation" >&2
-  exit 2
-fi
 if [[ -e "$OUT" ]]; then
   echo "output directory already exists: $OUT" >&2
   exit 2

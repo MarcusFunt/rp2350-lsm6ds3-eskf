@@ -45,6 +45,24 @@ static void test_obvious_motion_conflicts_with_stationary_hint() {
     std::puts("PASS obvious IMU motion contradicts and suppresses a stationary hint");
 }
 
+static void test_zero_dwell_does_not_bypass_stationary_hint_guard() {
+    Settings settings; settings.expected_period_us=5000;
+    settings.static_min_samples=0;
+    settings.aid_every_samples=1;
+    settings.heuristic_zero_rate=true;
+    settings.gravity_policy=GravityPolicy::Conservative;
+    Eskf15 f(settings); unsigned k=0; initialize(f,k);
+    const uint32_t gravity_before=f.gravity_applied_updates();
+    const float bias_before=f.state().gyro_bias.x;
+    f.set_external_stationary_confirmed(true);
+    for(unsigned i=0;i<60;i++)
+        f.process(sample(++k,{0.4f*kGravity,0,kGravity},{0.10f,0,0}));
+    assert(f.external_stationary_conflicts()>=60);
+    assert(f.gravity_applied_updates()==gravity_before);
+    assert(std::fabs(f.state().gyro_bias.x-bias_before)<0.01f);
+    std::puts("PASS zero dwell cannot turn a contradicted stationary hint into gravity or zero-rate aiding");
+}
+
 static void test_wrong_initial_tilt_requires_trusted_static_recovery() {
     const Vec3 misleading_initial_accel{0.2f*kGravity,0,kGravity};
     Settings settings; settings.expected_period_us=5000;
@@ -156,6 +174,7 @@ static void test_repeated_reset_reinitialization() {
 
 int main() {
     test_obvious_motion_conflicts_with_stationary_hint();
+    test_zero_dwell_does_not_bypass_stationary_hint_guard();
     test_wrong_initial_tilt_requires_trusted_static_recovery();
     test_in_tolerance_acceleration_remains_unobservable();
     test_slow_yaw_with_changing_bias_and_heading();

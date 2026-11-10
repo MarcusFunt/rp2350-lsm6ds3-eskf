@@ -1,0 +1,36 @@
+PASS stable startup gate, static roll alignment, free yaw
+PASS gyro yaw, independent heading aid, NIS/PSD
+PASS explicitly opted gyro-bias calibration and dynamic tilt gate
+PASS slow yaw remains enabled by default
+PASS normalized gravity-direction correction
+PASS timestamped aids, calibration hash gate, NIS outliers
+PASS duplicate timestamp, missing data uncertainty, saturation fault
+PASS single missing sample detected
+PASS deterministic synthetic IMU replay, covariance positive definite
+PASS yaw gauge correctly rotated into tilted body-error frame
+PASS short-gap recovery, long-gap latch, reset and timestamp invariants
+All report-revision ESKF host tests passed.
+PASS independent finite differences: 7200 dynamics entries, max |A error|=0.002601, |Hgravity|=0.000844, |Hyaw|=0.001023
+PASS quaternion sign invariance and rank-two gravity tangent model
+PASS nonzero-innovation gravity bias Jacobian; max error=0.00003023
+PASS process Qd vs independent FP64 quadrature: 42 entries, max abs error 1.00578e-06
+PASS yaw-invariant tilt metric; protocol-v1 would report 22.697 deg for yaw-only change
+oracle attitude correction norm=0.042196347 rad
+max covariance error=0.00026823457 at (1,1); exact reset block=7.09947786e-06; first-order reset block=0.000220535708
+PASS independent FP64 Joseph and right-error covariance-reset oracle
+Replay: 1200 valid CSV records, 1120 propagated; malformed 0; gaps 0; saturation 0; health 1
+PASS CSV replay (56 rows): yaw=1.963498, target=1.963495
+PASS stable startup gate, static roll alignment, free yaw
+PASS gyro yaw, independent heading aid, NIS/PSD
+PASS explicitly opted gyro-bias calibration and dynamic tilt gate
+PASS slow yaw remains enabled by default
+PASS normalized gravity-direction correction
+PASS timestamped aids, calibration hash gate, NIS outliers
+PASS duplicate timestamp, missing data uncertainty, saturation fault
+PASS single missing sample detected
+PASS deterministic synthetic IMU replay, covariance positive definite
+PASS yaw gauge correctly rotated into tilted body-error frame
+PASS short-gap recovery, long-gap latch, reset and timestamp invariants
+All report-revision ESKF host tests passed.
+Replay: 1200 valid CSV records, 1120 propagated; malformed 0; gaps 0; saturation 0; health 1
+PASS sanitizers

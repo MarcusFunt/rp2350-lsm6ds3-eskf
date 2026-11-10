@@ -13,9 +13,11 @@ int main(int argc, char** argv) {
     const std::string dir=argv[1],split=argv[2];
     const unsigned first=static_cast<unsigned>(std::strtoul(argv[3],nullptr,10));
     const unsigned last=static_cast<unsigned>(std::strtoul(argv[4],nullptr,10));
-    const unsigned expected_first=split=="development"?101u:2001u;
-    const unsigned expected_last=split=="development"?116u:2016u;
-    if ((split!="development" && split!="confirmation")
+    unsigned expected_first=0,expected_last=0;
+    if(split=="development") { expected_first=101u; expected_last=116u; }
+    else if(split=="confirmation") { expected_first=2001u; expected_last=2016u; }
+    else if(split=="confirmation_v3") { expected_first=3001u; expected_last=3016u; }
+    if (expected_first==0
         || first!=expected_first || last!=expected_last) {
         std::fprintf(stderr,"Refusing seed range for split %s\n",split.c_str());
         return 2;
