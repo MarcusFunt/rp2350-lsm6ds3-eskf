@@ -1,0 +1,7 @@
+PASS calibrated sensor frame, matrix, temp and invalid transform
+PASS FIFO pattern, overrun, signed decoding and bus failure
+PASS binary log roundtrip, CRC and short-record rejection
+PASS aiding provenance, timestamp, frame and version gates
+Bundle C host tests passed
+replayed=1200 propagated=1120 calibration=1234
+PASS 1200-record replay, mismatch / CRC / truncation rejection

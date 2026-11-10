@@ -63,7 +63,7 @@
 - [x] **Step 3: Implement the smallest safe consistency gate.** A supplied hint is usable only when the current sample passes configured accel-norm, gyro, and accel-step bounds. Conflicts are counted; constant in-tolerance acceleration remains ambiguous.
 - [x] **Step 4: Run the focused regressions and Bundle B/C.** All focused regressions and normal Bundle B/C suites passed; confirmed recovery works and ambiguity remains explicit.
 - [x] **Step 5: Document health semantics.** `Health` tracks alignment, continuity, and numeric/input faults; `control_state_valid()` indicates freshness/availability. Neither certifies accuracy, observability, or control safety. This is now stated beside the public API.
-- [ ] **Step 6: Commit the recovery guard, tests, and contract.**
+- [x] **Step 6: Commit the recovery guard, tests, and contract.**
 
 ### Task 3: Bias, yaw-gauge, sign, and lifecycle audit
 
@@ -76,10 +76,10 @@
 - Consumes: exact right-reset and stationarity-conflict APIs from Tasks 1–2.
 - Produces: PR 2 evidence for right-error F/H, gravity tangent rank, quaternion sign invariance, yaw-gauge behavior, slow yaw, changing bias, restart, and false-hint limitations.
 
-- [ ] **Step 1: Add tests for quaternion `q` versus `-q`, tilted yaw finite differences, gravity Jacobian tangency/rank-two behavior, changing bias with and without trusted heading, slow yaw, and repeated reset/reinitialization.** Each test must assert availability separately from accuracy and keep yaw/position observability limitations explicit.
-- [ ] **Step 2: Run new tests first and inspect any failure.** Expected: existing finite-difference math remains within established tolerances; any failure is investigated before changing code.
-- [ ] **Step 3: Make only test-supported fixes, each with a new RED→GREEN cycle.** Do not convert a physical ambiguity into a software accuracy claim.
-- [ ] **Step 4: Run the full A/B/C host and sanitizer suites.** Expected: all six commands pass.
+- [x] **Step 1: Add tests for quaternion `q` versus `-q`, tilted yaw finite differences, gravity Jacobian tangency/rank-two behavior, changing bias with and without trusted heading, slow yaw, and repeated reset/reinitialization.** Each test must assert availability separately from accuracy and keep yaw/position observability limitations explicit.
+- [x] **Step 2: Run new tests first and inspect any failure.** Expected: existing finite-difference math remains within established tolerances; any failure is investigated before changing code.
+- [x] **Step 3: Make only test-supported fixes, each with a new RED→GREEN cycle.** Do not convert a physical ambiguity into a software accuracy claim. No estimator change was justified by the audit tests; the exact reset and false-hint guard remain the only PR 2 algorithm changes.
+- [x] **Step 4: Run the full A/B/C host and sanitizer suites.** Expected: all six commands pass.
 - [ ] **Step 5: Commit the audit tests and root-cause updates.**
 
 ### Task 4: Development comparison, candidate freeze, and untouched confirmation
@@ -96,8 +96,8 @@
 - Consumes: PR 1 frozen inputs/definitions and the candidate source SHA from Tasks 1–3.
 - Produces: paired baseline/candidate metrics for all four PR 1 core scenarios, three noisy modes, development seeds 101–116 during development, and a new disjoint confirmation set (seeds 2001–2016) evaluated only after candidate freeze. Also compare the existing six Bundle B scenarios with a separately designated development seed.
 
-- [ ] **Step 1: Freeze the new confirmation seed list and scenario configuration without running it.** Hash and commit the configuration; record that PR 1 held-out seeds are exposed and excluded from candidate selection.
-- [ ] **Step 2: Compare candidates only on development inputs and the existing six Bundle B scenarios.** Report paired availability, tilt/yaw/p95/max, bias, aid counts, and health for all relevant modes; select one candidate without looking at confirmation results.
+- [x] **Step 1: Freeze the new confirmation seed list and scenario configuration without running it.** Hash and commit the configuration; record that PR 1 held-out seeds are exposed and excluded from candidate selection. Config SHA-256: `bfcc898a3af18cb7a5a0f47f1af1a89b51dcc74033fa2ea002e5bd24881b7d57`, commit `37ae832`.
+- [x] **Step 2: Compare candidates only on development inputs and the existing six Bundle B scenarios.** Report paired availability, tilt/yaw/p95/max, bias, aid counts, and health for all relevant modes; select one candidate without looking at confirmation results. PR 1 development and Bundle B seed `20261111` comparisons are recorded; candidate selection is the independently validated exact-reset/stationarity-guard source. Legacy and synthetic-heading trade-offs remain open and disclosed.
 - [ ] **Step 3: Commit the candidate SHA and evaluator before acceptance.**
 - [ ] **Step 4: Run the new confirmation set once against the frozen PR 1 parent and candidate using identical raw inputs.** Validate sample hashes and expected denominators. Do not tune on this set. If results guide a revision, mark it exposed and require a new disjoint set.
 - [ ] **Step 5: Run all six A/B/C host/sanitizer checks and available target builds.** Report branch ARM cross-build as `NOT_RUN` if the pinned SDK/toolchain remains unavailable; do not substitute the base CI result.
