@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "evaluation_protocol_version": 2,
+  "status": "FROZEN_PRECHANGE_BASELINE",
+  "purpose": "PR 1 deterministic regression smoke set; not performance certification",
+  "simulation_only": true,
+  "sample_rate_hz": 200,
+  "sample_period_us": 5000,
+  "duration_s": 12,
+  "time_grid": "integer timestamps: 1,000,000 + i*5,000 us, i=1..2400; truth is integrated from the preceding interval using midpoint motion, while instantaneous IMU samples use the motion profile at the sample time",
+  "evaluation_window": {
+    "start_s_inclusive": 2,
+    "end_s_inclusive": 12,
+    "expected_samples_per_trial": 2001,
+    "validity_rule": "Eskf15.control_state_valid() at the corresponding timestamp",
+    "reporting": "fixed expected denominator and unavailable/stale counts, plus conditional error metrics over valid outputs"
+  },
+  "frames_and_conventions": {
+    "orientation": "world_from_body quaternion; q.rotate(body_vector) returns a world vector",
+    "angular_rate": "body axes, rad/s",
+    "linear_acceleration": "world axes, m/s^2",
+    "gravity_world_m_s2": [0, 0, 9.80665],
+    "position_and_velocity": "world axes, m and m/s"
+  },
+  "scenarios": [
+    {
+      "id": "static",
+      "definition": "zero body angular rate and zero world linear acceleration for all t in [0,12]"
+    },
+    {
+      "id": "pure_roll",
+      "definition": "body angular rate [0.18,0,0] rad/s for 2 <= t < 8 s; zero otherwise; no translation",
+      "historical_match": "transparent recreation; original generator and exact trajectory parameters unavailable"
+    },
+    {
+      "id": "lateral_accel_0p2g",
+      "definition": "zero true rotation; world acceleration [0.2*g,0,0] for 2 <= t < 8 s and zero otherwise; duration 12 s",
+      "historical_match": "matches requested interval and magnitude; exact historical sensor/noise generator unavailable"
+    },
+    {
+      "id": "slow_yaw",
+      "definition": "body angular rate [0,0,0.035] rad/s for 2 <= t < 12 s; zero otherwise; no translation"
+    }
+  ],
+  "noise_model": {
+    "accel_white_density_m_s2_per_sqrt_hz": 0.0015,
+    "gyro_white_density_rad_s_per_sqrt_hz": 0.00025,
+    "accel_bias_random_walk_m_s2_per_sqrt_s": 0.00008,
+    "gyro_bias_random_walk_rad_s_per_sqrt_s": 0.00003,
+    "discrete_white_sigma": "density * sqrt(200 Hz)",
+    "bias_walk_step_sigma": "random-walk density * sqrt(0.005 s)",
+    "initial_sensor_bias": "zero; bias random walk enabled only for the corresponding sensor noise mode",
+    "modes": ["clean", "accel_only", "gyro_only", "combined"],
+    "calibration": "identity/uncalibrated; startup gyro-bias calibration is independently declared per run"
+  },
+  "input_modes": {
+    "IMU_ONLY": "six-axis IMU samples only; no runtime aid or ongoing stationarity hint; startup_knowledge is independently set to UNKNOWN or EXTERNALLY_VERIFIED_STATIC",
+    "TRUSTED_AIDED": "same IMU samples plus an independent synthetic heading-sensor proxy at 1 Hz, sigma 0.04 rad; startup_knowledge remains a separate field"
+  },
+  "startup_knowledge": ["UNKNOWN", "EXTERNALLY_VERIFIED_STATIC"],
+  "startup_knowledge_window": "EXTERNALLY_VERIFIED_STATIC is asserted only while t < 2 s; the assertion is cleared at motion onset",
+  "startup_gyro_bias_calibration": ["OFF", "ON only with EXTERNALLY_VERIFIED_STATIC"],
+  "runtime_aid": {
+    "IMU_ONLY": "NONE",
+    "TRUSTED_AIDED": "synthetic independent heading measurement every 1 second from t=2 through t=12 inclusive; measurement = wrapped truth yaw + N(0,0.04 rad), separate PRNG stream, source_id=0x48454144"
+  },
+  "estimator_variants": ["Conservative", "LegacyHeuristic", "ConfirmedOnly"],
+  "metrics": {
+    "tilt_error_deg": "acos(dot(q_est.unrotate(world_up), q_truth.unrotate(world_up))) in degrees; invariant to relative left-multiplied world yaw",
+    "attitude_error_deg": "SO(3) geodesic angle, reported separately",
+    "yaw_error_deg": "wrapped Euler yaw difference, diagnostic only",
+    "p95": "nearest lower order statistic at floor(0.95*(n_valid-1))",
+    "position_velocity_error": "Euclidean norm in world coordinates",
+    "nis": "reported only when the corresponding gravity update is accepted; heading aid NIS is retained in the per-sample trace with source label"
+  },
+  "seed_sets": {
+    "reference": [0],
+    "development": [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116],
+    "held_out": [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016],
+    "application": "for pure_roll, lateral_accel_0p2g and slow_yaw, each of accel_only, gyro_only and combined; static has a deterministic clean reference only"
+  },
+  "raw_sample_record": {
+    "path": "benchmarks/reports/pr1_imu_samples_protocol_v2.bin",
+    "record_bytes": 40,
+    "layout": "little-endian u64 timestamp_us; f32 accel xyz; f32 gyro xyz; f32 independent heading measurement rad; u32 heading-present flag",
+    "one_stream_per": "scenario/noise_mode/split/seed; shared by all estimator and aid configurations"
+  },
+  "historical_figures": "Existing Bundle B CSV/summary artifacts are protocol v1 and are not silently overwritten; see remediation/FAILURE_REPRO.md for metric correction and supersession record."
+}

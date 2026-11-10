@@ -9,6 +9,8 @@ for test in test_eskf15 test_math test_noise; do
   "$CXX" "${FLAGS[@]}" "tests/${test}.cpp" -o "$OUT/$test"
   "$OUT/$test"
 done
+"$CXX" "${FLAGS[@]}" tests/test_benchmark_tilt_metric.cpp -o "$OUT/test_benchmark_tilt_metric"
+"$OUT/test_benchmark_tilt_metric"
 "$CXX" "${FLAGS[@]}" tools/replay_imu_csv.cpp -o "$OUT/replay"
 python3 tools/create_fixture.py > /dev/null
 "$OUT/replay" fixtures/stationary_then_yaw.csv > "$OUT/output.csv"

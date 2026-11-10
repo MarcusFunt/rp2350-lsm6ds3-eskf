@@ -110,8 +110,11 @@ struct Metrics {
 };
 
 float tilt_error(Quat est,Quat truth){
-    const Vec3 z=est.rotate({0,0,1}), ztruth=truth.rotate({0,0,1});
-    return std::acos(std::max(-1.0f,std::min(1.0f,dot(z,ztruth))))*kRadToDeg;
+    // Tilt is the difference between the gravity directions expressed in body
+    // coordinates. A left-multiplied world-yaw change must not affect it.
+    const Vec3 gravity_est=est.unrotate({0,0,1});
+    const Vec3 gravity_truth=truth.unrotate({0,0,1});
+    return std::acos(std::max(-1.0f,std::min(1.0f,dot(gravity_est,gravity_truth))))*kRadToDeg;
 }
 
 // Only 2D world-horizontal attitude error NEES. World yaw is an unobservable
@@ -232,13 +235,13 @@ int main(int argc,char**argv) {
     if(!trials || trials>200){std::fputs("trials must be between 1 and 200\n",stderr);return 2;}
     std::ofstream out(output);
     if(!out){std::fprintf(stderr,"Cannot create %s\n",output.c_str());return 2;}
-    out<<"scenario,model,seed,startup_bias,expected,valid,tilt_rms_deg,tilt_p95_deg,tilt_max_deg,yaw_rms_deg,tilt_nees_mean,tilt_nees_coverage95,gravity_nis_mean,gyro_bias_error_rps,gravity_applied,gravity_suppressed\n";
+    out<<"evaluation_protocol_version,scenario,model,seed,startup_bias,expected,valid,tilt_rms_deg,tilt_p95_deg,tilt_max_deg,yaw_rms_deg,tilt_nees_mean,tilt_nees_coverage95,gravity_nis_mean,gyro_bias_error_rps,gravity_applied,gravity_suppressed\n";
     out<<std::fixed<<std::setprecision(8);
     for(const char* scene:{"static","slow_yaw","lateral_accel","maneuver","vibration","timing_jitter"}) {
         for(unsigned trial=0;trial<trials;trial++) {
             Comparison results=simulate(scene,seed+1009*trial+103*static_cast<unsigned>(std::string(scene).size()),startup_bias);
             for(Metrics* m:{&results.ekf,&results.mahony,&results.legacy}){
-                out<<m->scenario<<","<<m->model<<","<<m->seed<<","<<startup_bias<<","<<m->expected<<","<<m->valid<<","<<m->tilt_rms()<<","<<m->p95()<<","<<m->max_tilt<<","<<m->yaw_rms()<<",";
+                out<<"2,"<<m->scenario<<","<<m->model<<","<<m->seed<<","<<startup_bias<<","<<m->expected<<","<<m->valid<<","<<m->tilt_rms()<<","<<m->p95()<<","<<m->max_tilt<<","<<m->yaw_rms()<<",";
                 if(m->nees_count)out<<m->nees_sum/m->nees_count<<","<<static_cast<double>(m->nees95)/m->nees_count;
                 out<<",";
                 if(m->nis_count)out<<m->nis_sum/m->nis_count;
@@ -250,4 +253,5 @@ int main(int argc,char**argv) {
     }
     std::printf("Wrote %s: %u trials per scenario, 6 scenarios, 3 estimator variants; startup bias %s\n",
         output.c_str(),trials,startup_bias?"enabled":"disabled");
+    return 0;
 }
