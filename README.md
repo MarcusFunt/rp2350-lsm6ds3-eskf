@@ -2,7 +2,7 @@
 
 **Target:** Raspberry Pi Pico 2 / RP2350 in ARM Cortex-M33 mode, Pico SDK 2.x, original ST LSM6DS3 (`WHO_AM_I=0x69`). This is a concrete revision of the previous example, informed by *Sensor Fusion for Attitude and Navigation*, Research-Expanded Edition (7 November 2026). See [`REVIEW_2026.md`](REVIEW_2026.md) for the audit and source mapping.
 
-**Status:** Host compilation, numerical synthetic tests and deterministic replay have passed. A Pico SDK cross-build, real accelerometer/gyro calibration, real timing and hardware-in-the-loop validation **have not been performed**. Do not use as a flight-safety controller.
+**Status:** Host compilation, numerical synthetic tests and deterministic replay have passed. A Pico SDK 2.2.0 RP2350 cross-build has **passed in GitHub Actions**; real accelerometer/gyro calibration, physical timing and hardware-in-the-loop validation **have not been performed**. Do not use as a flight-safety controller.
 
 ## Files
 
@@ -110,7 +110,7 @@ Replay input: `timestamp_us,ax_mps2,ay_mps2,az_mps2,gx_rps,gy_rps,gz_rps`, with 
 
 ## Priority work remaining
 
-1. Cross-compile on SDK 2.x and fix any actual Pico SDK API/toolchain incompatibilities.
+1. Repeat the passing SDK 2.2.0 cross-build on relevant firmware configurations; check stack high-water and runtime timing on eventual hardware.
 2. Validate INT1 GPIO polarity, SPI waveform, DMA timing, and PIO period counter against a logic analyzer. Verify no sample duplication/overwrites.
 3. Implement and test LSM6DS3 FIFO watermark, timestamp and overrun handling; quantify losslessness. Preserve a calibration hash, timebase ID, full raw sample identity and fault flags in recorded data.
 4. Measure gyro/accelerometer noise and bias drift at multiple temperatures; calibrate axes/scales. Refit `Settings` and verify NIS/NEES with independent truth.
