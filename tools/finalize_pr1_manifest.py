@@ -71,6 +71,13 @@ def main() -> None:
            "summary contains a non-v2 row")
     ensure(all(int(row["expected"]) == EXPECTED_SAMPLES for row in summary_rows),
            "summary denominator changed")
+    for row in summary_rows:
+        if int(row["valid"]) > 0:
+            ensure(math.isfinite(float(row["yaw_abs_p95_deg"]))
+                   and math.isfinite(float(row["yaw_abs_max_deg"])),
+                   "valid run lacks yaw tail metrics")
+            ensure(float(row["yaw_abs_p95_deg"]) <= float(row["yaw_abs_max_deg"]) + 1e-6,
+                   "yaw p95 exceeds per-trial maximum")
     ensure(all(int(row["record_count"]) == RECORD_COUNT for row in index_rows),
            "sample stream length changed")
 

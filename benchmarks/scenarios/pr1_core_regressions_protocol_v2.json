@@ -69,6 +69,7 @@
     "tilt_error_deg": "acos(dot(q_est.unrotate(world_up), q_truth.unrotate(world_up))) in degrees; invariant to relative left-multiplied world yaw",
     "attitude_error_deg": "SO(3) geodesic angle, reported separately",
     "yaw_error_deg": "wrapped Euler yaw difference, diagnostic only",
+    "yaw_abs_p95_and_max": "per-trial absolute wrapped Euler yaw error tail and maximum; not a gauge-invariant attitude metric",
     "p95": "nearest lower order statistic at floor(0.95*(n_valid-1))",
     "position_velocity_error": "Euclidean norm in world coordinates",
     "nis": "reported only when the corresponding gravity update is accepted; heading aid NIS is retained in the per-sample trace with source label"

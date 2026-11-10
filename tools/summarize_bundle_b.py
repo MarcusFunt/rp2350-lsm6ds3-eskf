@@ -12,6 +12,9 @@ from pathlib import Path
 def read(path):
     with open(path, newline='', encoding='utf-8') as f:
         rows = list(csv.DictReader(f))
+    versions = {row.get('evaluation_protocol_version', '') for row in rows}
+    if versions != {'2'}:
+        raise ValueError('This summarizer requires evaluation protocol v2; protocol-v1 results are superseded for tilt metrics')
     expected = {'static', 'slow_yaw', 'lateral_accel', 'maneuver', 'vibration', 'timing_jitter'}
     if {r['scenario'] for r in rows} != expected:
         raise ValueError('Missing benchmark scenario(s)')

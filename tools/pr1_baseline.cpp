@@ -219,10 +219,12 @@ struct Metrics {
     double gravity_nis_sum = 0.0;
     uint32_t gravity_nis_count = 0;
     std::vector<float> tilt_errors;
+    std::vector<float> yaw_abs_errors;
     std::vector<float> position_errors;
     uint32_t gravity_applied = 0;
     uint32_t gravity_suppressed = 0;
     float max_state_age_us = 0.0f;
+    float max_abs_yaw_error_deg = 0.0f;
     float final_bias_error_accel = std::numeric_limits<float>::quiet_NaN();
     float final_bias_error_gyro = std::numeric_limits<float>::quiet_NaN();
 
@@ -304,6 +306,8 @@ void write_summary_row(std::ostream& out, const Scenario& scenario, NoiseMode no
         : *std::max_element(m.tilt_errors.begin(), m.tilt_errors.end()));
     out << ','; csv_float(out, Metrics::rms(m.attitude_sq, m.valid));
     out << ','; csv_float(out, Metrics::rms(m.yaw_sq, m.valid));
+    out << ','; csv_float(out, Metrics::percentile(m.yaw_abs_errors, 0.95f));
+    out << ','; csv_float(out, m.max_abs_yaw_error_deg);
     out << ','; csv_float(out, Metrics::rms(m.position_sq, m.valid));
     out << ','; csv_float(out, Metrics::percentile(m.position_errors, 0.95f));
     out << ','; csv_float(out, Metrics::rms(m.velocity_sq, m.valid));
@@ -436,6 +440,8 @@ void write_trial(std::ostream& summary, std::ostream& trace, std::ostream& index
                     m.position_sq += position * position;
                     m.velocity_sq += velocity * velocity;
                     m.tilt_errors.push_back(tilt);
+                    m.yaw_abs_errors.push_back(std::fabs(yaw));
+                    m.max_abs_yaw_error_deg = std::max(m.max_abs_yaw_error_deg, std::fabs(yaw));
                     m.position_errors.push_back(position);
                     m.final_bias_error_accel = (estimate.accel_bias - sample.truth_accel_bias).norm();
                     m.final_bias_error_gyro = (estimate.gyro_bias - sample.truth_gyro_bias).norm();
@@ -494,7 +500,7 @@ int main(int argc, char** argv) {
     ensure_stream(trace, trace_path.c_str());
     ensure_stream(index, index_path.c_str());
     ensure_stream(sample_file, sample_path.c_str());
-    summary << "evaluation_protocol_version,scenario,noise_mode,seed_split,seed,input_mode,startup_knowledge,startup_calibration,runtime_aid,estimator,expected,valid,unavailable,stale,valid_fraction,tilt_rms_deg,tilt_p95_deg,tilt_max_deg,attitude_rms_deg,yaw_rms_deg,position_rms_m,position_p95_m,velocity_rms_m_s,gravity_nis_mean,gravity_nis_count,gravity_applied,gravity_suppressed,aid_accepted,aid_rejected,health_end,max_state_age_us,accel_bias_error_end_m_s2,gyro_bias_error_end_rad_s\n";
+    summary << "evaluation_protocol_version,scenario,noise_mode,seed_split,seed,input_mode,startup_knowledge,startup_calibration,runtime_aid,estimator,expected,valid,unavailable,stale,valid_fraction,tilt_rms_deg,tilt_p95_deg,tilt_max_deg,attitude_rms_deg,yaw_rms_deg,yaw_abs_p95_deg,yaw_abs_max_deg,position_rms_m,position_p95_m,velocity_rms_m_s,gravity_nis_mean,gravity_nis_count,gravity_applied,gravity_suppressed,aid_accepted,aid_rejected,health_end,max_state_age_us,accel_bias_error_end_m_s2,gyro_bias_error_end_rad_s\n";
     trace << "evaluation_protocol_version,scenario,noise_mode,seed_split,seed,input_mode,startup_knowledge,startup_calibration,runtime_aid,estimator,timestamp_us,time_s,truth_qw,truth_qx,truth_qy,truth_qz,truth_px,truth_py,truth_pz,truth_vx,truth_vy,truth_vz,imu_ax,imu_ay,imu_az,imu_gx,imu_gy,imu_gz,estimate_qw,estimate_qx,estimate_qy,estimate_qz,estimate_px,estimate_py,estimate_pz,estimate_vx,estimate_vy,estimate_vz,truth_bax,truth_bay,truth_baz,estimate_bax,estimate_bay,estimate_baz,truth_bgx,truth_bgy,truth_bgz,estimate_bgx,estimate_bgy,estimate_bgz,cov_p_x,cov_v_x,cov_theta_x,cov_ba_x,cov_bg_x,cov_theta_bg_x,cov_v_bg_x,gravity_event,nis,nis_source,heading_sample_present,output_valid,health,state_age_us,tilt_error_deg,attitude_error_deg,euler_yaw_error_deg,position_error_m,velocity_error_m_s\n";
     index << "trial_id,scenario,noise_mode,seed_split,seed,offset_bytes,record_count,record_bytes\n";
     summary << std::fixed << std::setprecision(8);
