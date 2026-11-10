@@ -3,6 +3,7 @@
 from pathlib import Path
 import math
 f=Path(__file__).resolve().parent.parent/'fixtures'/'stationary_then_yaw.csv'
+f.parent.mkdir(parents=True, exist_ok=True)
 with f.open('w') as h:
     h.write('# dataset=synthetic; no hardware ground truth; timebase=sim_200hz\n')
     h.write('# calibration_id=0; frame=body_xyz; units=m/s2,rad/s\n')
