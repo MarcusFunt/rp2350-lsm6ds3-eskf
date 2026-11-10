@@ -2,10 +2,10 @@
 
 ## Gate status
 
-- **Technical gate:** `TEST_GATE_PASS` for the required A/B/C host and sanitizer suites, the frozen protocol-v2 artifact validator, and a clean-clone run of the new Bundle A/B regressions.
-- **Review state:** `REVIEW_PENDING` until independent review of the local diff.
+- **Technical gate:** `TEST_GATE_PASS` for the A/B/C host and sanitizer suites, the frozen protocol-v2 artifact validator, and a clean-clone run of the new Bundle A/B regressions. The PR 1 branch ARM cross-build is `NOT_RUN`; only pinned baseline commit `c397fec` has cross-build CI evidence.
+- **Review state:** Independent internal review complete with no blocking findings. No external PR review is available because the branch has not been published.
 - **Remote state:** local branch only; no push, draft PR, or merge was performed.
-- **Next dependency:** any later milestone must branch from the final reviewed PR 1 head, not from `origin/main`, while PR 1 remains unmerged.
+- **Next dependency:** any later milestone must branch from the final reviewed PR 1 head reported by `git rev-parse HEAD`, not from `origin/main`, while PR 1 remains unmerged.
 
 ## Included in this first step
 
