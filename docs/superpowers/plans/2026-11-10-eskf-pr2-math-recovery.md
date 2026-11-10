@@ -80,7 +80,7 @@
 - [x] **Step 2: Run new tests first and inspect any failure.** Expected: existing finite-difference math remains within established tolerances; any failure is investigated before changing code.
 - [x] **Step 3: Make only test-supported fixes, each with a new RED→GREEN cycle.** Do not convert a physical ambiguity into a software accuracy claim. No estimator change was justified by the audit tests; the exact reset and false-hint guard remain the only PR 2 algorithm changes.
 - [x] **Step 4: Run the full A/B/C host and sanitizer suites.** Expected: all six commands pass.
-- [ ] **Step 5: Commit the audit tests and root-cause updates.**
+- [x] **Step 5: Commit the audit tests and root-cause updates.** Committed in candidate freeze `60b967b`.
 
 ### Task 4: Development comparison, candidate freeze, and untouched confirmation
 
@@ -99,6 +99,6 @@
 - [x] **Step 1: Freeze the new confirmation seed list and scenario configuration without running it.** Hash and commit the configuration; record that PR 1 held-out seeds are exposed and excluded from candidate selection. Config SHA-256: `bfcc898a3af18cb7a5a0f47f1af1a89b51dcc74033fa2ea002e5bd24881b7d57`, commit `37ae832`.
 - [x] **Step 2: Compare candidates only on development inputs and the existing six Bundle B scenarios.** Report paired availability, tilt/yaw/p95/max, bias, aid counts, and health for all relevant modes; select one candidate without looking at confirmation results. PR 1 development and Bundle B seed `20261111` comparisons are recorded; candidate selection is the independently validated exact-reset/stationarity-guard source. Legacy and synthetic-heading trade-offs remain open and disclosed.
 - [x] **Step 3: Commit the candidate SHA and evaluator before acceptance.** Candidate/evaluator freeze is `60b967b0d1e8480bade505dbe3beb788ee442da9`; pre-registered manifest committed as `a76736b` with confirmation status `NOT_RUN`.
-- [ ] **Step 4: Run the new confirmation set once against the frozen PR 1 parent and candidate using identical raw inputs.** Validate sample hashes and expected denominators. Do not tune on this set. If results guide a revision, mark it exposed and require a new disjoint set.
-- [ ] **Step 5: Run all six A/B/C host/sanitizer checks and available target builds.** Report branch ARM cross-build as `NOT_RUN` if the pinned SDK/toolchain remains unavailable; do not substitute the base CI result.
-- [ ] **Step 6: Finalize PR 2 root-cause, resource, and stacked-branch handoff documents; commit the result.**
+- [x] **Step 4: Run the new confirmation set once against the frozen PR 1 parent and candidate using identical raw inputs.** Validate sample hashes and expected denominators. Do not tune on this set. If results guide a revision, mark it exposed and require a new disjoint set. One run completed: 3,456 rows, identical sample hash, all denominators/availability reconciled; Legacy and synthetic-aid trade-offs remain open.
+- [x] **Step 5: Run all six A/B/C host/sanitizer checks and available target builds.** Report branch ARM cross-build as `NOT_RUN` if the pinned SDK/toolchain remains unavailable; do not substitute the base CI result. All six host/sanitizer commands pass; ARM cross-build is `NOT_RUN` (`arm-none-eabi-g++`/`PICO_SDK_PATH` unavailable).
+- [x] **Step 6: Finalize PR 2 root-cause, resource, and stacked-branch handoff documents; commit the result.** `PR2_RESULTS.md`, updated root-cause matrix, resources, paired development/confirmation artifacts and manifest are finalized locally; the overall PR 2 gate remains OPEN for documented severe findings.

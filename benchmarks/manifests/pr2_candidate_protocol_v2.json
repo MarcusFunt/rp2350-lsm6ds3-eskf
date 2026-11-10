@@ -1,6 +1,6 @@
 {
   "protocol": "pr2_confirmation_protocol_v2",
-  "status": "CANDIDATE_FROZEN_CONFIRMATION_NOT_RUN",
+  "status": "CONFIRMATION_EXECUTED_ONCE_DATA_INTEGRITY_PASS_OPEN_FINDINGS",
   "parent": {
     "branch": "test/eskf-remediation-pr1",
     "sha": "b749a8aa0e40718ab7b163cad29d9c550b088265",
@@ -63,22 +63,66 @@
     "raw_input_capture": "NOT_RETAINED; deterministic same-source/same-seed runs; generator source equality was checked before paired runs"
   },
   "confirmation": {
-    "status": "NOT_RUN",
-    "run_count": 0,
+    "status": "PASS_PAIRING_AND_DENOMINATOR; OVERALL_PR2_GATE_OPEN",
+    "run_count": 1,
+    "evaluation_checkout_sha": "78954978289f5eb6fe89cda35709ecc3b7dd6853",
     "seeds": [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
     "scenarios": ["static", "pure_roll", "lateral_accel_0p2g", "slow_yaw"],
     "noise_modes": ["accel_only", "gyro_only", "combined"],
     "expected_input_streams": 192,
     "expected_sample_records": 460800,
     "expected_metric_rows": 3456,
-    "input_sha256": null,
-    "paired_report_sha256": null,
+    "expected_samples_per_metric_row": 2001,
+    "expected_denominator_total_across_3456_rows": 6915456,
+    "shared_sample_sha256": "6c5236898431d30ed0201798148a42f515ce47af234d566ed8ee5b581e5361e3",
+    "sample_bytes": 18432000,
+    "availability_differences": 0,
+    "final_health_differences": 0,
+    "incomplete_rows_baseline": 0,
+    "incomplete_rows_candidate": 0,
+    "stale_rows_candidate": 0,
+    "paired_report": {
+      "path": "benchmarks/reports/pr2_confirmation_comparison_protocol_v2.csv",
+      "sha256": "88988a836a29b29019dd705f4f8511bb88f0c46670f03bc8537f13bb11ddff3a"
+    },
+    "shared_input_artifacts": [
+      {
+        "path": "benchmarks/reports/pr2_confirmation_imu_samples_protocol_v2.bin",
+        "sha256": "6c5236898431d30ed0201798148a42f515ce47af234d566ed8ee5b581e5361e3"
+      },
+      {
+        "path": "benchmarks/reports/pr2_confirmation_sample_index_protocol_v2.csv",
+        "sha256": "bf6eef118c18ddea8b09c52218c9ac5f7b78d28871389266e051babc616bd300"
+      }
+    ],
+    "selected_mode_results": {
+      "Conservative_IMU_ONLY_UNKNOWN": {
+        "trials": 192,
+        "mean_tilt_rms_deg_parent_to_candidate": [0.102904, 0.102903],
+        "mean_yaw_rms_deg_parent_to_candidate": [0.575054, 0.575557],
+        "availability_and_health_differences": 0
+      },
+      "LegacyHeuristic_IMU_ONLY_UNKNOWN": {
+        "trials": 192,
+        "mean_tilt_rms_deg_parent_to_candidate": [3.954709, 3.699982],
+        "mean_yaw_rms_deg_parent_to_candidate": [1.703670, 1.815770],
+        "mean_final_gyro_bias_error_rad_s_parent_to_candidate": [0.006154, 0.007253],
+        "maximum_yaw_rms_increase_deg": 4.191749
+      },
+      "synthetic_heading_aid_pure_roll_combined_candidate_only": {
+        "seeds": 16,
+        "expected_samples_per_seed": 2001,
+        "IMU_ONLY_mean_tilt_yaw_rms_deg": [0.210836, 0.973115],
+        "TRUSTED_AIDED_mean_tilt_yaw_rms_deg": [3.636263, 1.922513]
+      }
+    },
+    "overall_gate": "BLOCKED_FOR_DEPENDENT_COMPLETION_CLAIMS_BY_OPEN_LEGACY_YAW_BIAS_AND_SYNTHETIC_HEADING_AID_FINDINGS",
     "candidate_freeze_sha": "60b967b0d1e8480bade505dbe3beb788ee442da9",
-    "run_command": "tools/run_pr2_comparison.sh <PR1-parent-worktree> <PR2-candidate-worktree> confirmation <new-output-directory>"
+    "run_command": "tools/run_pr2_comparison.sh /mnt/c/Users/marcu/rp2350-eskf-pr1 /mnt/c/Users/marcu/rp2350-eskf-pr2 confirmation /tmp/pr2-confirmation-2001-2016"
   },
   "exposure_control": {
     "pr1_heldout_seeds_1001_to_1016": "EXPOSED; excluded from candidate selection",
-    "confirmation_seed_list": "FROZEN and unexecuted before this manifest commit",
+    "confirmation_seed_list": "FROZEN and unexecuted at manifest commit a76736b; evaluated once after candidate freeze",
     "revision_rule": "If confirmation results guide a revision, preserve this result as exposed and freeze a new disjoint confirmation set."
   },
   "environment": {
@@ -86,5 +130,21 @@
     "python": "3.10.12",
     "platform": "WSL2 Linux x86_64",
     "pico_sdk": "NOT_USED for host simulations"
+  },
+  "post_confirmation_validation": {
+    "host_and_sanitizer_suites": {
+      "bundle_a_host": "PASS",
+      "bundle_a_sanitizers": "PASS",
+      "bundle_b_host": "PASS",
+      "bundle_b_sanitizers": "PASS",
+      "bundle_c_host": "PASS",
+      "bundle_c_sanitizers": "PASS",
+      "evidence_directory": "remediation/evidence/pr2_bundle_*_confirmation_*.log"
+    },
+    "rp2350_arm_cross_build": {
+      "status": "NOT_RUN",
+      "reason": "arm-none-eabi-g++ unavailable and PICO_SDK_PATH unset"
+    },
+    "physical_validation": "BLOCKED_HARDWARE; no Pico 2 or LSM6DS3 device run"
   }
 }
