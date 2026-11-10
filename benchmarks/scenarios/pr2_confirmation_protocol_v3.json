@@ -1,0 +1,157 @@
+{
+  "protocol": "pr2_confirmation_protocol_v3",
+  "protocol_version": 3,
+  "status": "FROZEN_UNEXECUTED_DISJOINT_REVISION_CONFIRMATION",
+  "parent_branch": "test/eskf-remediation-pr1",
+  "parent_sha": "b749a8aa0e40718ab7b163cad29d9c550b088265",
+  "scenario_generator_source_sha": "c43c52671fa350cf8d095e93fa3b012331cd62f5",
+  "inherits": "benchmarks/scenarios/pr1_core_regressions_protocol_v2.json",
+  "sampling": {
+    "sample_rate_hz": 200,
+    "sample_period_us": 5000,
+    "epoch_us": 1000000,
+    "samples_per_trial": 2400,
+    "expected_evaluation_samples": 2001,
+    "evaluation_time_inclusive_s": [
+      2.0,
+      12.0
+    ],
+    "timestamp_rule": "epoch_us + sample_index * sample_period_us; sample_index starts at 1"
+  },
+  "scenarios": [
+    "static",
+    "pure_roll",
+    "lateral_accel_0p2g",
+    "slow_yaw"
+  ],
+  "noise_modes": [
+    "accel_only",
+    "gyro_only",
+    "combined"
+  ],
+  "seeds": {
+    "development": [
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116
+    ],
+    "confirmation_v3": [
+      3001,
+      3002,
+      3003,
+      3004,
+      3005,
+      3006,
+      3007,
+      3008,
+      3009,
+      3010,
+      3011,
+      3012,
+      3013,
+      3014,
+      3015,
+      3016
+    ]
+  },
+  "matrix": {
+    "trials_per_split": 192,
+    "rows_per_estimator_per_split": 192,
+    "estimator_variants": 18,
+    "input_modes": [
+      "IMU_ONLY",
+      "TRUSTED_AIDED"
+    ],
+    "startup_knowledge": [
+      "UNKNOWN",
+      "EXTERNALLY_VERIFIED_STATIC"
+    ],
+    "startup_calibration": [
+      "OFF",
+      "ON when startup is EXTERNALLY_VERIFIED_STATIC"
+    ],
+    "runtime_aid": [
+      "NONE",
+      "synthetic independent heading at 1 Hz when TRUSTED_AIDED"
+    ],
+    "gravity_policies": [
+      "Conservative",
+      "LegacyHeuristic",
+      "ConfirmedOnly"
+    ]
+  },
+  "noise_model": {
+    "accelerometer_white_noise_density_mps2_per_sqrt_hz": 0.0015,
+    "gyroscope_white_noise_density_radps_per_sqrt_hz": 0.00025,
+    "accelerometer_bias_walk_mps2_per_sqrt_s": 8e-05,
+    "gyroscope_bias_walk_radps_per_sqrt_s": 3e-05,
+    "source": "PR1 protocol-v2 generator; do not alter"
+  },
+  "comparison": {
+    "pairing": "same frozen raw IMU and heading records for PR1-parent and PR2-candidate evaluators",
+    "metrics": [
+      "expected",
+      "valid",
+      "unavailable",
+      "stale",
+      "health_end",
+      "tilt_rms_deg",
+      "tilt_p95_deg",
+      "tilt_max_deg",
+      "attitude_rms_deg",
+      "yaw_rms_deg",
+      "yaw_abs_p95_deg",
+      "yaw_abs_max_deg",
+      "position_rms_m",
+      "position_p95_m",
+      "velocity_rms_m_s",
+      "gravity_nis_mean",
+      "gravity_nis_count",
+      "gravity_applied",
+      "gravity_suppressed",
+      "aid_accepted",
+      "aid_rejected",
+      "accel_bias_error_end_m_s2",
+      "gyro_bias_error_end_rad_s"
+    ],
+    "expected_denominator_is_fixed": true,
+    "conditional_accuracy_must_be_reported_with_availability": true
+  },
+  "bundle_b_development": {
+    "scenarios": [
+      "static",
+      "slow_yaw",
+      "lateral_accel",
+      "maneuver",
+      "vibration",
+      "timing_jitter"
+    ],
+    "seed": 20261111,
+    "trials": 5,
+    "startup_bias_modes": [
+      "OFF",
+      "externally verified ON"
+    ],
+    "baseline_and_candidate_must_use_identical_generated_inputs": true
+  },
+  "exposure_controls": {
+    "pr1_heldout_seeds_1001_to_1016": "EXPOSED; excluded from candidate selection",
+    "pr2_v2_confirmation_seeds_2001_to_2016": "EXPOSED by candidate 60b967b; preserved and not reused for this revision",
+    "confirmation_v3_seeds_3001_to_3016": "FROZEN and unexecuted; run once only after revision candidate and evaluator are committed",
+    "if_confirmation_v3_informs_revision": "Mark this set exposed; preserve its report; use a new disjoint uninspected set",
+    "bundle_b_development_scenarios": "Corrected metadata from frozen tools/benchmark_bundle_b.cpp; no Bundle B rerun is part of this confirmation protocol"
+  }
+}
