@@ -6,6 +6,7 @@
 *.pio text eol=lf
 benchmarks/scenarios/pr1_core_regressions_protocol_v2.json text eol=lf
 benchmarks/manifests/pr1*.json text eol=lf
+benchmarks/manifests/pr2*.json text eol=lf
 benchmarks/reports/pr1*.csv text eol=lf
 benchmarks/reports/pr2_candidate_comparison_protocol_v2.csv -text -diff
 benchmarks/reports/pr2_bundle_b_no_startup_bias_protocol_v2.csv -text -diff

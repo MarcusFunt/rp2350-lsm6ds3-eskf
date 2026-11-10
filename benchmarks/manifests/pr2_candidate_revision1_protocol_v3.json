@@ -1,0 +1,186 @@
+{
+  "protocol": "pr2_confirmation_protocol_v3",
+  "status": "FROZEN_NOT_RUN",
+  "revision": 1,
+  "parent": {
+    "branch": "test/eskf-remediation-pr1",
+    "sha": "b749a8aa0e40718ab7b163cad29d9c550b088265",
+    "eskf15_hpp_sha256": "2a04cb479ffade58d3c8f3522c4ee4e8b0b57dc038e4a73e95b164eadc296a04"
+  },
+  "prior_candidate_exposed": {
+    "freeze_sha": "60b967b0d1e8480bade505dbe3beb788ee442da9",
+    "manifest": "benchmarks/manifests/pr2_candidate_protocol_v2.json",
+    "confirmation_seeds_exposed": [
+      2001,
+      2002,
+      2003,
+      2004,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016
+    ],
+    "preservation": "Its run, paired report and raw inputs remain unchanged; none of these seeds are reused."
+  },
+  "candidate": {
+    "branch": "fix/eskf-math-recovery",
+    "freeze_sha": "55eed32",
+    "eskf15_hpp_sha256": "0bbd516252edbc4a58799bc52bf80b17dada9bc8daade13f50b0657ba02bf05a",
+    "changes": "Gravity accelerometer-bias Jacobian uses the measured unit-vector projector for finite innovations; zero static dwell is clamped to one consistent sample so a contradictory sample cannot make the heuristic stationary flag true.",
+    "selection_basis": [
+      "Independent nonzero-innovation FP64 finite-difference regression",
+      "PR2 development seeds 101-116",
+      "Bundle A/B/C host and sanitizer checks"
+    ],
+    "no_confirmation_observations_used_for_selection": true
+  },
+  "protocol_config": {
+    "path": "benchmarks/scenarios/pr2_confirmation_protocol_v3.json",
+    "sha256": "cbf3f2e7687dc5485065ce0ca6cf5126e7cecf8f8443de0f44366bff878b0aa5",
+    "differences_from_v2": "Uses disjoint seeds 3001-3016 for this revision; corrects Bundle B scenario metadata to match tools/benchmark_bundle_b.cpp (static, slow_yaw, lateral_accel, maneuver, vibration, timing_jitter). Scoring, core PR2 scenarios, sample counts and metrics remain unchanged."
+  },
+  "sources": {
+    "scenario_generator": {
+      "path": "tools/pr1_baseline.cpp",
+      "sha256": "65c4fd8bb6284a2a20ef39896cbcc33f800ddf95202c80a4fd4a6a622f3a4b4e"
+    },
+    "confirmation_evaluator": {
+      "path": "tools/pr2_confirmation.cpp",
+      "sha256": "06092067c771e5168f12e204088a0f66bd478a9a8bd446db902b1d23786c0c1a"
+    },
+    "paired_validator": {
+      "path": "tools/compare_pr2_results.py",
+      "sha256": "4bb4fe5e1f8fdcf0ad6966dde0208799a284ca82f08ae9fd0d5a2cf3e8ebfddf"
+    },
+    "runner": {
+      "path": "tools/run_pr2_comparison.sh",
+      "sha256": "87c396433b36a3f6092100b2e5966021840b51b61d8aadae172fe46f88cc64cf"
+    },
+    "diagnostics": {
+      "path": "tools/pr2_development_diagnostics.py",
+      "sha256": "f012f670abc85bbc159c7baed7a549ad8f892d437c8f8d18332e05c9fefd35ca"
+    }
+  },
+  "development": {
+    "status": "PASS",
+    "seeds": [
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116
+    ],
+    "input_records": 460800,
+    "input_bytes": 18432000,
+    "input_sha256": "0cbd28d02f8405619f65c2df9391e9689e13c3f5caa4b3cf7c09d3d43a02fcca",
+    "paired_rows": 3456,
+    "paired_report": {
+      "path": "benchmarks/reports/pr2_revision1_development_comparison_protocol_v2.csv",
+      "sha256": "2e1b3de210c5b2bf77fc79d231f581c680d50f0ce193ff3c3b8ac513c808b230"
+    },
+    "diagnostic_traces": {
+      "path": "benchmarks/reports/pr2_revision1_development_diagnostic_traces_protocol_v2.csv",
+      "sha256": "611cb13c5cdc87b79775ae5a9920e56038422693d25cdc1b994e2a5fd0d2d879",
+      "streams": "seed 101, combined noise, externally verified static startup, calibration OFF; 6 paired representative estimator/mode streams"
+    },
+    "diagnostic_summary": {
+      "path": "benchmarks/reports/pr2_revision1_development_diagnostics_protocol_v2.json",
+      "sha256": "ec877798006f423a298a8b37b9322a48ffb706c854e8d5c0961182422384d379"
+    },
+    "input_artifact": {
+      "path": "benchmarks/reports/pr2_revision1_development_imu_samples_protocol_v2.bin",
+      "sha256": "0cbd28d02f8405619f65c2df9391e9689e13c3f5caa4b3cf7c09d3d43a02fcca"
+    },
+    "availability_differences": 0,
+    "final_health_differences": 0,
+    "aggregate_unknown_imu_only": {
+      "Conservative": {
+        "mean_tilt_rms_deg_parent_to_candidate": [
+          0.096197,
+          0.096197
+        ],
+        "mean_yaw_rms_deg_parent_to_candidate": [
+          0.541892,
+          0.542303
+        ]
+      },
+      "LegacyHeuristic": {
+        "mean_tilt_rms_deg_parent_to_candidate": [
+          3.993426,
+          3.706208
+        ],
+        "mean_yaw_rms_deg_parent_to_candidate": [
+          1.814867,
+          2.032017
+        ],
+        "mean_final_gyro_bias_error_rad_s_parent_to_candidate": [
+          0.006051,
+          0.007769
+        ]
+      }
+    }
+  },
+  "confirmation_v3": {
+    "status": "FROZEN_UNEXECUTED",
+    "run_count": 0,
+    "seeds": [
+      3001,
+      3002,
+      3003,
+      3004,
+      3005,
+      3006,
+      3007,
+      3008,
+      3009,
+      3010,
+      3011,
+      3012,
+      3013,
+      3014,
+      3015,
+      3016
+    ],
+    "scenarios": [
+      "static",
+      "pure_roll",
+      "lateral_accel_0p2g",
+      "slow_yaw"
+    ],
+    "noise_modes": [
+      "accel_only",
+      "gyro_only",
+      "combined"
+    ],
+    "expected_streams": 192,
+    "expected_sample_records": 460800,
+    "expected_metric_rows": 3456,
+    "expected_samples_per_row": 2001,
+    "expected_total_metric_samples": 6915456,
+    "run_command": "tools/run_pr2_comparison.sh /mnt/c/Users/marcu/rp2350-eskf-pr1 /mnt/c/Users/marcu/rp2350-eskf-pr2 confirmation_v3 /tmp/pr2-confirmation-v3-3001-3016"
+  },
+  "environment": {
+    "compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+    "python": "3.10.12",
+    "platform": "WSL2 Linux x86_64"
+  }
+}
