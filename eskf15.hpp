@@ -474,6 +474,31 @@ public:
         for(int i=0;i<3;i++) A[6+i][12+i]=-1;
     }
 
+    // Exact right-error covariance reset Jacobian for q <- q*Exp(dtheta).
+    // With a right-multiplicative error, the reset is
+    // Exp(-dtheta)*Exp(dtheta+epsilon), whose first derivative is J_r(dtheta).
+    // The Taylor branch avoids cancellation for small corrections.
+    static void attitude_reset_jacobian(Vec3 dtheta,float G[3][3]) {
+        const float theta2=dot(dtheta,dtheta);
+        const float theta=std::sqrt(theta2);
+        float a,b;
+        if(theta2<1.0e-4f) {
+            const float theta4=theta2*theta2;
+            a=0.5f-theta2/24.0f+theta4/720.0f;
+            b=1.0f/6.0f-theta2/120.0f+theta4/5040.0f;
+        } else {
+            a=(1.0f-std::cos(theta))/theta2;
+            b=(theta-std::sin(theta))/(theta2*theta);
+        }
+        const float S[3][3]={{0.0f,-dtheta.z,dtheta.y},
+            {dtheta.z,0.0f,-dtheta.x},{-dtheta.y,dtheta.x,0.0f}};
+        for(int i=0;i<3;i++) for(int j=0;j<3;j++) {
+            float s2=0.0f;
+            for(int k=0;k<3;k++) s2+=S[i][k]*S[k][j];
+            G[i][j]=(i==j?1.0f:0.0f)-a*S[i][j]+b*s2;
+        }
+    }
+
 
 private:
     void degrade() { if(health_!=Health::Fault) health_=Health::Degraded; }
@@ -750,12 +775,8 @@ private:
         state_.accel_bias=state_.accel_bias+Vec3{dx[9],dx[10],dx[11]};
         state_.gyro_bias=state_.gyro_bias+Vec3{dx[12],dx[13],dx[14]};
 
-        // Right-multiplicative attitude-error reset Jacobian:
-        // G_theta = I - 0.5*[dtheta]x, first-order small-angle approximation.
-        float Sd[3][3];skew(dtheta,Sd);
         float G[3][3];
-        for(int i=0;i<3;i++) for(int j=0;j<3;j++)
-            G[i][j]=(i==j ? 1.0f : 0.0f)-.5f*Sd[i][j];
+        attitude_reset_jacobian(dtheta,G);
         for(int j=0;j<kDim;j++) {
             const float old[3]={P_[6][j],P_[7][j],P_[8][j]};
             for(int i=0;i<3;i++) P_[6+i][j]=G[i][0]*old[0]+G[i][1]*old[1]+G[i][2]*old[2];
