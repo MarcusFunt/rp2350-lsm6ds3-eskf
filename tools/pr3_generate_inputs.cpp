@@ -31,8 +31,8 @@ void write_f32(std::ostream& out,float value) {
 }
 void write_header(std::ostream& out,int scenario,int rate_mode,bool stress,
                   std::uint32_t seed,std::uint32_t samples) {
-    out.write("PR3INP02",8);
-    for(std::uint32_t value:{2u,static_cast<std::uint32_t>(scenario),
+    out.write("PR3INP03",8);
+    for(std::uint32_t value:{3u,static_cast<std::uint32_t>(scenario),
             static_cast<std::uint32_t>(rate_mode),stress?1u:0u,seed,samples,
             static_cast<std::uint32_t>(kRecordBytes),samples,0u}) write_u32(out,value);
     out.write(pr3_protocol::kProtocolSha256,64);

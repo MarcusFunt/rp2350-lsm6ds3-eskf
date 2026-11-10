@@ -125,11 +125,11 @@ int evaluate(const char* input,const char* output,const char* split,const char* 
     std::ifstream in(input,std::ios::binary);
     if(!in) {std::fprintf(stderr,"cannot open input %s\n",input);return 2;}
     char magic[8]{};in.read(magic,8);
-    if(in.gcount()!=8 || std::memcmp(magic,"PR3INP02",8)!=0) {std::fputs("bad PR3 input magic\n",stderr);return 3;}
+    if(in.gcount()!=8 || std::memcmp(magic,"PR3INP03",8)!=0) {std::fputs("bad PR3 input magic\n",stderr);return 3;}
     std::array<std::uint32_t,9> h{};
     try {for(auto& x:h)read_u32(in,x);}catch(...){std::fputs("truncated PR3 header\n",stderr);return 3;}
     char protocol_sha[64]{};in.read(protocol_sha,64);
-    if(in.gcount()!=64 || std::string(protocol_sha,64)!=kProtocolSha256 || h[0]!=2 || h[1]>=kScenarioCount || h[2]>=3 || h[3]>1 || h[6]!=kRecordBytes || h[5]!=h[7]) {
+    if(in.gcount()!=64 || std::string(protocol_sha,64)!=kProtocolSha256 || h[0]!=3 || h[1]>=kScenarioCount || h[2]>=3 || h[3]>1 || h[6]!=kRecordBytes || h[5]!=h[7]) {
         std::fputs("invalid PR3 input header or protocol SHA\n",stderr);return 3;
     }
     in.ignore(static_cast<std::streamsize>(kHeaderBytes-108));

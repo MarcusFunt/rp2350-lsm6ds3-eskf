@@ -109,7 +109,7 @@ def _validate_seeds(seeds, protocol_version):
             _fail(f"seeds.{split} must have a valid inclusive range")
         if last - first + 1 < 100:
             _fail(f"seeds.{split} must contain at least 100 seeds")
-        expected_status = "FROZEN_RANGE" if protocol_version == 2 else "FROZEN_UNRUN"
+        expected_status = "FROZEN_RANGE" if protocol_version >= 2 else "FROZEN_UNRUN"
         if value.get("status") != expected_status:
             _fail(f"seeds.{split} must have status {expected_status}")
         ranges.append((split, first, last))
@@ -124,7 +124,7 @@ def _validate_seeds(seeds, protocol_version):
         for seed in golden
     ):
         _fail("ci_golden_seeds must be nonempty and a subset of development")
-    expected_golden_status = "FROZEN_SEEDS" if protocol_version == 2 else "FROZEN_SEEDS_ONLY_NO_OUTPUTS_YET"
+    expected_golden_status = "FROZEN_SEEDS" if protocol_version >= 2 else "FROZEN_SEEDS_ONLY_NO_OUTPUTS_YET"
     if seeds.get("ci_golden_status") != expected_golden_status:
         _fail(f"ci_golden_status must be {expected_golden_status}")
 
@@ -133,13 +133,20 @@ def validate_protocol(document):
     if not isinstance(document, dict):
         _fail("protocol root must be an object")
     version = document.get("protocol_version")
-    if document.get("protocol") != "pr3_statistics_benchmarks" or version not in (1, 2):
-        _fail("protocol identifier/version must be pr3_statistics_benchmarks/1 or /2")
-    expected_status = "FROZEN_SPEC_READY" if version == 2 else "FROZEN_SPEC_UNRUN"
+    if document.get("protocol") != "pr3_statistics_benchmarks" or version not in (1, 2, 3):
+        _fail("protocol identifier/version must be pr3_statistics_benchmarks/1, /2, or /3")
+    expected_status = "FROZEN_SPEC_READY" if version >= 2 else "FROZEN_SPEC_UNRUN"
     if document.get("status") != expected_status:
         _fail(f"protocol status must be {expected_status}")
     if version == 2 and (document.get("supersedes_protocol_version") != 1 or not document.get("protocol_revision_reason")):
         _fail("protocol v2 must identify the superseded protocol and revision reason")
+    if version == 3 and (
+        document.get("supersedes_protocol_version") != 2
+        or not isinstance(document.get("protocol_revision_reason"), str)
+        or "vibration" not in document["protocol_revision_reason"].lower()
+        or "2.0 seconds" not in document["protocol_revision_reason"]
+    ):
+        _fail("protocol v3 must identify v2 as superseded and explain the vibration startup correction")
     if (
         not isinstance(document.get("base_commit"), str)
         or len(document["base_commit"]) != 40
@@ -276,9 +283,16 @@ def validate_protocol(document):
         disturbances = scenario.get("measurement_disturbances", {})
         if not isinstance(disturbances, dict):
             _fail(f"{context}.measurement_disturbances must be an object")
+        if "start_s" in disturbances and (
+            not _number(disturbances["start_s"])
+            or not 0 <= disturbances["start_s"] <= duration
+        ):
+            _fail(f"{context}.measurement_disturbances.start_s must be inside the trial duration")
         for key in ("accelerometer_specific_force_terms", "gyroscope_rate_terms"):
             if key in disturbances:
                 _validate_terms(disturbances[key], f"{context}.measurement_disturbances.{key}", "frequency_hz")
+    if version == 3 and scenario_by_id["vibration"].get("measurement_disturbances", {}).get("start_s") != 2.0:
+        _fail("protocol v3 vibration measurement_disturbances.start_s must equal 2.0 seconds")
 
     scenario_jitter_sources = [
         scenario["timestamp_jitter"]
@@ -314,8 +328,8 @@ def validate_protocol(document):
     method = paired.get("paired_interval_method")
     if not isinstance(method, str) or not method.strip():
         _fail("paired_comparison.paired_interval_method must be preregistered")
-    if version == 2 and ("paired percentile bootstrap" not in method.lower() or paired.get("paired_interval_confidence") != 0.95 or paired.get("paired_interval_replicates") != 10000 or paired.get("paired_interval_seed") != 20261110):
-        _fail("PR3 protocol v2 must freeze the 95% paired bootstrap method, 10,000 replicates, and seed 20261110")
+    if version >= 2 and ("paired percentile bootstrap" not in method.lower() or paired.get("paired_interval_confidence") != 0.95 or paired.get("paired_interval_replicates") != 10000 or paired.get("paired_interval_seed") != 20261110):
+        _fail(f"PR3 protocol v{version} must freeze the 95% paired bootstrap method, 10,000 replicates, and seed 20261110")
     return document
 
 

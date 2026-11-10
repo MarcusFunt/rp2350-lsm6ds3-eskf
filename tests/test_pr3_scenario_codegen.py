@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PROTOCOL = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v2.json"
+PROTOCOL = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v3.json"
 CODEGEN = ROOT / "tools" / "pr3_generate_scenario_header.py"
 
 
@@ -39,6 +39,8 @@ class Pr3ScenarioCodegenTests(unittest.TestCase):
                 self.assertIn(f'"{scenario}"', source)
             self.assertIn("irregular_208hz", source)
             self.assertIn("scenario_jitter_us", source)
+            self.assertIn("kProtocolVersion = 3", source)
+            self.assertIn("t >= 0x1.0000000000000p+1", source)
             self.assertIn("protocol_sha256=", source)
 
     def test_header_codegen_rejects_invalid_protocol(self):

@@ -149,10 +149,11 @@ def generate(document, protocol_bytes):
         while "truth_profile" not in owner:
             owner = scenario_by_id[owner["truth_profile_ref"]]
         disturbance = owner.get("measurement_disturbances", {})
+        disturbance_start = _f(disturbance.get("start_s", 0.0))
         for field, is_gyro in (("gyroscope_rate_terms", True), ("accelerometer_specific_force_terms", False)):
             for term in disturbance.get(field, []):
                 lines.append(
-                    f"  if (scenario=={i} && gyro=={str(is_gyro).lower()} && axis=={term['axis']}) "
+                    f"  if (scenario=={i} && gyro=={str(is_gyro).lower()} && axis=={term['axis']} && t>={disturbance_start}) "
                     f"result += {_f(term['amplitude'])} * multiplier * std::sin(2.0 * 3.14159265358979323846 * "
                     f"{_f(term['frequency_hz'])} * t + {_f(term['phase_rad'])});"
                 )

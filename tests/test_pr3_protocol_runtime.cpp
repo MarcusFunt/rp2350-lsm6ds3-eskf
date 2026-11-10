@@ -6,7 +6,7 @@
 
 int main() {
     using namespace pr3_protocol;
-    assert(kProtocolVersion == 2);
+    assert(kProtocolVersion == 3);
     assert(kScenarioCount == 8);
     assert(scenario_index("compound_motion") == 7);
     assert(scenario_index("unknown") == -1);
@@ -16,7 +16,9 @@ int main() {
     const Motion jitter_scenario = motion(scenario_index("timing_jitter"), 5.25);
     assert(std::fabs(maneuver.body_rate_rad_s.x-jitter_scenario.body_rate_rad_s.x)<1e-12);
     assert(std::fabs(maneuver.world_acceleration_m_s2.y-jitter_scenario.world_acceleration_m_s2.y)<1e-12);
-    assert(std::fabs(disturbance(scenario_index("vibration"),0,false,0.25)-0.4*std::sin(2.0*3.14159265358979323846*43.0*0.25))<1e-12);
+    assert(disturbance(scenario_index("vibration"),0,false,1.99)==0.0);
+    const double vibration_t=2.0+1.0/(4.0*43.0);
+    assert(std::fabs(disturbance(scenario_index("vibration"),0,false,vibration_t)-0.4)<1e-12);
     assert(rate_jitter_us(2, 100) != 0);
     assert(scenario_jitter_us(scenario_index("timing_jitter"),100,208) != 0);
     for (int rate_mode=0; rate_mode<3; ++rate_mode) {

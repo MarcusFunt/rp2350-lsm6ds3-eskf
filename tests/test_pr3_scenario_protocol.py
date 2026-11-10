@@ -8,6 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v2.json"
+PROTOCOL_V3 = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v3.json"
 VALIDATOR = ROOT / "tools" / "validate_pr3_scenario_protocol.py"
 
 
@@ -77,6 +78,47 @@ class Pr3ScenarioProtocolTests(unittest.TestCase):
             check=False,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_protocol_v2_remains_valid_as_superseded_evidence(self):
+        result = subprocess.run(
+            [sys.executable, str(VALIDATOR), str(PROTOCOL)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_protocol_v3_starts_vibration_disturbance_after_stationary_startup(self):
+        result = subprocess.run(
+            [sys.executable, str(VALIDATOR), str(PROTOCOL_V3)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        document = json.loads(PROTOCOL_V3.read_text(encoding="utf-8"))
+        vibration = next(s for s in document["scenarios"] if s["id"] == "vibration")
+        self.assertEqual(document["protocol_version"], 3)
+        self.assertEqual(document["supersedes_protocol_version"], 2)
+        self.assertEqual(vibration["measurement_disturbances"]["start_s"], 2.0)
+
+    def test_validator_rejects_disturbance_start_after_duration(self):
+        document = json.loads(PROTOCOL_V3.read_text(encoding="utf-8"))
+        vibration = next(s for s in document["scenarios"] if s["id"] == "vibration")
+        vibration["measurement_disturbances"]["start_s"] = 17.0
+        result = self.validate_document(document)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("start_s", result.stderr)
+
+    def test_protocol_v3_requires_vibration_disturbance_start(self):
+        document = json.loads(PROTOCOL_V3.read_text(encoding="utf-8"))
+        vibration = next(s for s in document["scenarios"] if s["id"] == "vibration")
+        del vibration["measurement_disturbances"]["start_s"]
+        result = self.validate_document(document)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("start_s", result.stderr)
 
     def test_validator_rejects_missing_required_scenario(self):
         document = json.loads(PROTOCOL.read_text(encoding="utf-8"))

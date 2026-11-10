@@ -32,10 +32,10 @@ class Pr3InputGeneratorTests(unittest.TestCase):
             first_bytes = first.read_bytes()
             self.assertEqual(first_bytes, second.read_bytes())
             self.assertEqual(len(first_bytes), 128 + 3200 * 128)
-            self.assertEqual(first_bytes[:8], b"PR3INP02")
-            self.assertEqual(struct.unpack_from("<9I", first_bytes, 8)[:8], (2, 0, 0, 0, 4001, 3200, 128, 3200))
+            self.assertEqual(first_bytes[:8], b"PR3INP03")
+            self.assertEqual(struct.unpack_from("<9I", first_bytes, 8)[:8], (3, 0, 0, 0, 4001, 3200, 128, 3200))
             self.assertEqual(first_bytes[44:108].decode("ascii"), hashlib.sha256(
-                (Path(__file__).resolve().parents[1] / "benchmarks/scenarios/pr3_scenarios_protocol_v2.json").read_bytes()
+                (Path(__file__).resolve().parents[1] / "benchmarks/scenarios/pr3_scenarios_protocol_v3.json").read_bytes()
             ).hexdigest())
 
     def test_generation_rejects_seed_from_wrong_frozen_split(self):

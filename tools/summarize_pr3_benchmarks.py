@@ -182,7 +182,7 @@ def summarize(input_path, output_dir):
 
     minimum_seed_count = min((len(seeds) for seeds in seeds_by_group.values()), default=0)
     report = {
-        "report_protocol": "pr3_summary_v2",
+        "report_protocol": "pr3_summary_v3",
         "source_summary": str(input_path),
         "trial_row_count": len(rows),
         "input_stream_count": len({row["input_sha256"] for row in rows}),

@@ -15,7 +15,7 @@ from validate_pr3_scenario_protocol import load_protocol
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PROTOCOL = ROOT / "benchmarks/scenarios/pr3_scenarios_protocol_v2.json"
+PROTOCOL = ROOT / "benchmarks/scenarios/pr3_scenarios_protocol_v3.json"
 PROFILES = {
     "baseline": ("IMU_ONLY", "UNKNOWN", False, "NONE"),
     "heading_sensor": ("IMU_WITH_SYNTHETIC_HEADING", "UNKNOWN", False, "NONE"),
@@ -51,7 +51,7 @@ def main():
     parser.add_argument("--rate-modes", default=",".join(m["id"] for m in protocol["sampling"]["rate_modes"]))
     parser.add_argument("--stress-modes", default="nominal,stress")
     parser.add_argument("--profiles", default="baseline")
-    parser.add_argument("--output-dir", default=str(ROOT / "benchmarks/generated/pr3_protocol_v2"))
+    parser.add_argument("--output-dir", default=str(ROOT / "benchmarks/generated/pr3_protocol_v3"))
     parser.add_argument("--cxx", default=os.environ.get("CXX", "c++"))
     parser.add_argument("--source-commit", default=os.environ.get("PR3_SOURCE_COMMIT"))
     parser.add_argument("--tree-dirty", choices=("yes", "no"), default=os.environ.get("PR3_TREE_DIRTY"))
