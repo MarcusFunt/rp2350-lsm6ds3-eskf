@@ -20,6 +20,7 @@
 | `tools/benchmark_bundle_b.cpp` | Shared synthetic IMU stream, ESKF/Mahony matched comparison and tilt NEES diagnostics |
 | `tools/summarize_bundle_b.py` | Reproducible confidence-interval report/JSON summaries and dependency-free SVG plots |
 | `BENCHMARK_B.md` | Synthetic benchmark summary and interpretation limits |
+| `BENCHMARK_B_NO_STARTUP_BIAS.md` | Matching report for runs without startup bias calibration |
 | `benchmarks/` | Raw per-seed CSV and machine-readable summaries |
 
 ## Wiring (Pico 2)
@@ -173,9 +174,11 @@ mkdir -p benchmarks/plots/no_startup_bias benchmarks/plots/verified_startup_bias
 g++ -std=c++17 -O2 -Wall -Wextra -Wpedantic -Werror tools/benchmark_bundle_b.cpp -o benchmark_bundle_b
 ./benchmark_bundle_b --trials 8 --seed 20261110 --sensor-profile both --output benchmarks/bundle_b_no_startup_bias.csv --metadata benchmarks/metadata_no_startup_bias.json
 ./benchmark_bundle_b --trials 8 --seed 20261110 --startup-bias --sensor-profile both --output benchmarks/bundle_b_verified_startup_bias.csv --metadata benchmarks/metadata_verified_startup_bias.json
-python3 tools/summarize_bundle_b.py benchmarks/bundle_b_no_startup_bias.csv --json benchmarks/summary_no_startup_bias.json --metadata benchmarks/metadata_no_startup_bias.json --plots-dir benchmarks/plots/no_startup_bias
+python3 tools/summarize_bundle_b.py benchmarks/bundle_b_no_startup_bias.csv --markdown BENCHMARK_B_NO_STARTUP_BIAS.md --json benchmarks/summary_no_startup_bias.json --metadata benchmarks/metadata_no_startup_bias.json --plots-dir benchmarks/plots/no_startup_bias
 python3 tools/summarize_bundle_b.py benchmarks/bundle_b_verified_startup_bias.csv --markdown BENCHMARK_B.md --json benchmarks/summary_verified_startup_bias.json --metadata benchmarks/metadata_verified_startup_bias.json --plots-dir benchmarks/plots/verified_startup_bias
 ```
+
+Both Markdown reports embed their profile-specific tilt and yaw SVG figures inline; the plotted points are per-trial RMS means and the whiskers are two-sided 95% Student-t intervals across the eight seeded trials.
 
 The simulator retains the nominal white-noise and bias-random-walk equations and adds a synthetic stress profile with residual scale and cross-axis errors, a smooth 6 °C temperature ramp, quantization, and illustrative ±60 m/s² and ±10 rad/s clipping limits. Those limits are not LSM6DS3 specifications; normal scenarios do not clip, and saturation is tested separately. Pass `--sensor-profile nominal` or `--sensor-profile stress` to isolate one profile (the default is `both`). Motion coverage includes smooth stop/start pulses and combined three-axis rotation and translation alongside the existing scenarios. The new trajectories stay below 1 rad/s and 7 m/s²; the stop/start speed pulses peak at 1.2 m/s and 0.75 m/s. Translation is represented only through acceleration for attitude testing; the simulator does not estimate position or velocity. Every result row carries trial identity, validity counts and a valid-sample mask; paired estimator and stress-minus-nominal comparisons are withheld when evaluation masks differ. The report gives mean per-trial RMS, between-trial SD, exact finite-sample 95% Student-t intervals, and paired differences. The checked-in eight-trial intervals are preliminary descriptive uncertainty under the simulator assumptions, not real-world accuracy bounds. It also reports **2-DOF horizontal-attitude NEES** as a diagnostic, with sample counts and coverage; gyro bias error is relative to injected additive bias and may also reflect scale and cross-axis effects. Gravity aiding reuses IMU data, so independent-noise NIS/NEES chi-squared coverage assumptions are not rigorous.
 

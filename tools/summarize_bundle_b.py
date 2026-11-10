@@ -643,9 +643,13 @@ def markdown_report(document, source, links):
             mode_name = 'verified_startup_bias' if mode else 'no_startup_bias'
             lines.extend([f'### {mode_name.replace("_", " ")}', ''])
             for profile in profiles:
-                lines.extend([f'#### {profile} profile', '',
-                              f"- Tilt RMS: [SVG]({links[(mode, profile, 'tilt')]})",
-                              f"- Yaw RMS: [SVG]({links[(mode, profile, 'yaw')]})", ''])
+                lines.extend([
+                    f'#### {profile} profile', '',
+                    f"![Tilt RMS across scenarios — {profile}, {mode_name.replace('_', ' ')}]({links[(mode, profile, 'tilt')]})",
+                    '',
+                    f"![Yaw RMS across scenarios — {profile}, {mode_name.replace('_', ' ')}]({links[(mode, profile, 'yaw')]})",
+                    '',
+                ])
     else:
         lines.extend(['', '## Plots', '', 'Plot generation was not requested for this summary.', ''])
     return '\n'.join(lines)

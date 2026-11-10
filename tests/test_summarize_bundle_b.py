@@ -120,6 +120,28 @@ class InputAndPairingTests(unittest.TestCase):
             self.assertIn('CI N/A when fewer than two finite trials.', content)
             ET.parse(svg_path)
 
+    def test_markdown_report_embeds_relative_figures(self):
+        raw = fixture_rows()
+        with tempfile.TemporaryDirectory() as directory:
+            csv_path = Path(directory) / 'trials.csv'
+            write_csv(csv_path, raw)
+            groups, pairs = SUMMARY.summarize(SUMMARY.read(csv_path))
+        document = {
+            'schema_version': 2,
+            'metric_definition_version': 2,
+            'truth_integration_version': 2,
+            'groups': groups,
+            'paired_comparisons': pairs,
+            'metadata': None,
+        }
+        links = {
+            (False, 'nominal', 'tilt'): 'figures/tilt.svg',
+            (False, 'nominal', 'yaw'): 'figures/yaw.svg',
+        }
+        report = SUMMARY.markdown_report(document, 'trials.csv', links)
+        self.assertIn('![Tilt RMS across scenarios — nominal, no startup bias](figures/tilt.svg)', report)
+        self.assertIn('![Yaw RMS across scenarios — nominal, no startup bias](figures/yaw.svg)', report)
+
     def test_unaligned_masks_are_excluded_and_reported(self):
         raw = fixture_rows()
         for row in raw:
