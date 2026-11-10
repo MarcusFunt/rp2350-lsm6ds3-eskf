@@ -17,6 +17,10 @@ jobs:
         run: ./tools/run_bundle_b_checks.sh
       - name: Bundle C calibration, aiding, FIFO and binary replay tests
         run: ./tools/run_bundle_c_checks.sh
+      - name: Validate PR3 scenario protocol
+        run: |
+          python3 tests/test_pr3_scenario_protocol.py
+          python3 tools/validate_pr3_scenario_protocol.py benchmarks/scenarios/pr3_scenarios_protocol_v1.json
       - name: Sanitized regression tests
         env:
           BUNDLE_A_SANITIZERS: '1'
