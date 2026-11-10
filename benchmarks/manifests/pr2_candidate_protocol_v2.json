@@ -1,0 +1,90 @@
+{
+  "protocol": "pr2_confirmation_protocol_v2",
+  "status": "CANDIDATE_FROZEN_CONFIRMATION_NOT_RUN",
+  "parent": {
+    "branch": "test/eskf-remediation-pr1",
+    "sha": "b749a8aa0e40718ab7b163cad29d9c550b088265",
+    "eskf15_hpp_sha256": "2a04cb479ffade58d3c8f3522c4ee4e8b0b57dc038e4a73e95b164eadc296a04"
+  },
+  "candidate": {
+    "branch": "fix/eskf-math-recovery",
+    "freeze_sha": "60b967b0d1e8480bade505dbe3beb788ee442da9",
+    "eskf15_hpp_sha256": "960b466916e48da41f078cdbcee0b09461f57b4d72d5e590c8a04d1f32313748",
+    "selected_on": [
+      "PR1 development seeds 101-116",
+      "Bundle B development seed 20261111"
+    ],
+    "selection_reason": "Independent FP64 reset oracle and false-hint regression pass; paired development Conservative behavior has no availability or health regression. LegacyHeuristic yaw trade-offs remain OPEN and are recorded."
+  },
+  "protocol_config": {
+    "path": "benchmarks/scenarios/pr2_confirmation_protocol_v2.json",
+    "sha256": "bfcc898a3af18cb7a5a0f47f1af1a89b51dcc74033fa2ea002e5bd24881b7d57"
+  },
+  "sources": {
+    "scenario_generator": {
+      "path": "tools/pr1_baseline.cpp",
+      "sha256": "65c4fd8bb6284a2a20ef39896cbcc33f800ddf95202c80a4fd4a6a622f3a4b4e"
+    },
+    "confirmation_evaluator": {
+      "path": "tools/pr2_confirmation.cpp",
+      "sha256": "2abe094c3730bc5352ab7473c023d295f19a7cc7f176ce8fce3b30afee3c30bc"
+    },
+    "paired_validator": {
+      "path": "tools/compare_pr2_results.py",
+      "sha256": "4bb4fe5e1f8fdcf0ad6966dde0208799a284ca82f08ae9fd0d5a2cf3e8ebfddf"
+    },
+    "runner": {
+      "path": "tools/run_pr2_comparison.sh",
+      "sha256": "8fc6b5669ed1de89264cf179c30c0a46cc2e957ca3a31244dfb4f0c0f5ca906e"
+    }
+  },
+  "development": {
+    "status": "PASS",
+    "seeds": [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116],
+    "input_sample_records": 460800,
+    "paired_estimator_rows": 3456,
+    "shared_sample_sha256": "0cbd28d02f8405619f65c2df9391e9689e13c3f5caa4b3cf7c09d3d43a02fcca",
+    "paired_report": {
+      "path": "benchmarks/reports/pr2_candidate_comparison_protocol_v2.csv",
+      "sha256": "010b2ed7c8dbf3509c0b1f66323ee0c41c74d244735f57faa8d1540f48487979"
+    },
+    "availability_differences": 0,
+    "final_health_differences": 0
+  },
+  "bundle_b_development": {
+    "status": "PASS",
+    "seed": 20261111,
+    "trials_per_scenario": 5,
+    "scenarios": ["static", "slow_yaw", "lateral_accel", "maneuver", "vibration", "timing_jitter"],
+    "generator_sha256": "463dd9405186cbb182576f10c234b7f0b96e3114e775df3ce657792221d09108",
+    "startup_bias_off_report_sha256": "05594e432ce014ce4e403e2ef2541bc777d0637a96acfb6892d8c9d5b0b0bf66",
+    "verified_startup_bias_report_sha256": "a563d2a06c2156ef791697b69b8bc6ab18e9d5a608d4e0093eca23d45f722818",
+    "availability_differences": 0,
+    "raw_input_capture": "NOT_RETAINED; deterministic same-source/same-seed runs; generator source equality was checked before paired runs"
+  },
+  "confirmation": {
+    "status": "NOT_RUN",
+    "run_count": 0,
+    "seeds": [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+    "scenarios": ["static", "pure_roll", "lateral_accel_0p2g", "slow_yaw"],
+    "noise_modes": ["accel_only", "gyro_only", "combined"],
+    "expected_input_streams": 192,
+    "expected_sample_records": 460800,
+    "expected_metric_rows": 3456,
+    "input_sha256": null,
+    "paired_report_sha256": null,
+    "candidate_freeze_sha": "60b967b0d1e8480bade505dbe3beb788ee442da9",
+    "run_command": "tools/run_pr2_comparison.sh <PR1-parent-worktree> <PR2-candidate-worktree> confirmation <new-output-directory>"
+  },
+  "exposure_control": {
+    "pr1_heldout_seeds_1001_to_1016": "EXPOSED; excluded from candidate selection",
+    "confirmation_seed_list": "FROZEN and unexecuted before this manifest commit",
+    "revision_rule": "If confirmation results guide a revision, preserve this result as exposed and freeze a new disjoint confirmation set."
+  },
+  "environment": {
+    "compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+    "python": "3.10.12",
+    "platform": "WSL2 Linux x86_64",
+    "pico_sdk": "NOT_USED for host simulations"
+  }
+}
