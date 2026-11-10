@@ -28,6 +28,7 @@ Do not set a controller freshness deadline or timing margin until the intended c
 |---|---|---|
 | Original LSM6DS3 FIFO pattern and register semantics | Reviewed against ST AN4650; mock coverage added | `lsm6ds3_fifo.hpp`, `tests/test_bundle_c.cpp` |
 | Host FIFO/status/timestamp tests | PASS | PR4A Bundle C test output |
-| RP2350 direct/FIFO/binary cross-build | NOT RUN locally; CI pending | local ARM compiler and `PICO_SDK_PATH` unavailable |
+| RP2350 direct/FIFO/binary cross-build (PR4A head) | PASS | Pinned Pico SDK 2.2.0 run [42922199617](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42922199617), stacked merge commit `7984be8f55dd23453f0786933003bc414785936e` |
+| RP2350 PR4B build | PENDING CI | Includes calibration serialization and runtime-health metadata |
 | Physical FIFO/DRDY/SPI capture | NOT RUN | hardware unavailable |
 | On-device timing, stack high-water, and long-run loss | NOT MEASURED | hardware unavailable |

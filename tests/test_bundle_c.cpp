@@ -3,14 +3,60 @@
 #include <cstdint>
 #include <cstring>
 #include <iostream>
+#include <type_traits>
+#include <utility>
 #include <vector>
 #include "../eskf15.hpp"
 #include "../calibration.hpp"
 #include "../aiding.hpp"
+#if __has_include("../runtime_health.hpp")
+#include "../runtime_health.hpp"
+#define TEST_HAS_RUNTIME_HEALTH 1
+#else
+#define TEST_HAS_RUNTIME_HEALTH 0
+#endif
 #include "../lsm6ds3_fifo.hpp"
 #include "../binary_log.hpp"
 using namespace inertial;
 static bool near(float a,float b,float eps=1e-4f){return std::fabs(a-b)<eps;}
+template<class T,class=void> struct HasCalibrationWireFormat:std::false_type{};
+template<class T> struct HasCalibrationWireFormat<T,std::void_t<
+    decltype(T::kEncodedSize),
+    decltype(std::declval<const T&>().encode(static_cast<uint8_t*>(nullptr),std::size_t{})),
+    decltype(T::decode(static_cast<const uint8_t*>(nullptr),std::size_t{},std::declval<T&>()))
+>>:std::true_type{};
+template<class T> static void test_calibration_wire_format_impl(){
+    if constexpr(HasCalibrationWireFormat<T>::value){
+        T input{};input.calibration_id=0x12345678;input.source_id=0x4c364433;
+        input.temperature_compensation=true;input.reference_temp_c=31.5f;
+        input.body_from_sensor.v[0][0]=0;input.body_from_sensor.v[0][1]=-1;
+        input.body_from_sensor.v[1][0]=1;input.body_from_sensor.v[1][1]=0;
+        input.accel_correction.v[0][0]=1.1f;input.gyro_correction.v[1][1]=0.9f;
+        input.accel_offset={0.1f,-0.2f,0.3f};input.gyro_offset={0.01f,-0.02f,0.03f};
+        input.accel_temp_coeff={0.001f,0.002f,0.003f};input.gyro_temp_coeff={0.004f,0.005f,0.006f};
+        uint8_t bytes[T::kEncodedSize]{};
+        assert(input.encode(bytes,sizeof(bytes)));
+        T decoded{};assert(T::decode(bytes,sizeof(bytes),decoded));
+        assert(decoded.version==input.version && decoded.calibration_id==input.calibration_id);
+        assert(decoded.source_id==input.source_id && decoded.temperature_compensation);
+        assert(near(decoded.body_from_sensor.v[0][1],-1.0f));
+        assert(near(decoded.accel_correction.v[0][0],1.1f));
+        assert(near(decoded.gyro_correction.v[1][1],0.9f));
+        assert(near(decoded.accel_offset.y,-0.2f) && near(decoded.gyro_offset.z,0.03f));
+        assert(near(decoded.accel_temp_coeff.z,0.003f) && near(decoded.gyro_temp_coeff.x,0.004f));
+        assert(near(decoded.reference_temp_c,31.5f));
+        bytes[30]^=0x40;assert(!T::decode(bytes,sizeof(bytes),decoded));
+        assert(!T::decode(bytes,sizeof(bytes)-1,decoded));
+        assert(input.encode(bytes,sizeof(bytes)));
+        calibration_wire::put16(bytes+4,2);
+        calibration_wire::put32(bytes+T::kEncodedSize-4,calibration_wire::crc32(bytes,T::kEncodedSize-4));
+        assert(!T::decode(bytes,sizeof(bytes),decoded));
+        input.accel_correction.v[0][0]=0;
+        assert(!input.encode(bytes,sizeof(bytes)));
+    }else{
+        assert(HasCalibrationWireFormat<T>::value && "versioned calibration serialization API is missing");
+    }
+}
 static void test_calibration(){
     SensorCalibration c{};c.calibration_id=1234;c.temperature_compensation=true;
     c.body_from_sensor.v[0][0]=0;c.body_from_sensor.v[0][1]=-1;
@@ -22,10 +68,20 @@ static void test_calibration(){
     assert(c.apply(raw,30.0f,out));
     assert(near(out.accel_mps2.x,-3)&&near(out.accel_mps2.y,2)&&near(out.accel_mps2.z,4));
     assert(near(out.gyro_rps.x,-1)&&near(out.gyro_rps.y,0));
+    assert(out.timestamp_us==raw.timestamp_us); // offline fixed calibration does not own ESKF bias state
     assert(!c.apply(raw,NAN,out));
+    c.accel_correction.v[0][0]=1e-10f;
+    assert(!c.valid()); // reject positive-determinant but numerically singular scale/cross-axis transforms
+    c.accel_correction.v[0][0]=2;
     c.body_from_sensor.v[0][0]=1;c.body_from_sensor.v[0][1]=0;
     assert(!c.valid());
+    SensorCalibration reflection{};reflection.body_from_sensor.v[0][0]=-1;
+    assert(!reflection.valid());
+    SensorCalibration no_temperature{};
+    assert(no_temperature.apply(raw,NAN,out));
     std::cout<<"PASS calibrated sensor frame, matrix, temp and invalid transform\n";
+    test_calibration_wire_format_impl<SensorCalibration>();
+    std::cout<<"PASS versioned calibration serialization, roundtrip and CRC rejection\n";
 }
 struct MockBus: lsm6ds3::Bus {
     uint8_t regs[256]{};
@@ -174,6 +230,8 @@ static void test_aiding(){
     m.interval_start_us=m.capture_us;m.interval_end_us=m.capture_us;
     m.value={0,0,0};
     assert(router.apply(eskf,m)==AidingResult::Accepted);
+    assert(eskf.last_accepted_aid_source()==77 && eskf.last_accepted_aid_timestamp_us()==m.capture_us);
+    assert(eskf.accepted_aid_mask()==kAidPosition);
     assert(router.apply(eskf,m)==AidingResult::DuplicateOrReordered);
     m.source_id=78;m.provenance=AidingProvenance::CorrelatedOrFused;
     assert(router.apply(eskf,m)==AidingResult::CorrelatedEvidence);
@@ -184,6 +242,61 @@ static void test_aiding(){
     assert(router.apply(eskf,m)==AidingResult::WrongFrame);
     m.frame=AidingFrame::WorldENU;m.capture_us-=2000;m.interval_start_us=m.capture_us;m.interval_end_us=m.capture_us;
     assert(router.apply(eskf,m)==AidingResult::StaleOrFuture);
+    m.capture_us=eskf.state_timestamp_us();m.interval_start_us=m.capture_us;m.interval_end_us=m.capture_us;
+    m.capture_us+=50;m.publication_us=m.capture_us+50;
+    m.interval_start_us=m.capture_us;m.interval_end_us=m.capture_us;
+    assert(router.apply(eskf,m)==AidingResult::StaleOrFuture);
+    m.capture_us=eskf.state_timestamp_us();m.interval_start_us=m.capture_us;m.interval_end_us=m.capture_us;
+    m.publication_us=m.capture_us-1;assert(router.apply(eskf,m)==AidingResult::Invalid);
+    m.publication_us=m.capture_us+10;m.interval_start_us=m.capture_us+1;
+    assert(router.apply(eskf,m)==AidingResult::Invalid);
+    m.interval_start_us=m.capture_us;m.interval_end_us=m.publication_us+1;
+    assert(router.apply(eskf,m)==AidingResult::Invalid);
     std::cout<<"PASS aiding provenance, timestamp, frame and version gates\n";
 }
-int main(){test_calibration();test_fifo();test_fifo_capacity_truncation();test_fifo_snapshot_capacity();test_fifo_snapshot_leaves_new_arrivals_for_next_edge();test_fifo_timestamp_reconstruction();test_log();test_aiding();std::cout<<"Bundle C host tests passed\n";}
+static void test_aiding_configured_age(){
+    Settings settings{};settings.calibration_id=1234;settings.max_aiding_age_us=4000;
+    Eskf15 filter(settings);
+    for(int i=0;i<130;i++)filter.process({uint64_t(10'000+i*4808),{0,0,kGravity},{0,0,0}});
+    AidingRouter router(1,1234);AidingMeasurement m{};
+    m.valid=true;m.source_id=33;m.calibration_id=1234;m.timebase_id=1;
+    m.provenance=AidingProvenance::IndependentPhysical;m.type=AidingType::PositionWorld;
+    m.frame=AidingFrame::WorldENU;m.sigma=0.5f;
+    m.capture_us=filter.state_timestamp_us()-2000;m.publication_us=filter.state_timestamp_us()+50;
+    m.interval_start_us=m.capture_us;m.interval_end_us=m.capture_us;
+    assert(router.apply(filter,m)==AidingResult::Accepted);
+    std::cout<<"PASS aiding router follows configured estimator freshness window\n";
+}
+static void test_runtime_health(){
+#if TEST_HAS_RUNTIME_HEALTH
+    RuntimeHealthInput in{};in.now_us=100000;in.last_sensor_edge_us=95000;
+    in.estimate_timestamp_us=94000;in.estimate_publication_us=96000;
+    in.max_age_us=10000;in.calibration_id=1234;in.estimator_valid=true;
+    in.estimator_health=Health::Nominal;
+    const RuntimeHealth fresh=assess_runtime_health(in);
+    assert(fresh.output_available() && fresh.sensor_fresh && fresh.estimate_fresh);
+    assert(!fresh.yaw_observable && !fresh.position_observable);
+    in.last_sensor_edge_us=0;
+    const RuntimeHealth missing_sensor=assess_runtime_health(in);
+    assert(!missing_sensor.output_available() && !missing_sensor.sensor_fresh);
+    in.last_sensor_edge_us=95000;in.estimate_publication_us=0;
+    const RuntimeHealth stale_core=assess_runtime_health(in);
+    assert(!stale_core.output_available() && !stale_core.estimate_fresh);
+    in.estimate_publication_us=96000;in.accepted_aid_mask=kAidHeading|kAidPosition;
+    const RuntimeHealth aided=assess_runtime_health(in);
+    assert(aided.output_available() && aided.yaw_observable && aided.position_observable);
+    in.calibration_id=0;
+    const RuntimeHealth unverified=assess_runtime_health(in);
+    assert(!unverified.output_available() && (unverified.flags&kCalibrationUnverified));
+    in.calibration_id=1234;
+    in.reset_required=true;
+    assert(!assess_runtime_health(in).output_available());
+    in.reset_required=false;
+    in.estimator_health=Health::Degraded;
+    assert(!assess_runtime_health(in).output_available());
+    std::cout<<"PASS freshness, calibration, reset, health and observability status\n";
+#else
+    assert(TEST_HAS_RUNTIME_HEALTH && "runtime health assessment API is missing");
+#endif
+}
+int main(){test_calibration();test_fifo();test_fifo_capacity_truncation();test_fifo_snapshot_capacity();test_fifo_snapshot_leaves_new_arrivals_for_next_edge();test_fifo_timestamp_reconstruction();test_log();test_aiding();test_aiding_configured_age();test_runtime_health();std::cout<<"Bundle C host tests passed\n";}

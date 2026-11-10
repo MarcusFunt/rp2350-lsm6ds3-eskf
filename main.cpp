@@ -21,6 +21,7 @@
 #include "eskf15.hpp"
 #include "calibration.hpp"
 #include "aiding.hpp"
+#include "runtime_health.hpp"
 #include "lsm6ds3_fifo.hpp"
 #include "binary_log.hpp"
 #ifdef RP2350_STREAM_BINARY_LOG
@@ -88,6 +89,9 @@ struct FusionEstimate {
     uint32_t saturation_count;
     uint32_t stale_aiding_updates;
     uint32_t fusion_max_us;
+    uint32_t last_aid_source_id;
+    uint64_t last_aid_timestamp_us;
+    uint8_t accepted_aid_mask;
     uint8_t health;
     bool valid_for_control;
     bool reset_required;
@@ -452,6 +456,9 @@ void core1_fusion() {
             estimate.saturation_count=filter.saturation_count();
             estimate.stale_aiding_updates=filter.stale_aiding_updates();
             estimate.fusion_max_us=max_process_us;
+            estimate.last_aid_source_id=filter.last_accepted_aid_source();
+            estimate.last_aid_timestamp_us=filter.last_accepted_aid_timestamp_us();
+            estimate.accepted_aid_mask=filter.accepted_aid_mask();
             estimate.health=static_cast<uint8_t>(filter.health());
             estimate.valid_for_control=filter.control_state_valid();
             estimate.reset_required=filter.reset_required();
@@ -639,21 +646,27 @@ int main() {
             gpio_put(PICO_DEFAULT_LED_PIN, (now / 500'000) & 1);
 #endif
             if (have_estimate) {
-                // Publication health must incorporate stream freshness: a filter
-                // cannot self-report a missing sensor when no new IMU arrives.
-                const bool stale_estimate=(now<latest.timestamp_us) ||
-                    (now-latest.timestamp_us)>100000u;
-                // DRDY can keep arriving when calibration rejects every
-                // reading. A recent edge alone is not a fresh filtered state.
-                const bool stale_input=(now-last_edge_us)>100000u ||
-                    stale_estimate || g_calibration_failed!=0;
-                const unsigned effective_health=(stale_input || !latest.valid_for_control) ?
-                    static_cast<unsigned>(inertial::Health::Fault) :
-                    static_cast<unsigned>(latest.health);
+                // Freshness and estimator health are separate from physical
+                // accuracy and per-axis observability.
+                inertial::RuntimeHealthInput health_input{};
+                health_input.now_us=now;
+                health_input.last_sensor_edge_us=last_edge_us;
+                health_input.estimate_timestamp_us=latest.timestamp_us;
+                health_input.estimate_publication_us=latest.published_us;
+                health_input.max_age_us=100000u; // diagnostic threshold, not a controller deadline
+                health_input.calibration_id=latest.calibration_version;
+                health_input.accepted_aid_mask=latest.accepted_aid_mask;
+                health_input.estimator_health=static_cast<inertial::Health>(latest.health);
+                health_input.estimator_valid=latest.valid_for_control;
+                health_input.reset_required=latest.reset_required;
+                const inertial::RuntimeHealth runtime=inertial::assess_runtime_health(health_input);
                 printf("seq=%lu RPY=(%7.2f,%7.2f,%7.2f) deg "
                        "|a|=%4.2fg bg=(%+.3f,%+.3f,%+.3f) "
                        "sigma_dtheta_body=(%.1f,%.1f,%.1f)deg static=%d "
-                       "health=%u valid=%u reset_required=%u age_ms=%.1f max_fusion_us=%lu NIS=%.2f "
+                       "health=%u output_available=%u runtime_flags=0x%08lx reset_required=%u "
+                       "state_age_ms=%.1f publish_age_ms=%.1f sensor_src=%lu timebase=%lu cal_id=%lu "
+                       "aid_src=%lu aid_age_ms=%.1f aid_mask=0x%02x yaw_obs=%u pos_obs=%u "
+                       "max_fusion_us=%lu NIS=%.2f "
                        "updates=%lu/%lu gaps=%lu sat=%lu stale_aid=%lu "
                        "read=%lu edge_drop=%lu sample_drop=%lu period_warn=%lu fifo_reset=%lu fifo_bus=%lu backfilled=%lu fifo_discard=%lu fifo_ts_err=%lu cal_fail=%lu\n",
                        static_cast<unsigned long>(latest.sequence),
@@ -663,10 +676,20 @@ int main() {
                        latest.theta_sigma_x_deg, latest.theta_sigma_y_deg,
                        latest.theta_sigma_z_deg,
                        static_cast<int>(latest.imu_stationary_candidate),
-                       effective_health,
-                       static_cast<unsigned>(latest.valid_for_control && !stale_input),
+                       static_cast<unsigned>(latest.health),
+                       static_cast<unsigned>(runtime.output_available()),
+                       static_cast<unsigned long>(runtime.flags),
                        static_cast<unsigned>(latest.reset_required),
                        static_cast<double>((now>=latest.timestamp_us)?now-latest.timestamp_us:0u)/1000.0,
+                       static_cast<double>((now>=latest.published_us)?now-latest.published_us:0u)/1000.0,
+                       static_cast<unsigned long>(latest.sensor_source_id),
+                       static_cast<unsigned long>(latest.timebase_id),
+                       static_cast<unsigned long>(latest.calibration_version),
+                       static_cast<unsigned long>(latest.last_aid_source_id),
+                       static_cast<double>((latest.last_aid_timestamp_us && now>=latest.last_aid_timestamp_us)?now-latest.last_aid_timestamp_us:0u)/1000.0,
+                       static_cast<unsigned>(latest.accepted_aid_mask),
+                       static_cast<unsigned>(runtime.yaw_observable),
+                       static_cast<unsigned>(runtime.position_observable),
                        static_cast<unsigned long>(latest.fusion_max_us),
                        latest.last_nis,
                        static_cast<unsigned long>(latest.accepted_updates),
