@@ -78,6 +78,39 @@ static void test_fifo(){
     b.fail=true;assert(fifo.read(f,2).result==lsm6ds3::Result::BusError);
     std::cout<<"PASS FIFO pattern, overrun, signed decoding and bus failure\n";
 }
+static void test_fifo_capacity_truncation(){
+    MockBus b{};lsm6ds3::Fifo fifo(b);
+    for(int i=0;i<4;i++)b.add_frame(static_cast<int16_t>(10+i),static_cast<int16_t>(100+i));
+    b.status(24);
+    lsm6ds3::Frame frames[2]{};
+    const auto result=fifo.read(frames,2);
+    assert(result.result==lsm6ds3::Result::Ok && result.frames==2);
+    assert(result.fifo_words==24 && result.truncated);
+    assert(frames[0].gyro[0]==10 && frames[1].gyro[0]==11);
+    std::cout<<"PASS bounded FIFO read reports unconsumed snapshot frames\n";
+}
+static void test_fifo_timestamp_reconstruction(){
+    uint64_t times[32]{};
+    constexpr uint64_t anchor=2000000;
+    assert(lsm6ds3::reconstruct_timestamps(anchor,50,0,32,208,times));
+    for(unsigned i=0;i<32;i++){
+        const uint64_t frames_back=49u-i;
+        assert(times[i]==anchor-(frames_back*1000000u)/208u);
+        if(i)assert(times[i]>times[i-1]);
+    }
+    uint64_t tail[18]{};
+    assert(lsm6ds3::reconstruct_timestamps(anchor,50,32,18,208,tail));
+    assert(tail[0]==anchor-(17u*1000000u)/208u);
+    assert(tail[17]==anchor);
+    assert(!lsm6ds3::reconstruct_timestamps(anchor,50,0,1,208,nullptr));
+    assert(!lsm6ds3::reconstruct_timestamps(anchor,0,0,1,208,times));
+    assert(!lsm6ds3::reconstruct_timestamps(anchor,50,0,0,208,times));
+    assert(!lsm6ds3::reconstruct_timestamps(anchor,50,0,33,208,times));
+    assert(!lsm6ds3::reconstruct_timestamps(anchor,50,50,1,208,times));
+    assert(!lsm6ds3::reconstruct_timestamps(anchor,50,0,1,0,times));
+    assert(!lsm6ds3::reconstruct_timestamps(4800,2,0,2,208,times));
+    std::cout<<"PASS exact rational 208 Hz FIFO timestamp reconstruction and range checks\n";
+}
 static void test_log(){
     imu_log::Header h{45,1,1234,208},hout{};
     uint8_t bytes[imu_log::kRecordSize]{};
@@ -121,4 +154,4 @@ static void test_aiding(){
     assert(router.apply(eskf,m)==AidingResult::StaleOrFuture);
     std::cout<<"PASS aiding provenance, timestamp, frame and version gates\n";
 }
-int main(){test_calibration();test_fifo();test_log();test_aiding();std::cout<<"Bundle C host tests passed\n";}
+int main(){test_calibration();test_fifo();test_fifo_capacity_truncation();test_fifo_timestamp_reconstruction();test_log();test_aiding();std::cout<<"Bundle C host tests passed\n";}

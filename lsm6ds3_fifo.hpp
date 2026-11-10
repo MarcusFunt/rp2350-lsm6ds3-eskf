@@ -26,6 +26,28 @@ struct ReadResult {
     uint16_t fifo_pattern=0;
     bool truncated=false; // remaining complete records must be read on next call
 };
+// Reconstruct the nominal timestamps for one ordered chunk from a single
+// FIFO status snapshot. The newest snapshotted frame is anchored at anchor_us;
+// any frames acquired after that snapshot must be left for the next edge.
+inline bool reconstruct_timestamps(uint64_t anchor_us,uint16_t snapshot_frames,
+                                   uint16_t first_frame_index,uint8_t count,
+                                   uint16_t rate_hz,uint64_t *out) {
+    if(!out || !anchor_us || !snapshot_frames || !count || count>32 || !rate_hz) return false;
+    const uint32_t end=uint32_t(first_frame_index)+uint32_t(count);
+    if(first_frame_index>=snapshot_frames || end>snapshot_frames) return false;
+    const uint64_t oldest_frames_back=uint64_t(snapshot_frames-1u-first_frame_index);
+    const uint64_t oldest_offset_us=(oldest_frames_back*1000000ull)/rate_hz;
+    if(oldest_offset_us>=anchor_us) return false;
+    for(uint8_t i=0;i<count;i++) {
+        const uint64_t frame_index=uint64_t(first_frame_index)+i;
+        const uint64_t frames_back=uint64_t(snapshot_frames)-1u-frame_index;
+        const uint64_t offset_us=(frames_back*1000000ull)/rate_hz;
+        const uint64_t timestamp_us=anchor_us-offset_us;
+        if(i && timestamp_us<=out[i-1]) return false;
+        out[i]=timestamp_us;
+    }
+    return true;
+}
 class Fifo {
 public:
     explicit Fifo(Bus &bus):bus_(bus){}
