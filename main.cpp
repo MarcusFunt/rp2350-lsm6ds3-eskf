@@ -586,7 +586,12 @@ int main() {
             if (have_estimate) {
                 // Publication health must incorporate stream freshness: a filter
                 // cannot self-report a missing sensor when no new IMU arrives.
-                const bool stale_input=(now-last_edge_us)>100000u;
+                const bool stale_estimate=(now<latest.timestamp_us) ||
+                    (now-latest.timestamp_us)>100000u;
+                // DRDY can keep arriving when calibration rejects every
+                // reading. A recent edge alone is not a fresh filtered state.
+                const bool stale_input=(now-last_edge_us)>100000u ||
+                    stale_estimate || g_calibration_failed!=0;
                 const unsigned effective_health=(stale_input || !latest.valid_for_control) ?
                     static_cast<unsigned>(inertial::Health::Fault) :
                     static_cast<unsigned>(latest.health);
