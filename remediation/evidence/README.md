@@ -8,6 +8,7 @@ Canonical final suite logs are pinned to source commit `c43c52671fa350cf8d095e93
 | Final Bundle A host checks, evaluator oracle, CSV replay | `bundle_a_final_c43.log` |
 | Final Bundle B host checks, protocol-v1 rejection, deterministic benchmark | `bundle_b_final_c43.log` |
 | Final Bundle C host checks and binary replay | `bundle_c_final_c43.log` |
+| Clean-clone Bundle A/B regression reproduction at PR 1 commit `9bb16a0` | `clean_clone_pr1_final.log` |
 | Bundle A sanitizers | `bundle_a_sanitizers_final_c43.log` |
 | Bundle B sanitizers | `bundle_b_sanitizers_final_c43.log` |
 | Bundle C sanitizers | `bundle_c_sanitizers_final_c43.log` |

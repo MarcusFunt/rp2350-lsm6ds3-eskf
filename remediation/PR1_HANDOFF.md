@@ -2,7 +2,7 @@
 
 ## Gate status
 
-- **Technical gate:** `TEST_GATE_PASS` for the required A/B/C host and sanitizer suites and the frozen protocol-v2 artifact validator.
+- **Technical gate:** `TEST_GATE_PASS` for the required A/B/C host and sanitizer suites, the frozen protocol-v2 artifact validator, and a clean-clone run of the new Bundle A/B regressions.
 - **Review state:** `REVIEW_PENDING` until independent review of the local diff.
 - **Remote state:** local branch only; no push, draft PR, or merge was performed.
 - **Next dependency:** any later milestone must branch from the final reviewed PR 1 head, not from `origin/main`, while PR 1 remains unmerged.

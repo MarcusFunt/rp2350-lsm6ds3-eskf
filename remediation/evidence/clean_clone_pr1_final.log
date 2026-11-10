@@ -1,0 +1,27 @@
+PASS stable startup gate, static roll alignment, free yaw
+PASS gyro yaw, independent heading aid, NIS/PSD
+PASS explicitly opted gyro-bias calibration and dynamic tilt gate
+PASS slow yaw remains enabled by default
+PASS normalized gravity-direction correction
+PASS timestamped aids, calibration hash gate, NIS outliers
+PASS duplicate timestamp, missing data uncertainty, saturation fault
+PASS single missing sample detected
+PASS deterministic synthetic IMU replay, covariance positive definite
+PASS yaw gauge correctly rotated into tilted body-error frame
+PASS short-gap recovery, long-gap latch, reset and timestamp invariants
+All report-revision ESKF host tests passed.
+PASS independent finite differences: 7200 dynamics entries, max |A error|=0.002601, |Hgravity|=0.000844, |Hyaw|=0.001023
+PASS process Qd vs independent FP64 quadrature: 42 entries, max abs error 1.00578e-06
+PASS yaw-invariant tilt metric; protocol-v1 would report 22.697 deg for yaw-only change
+Replay: 1200 valid CSV records, 1120 propagated; malformed 0; gaps 0; saturation 0; health 1
+PASS CSV replay (56 rows): yaw=1.963498, target=1.963495
+PASS startup gyro-bias estimation requires explicit opt-in
+PASS sustained 0.17 g false tilt suppressed without external aiding
+PASS independently confirmed stationary-only gravity aiding
+PASS excessive gyro variance rejects startup calibration
+Bundle B unit tests passed.
+PASS summarizer rejects superseded protocol-v1 CSV
+Wrote /tmp/rp2350_bundle_b_checks/no_bias.csv: 5 trials per scenario, 6 scenarios, 3 estimator variants; startup bias disabled
+Wrote /tmp/rp2350_bundle_b_checks/with_bias.csv: 5 trials per scenario, 6 scenarios, 3 estimator variants; startup bias enabled
+Wrote /tmp/rp2350_bundle_b_checks/repeated.csv: 5 trials per scenario, 6 scenarios, 3 estimator variants; startup bias enabled
+PASS matched Monte Carlo regression, truth metrics and deterministic replay
