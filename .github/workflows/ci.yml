@@ -12,11 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Unit tests, finite-difference audits and replay
-        run: bash ./tools/run_bundle_a_checks.sh
+        run: ./tools/run_bundle_a_checks.sh
+      - name: Bundle B motion/noise simulations and estimator comparison
+        run: ./tools/run_bundle_b_checks.sh
       - name: Sanitized regression tests
         env:
           BUNDLE_A_SANITIZERS: '1'
-        run: bash ./tools/run_bundle_a_checks.sh
+        run: |
+          ./tools/run_bundle_a_checks.sh
+          BUNDLE_B_SANITIZERS=1 ./tools/run_bundle_b_checks.sh
   pico2-cross-build:
     runs-on: ubuntu-24.04
     steps:

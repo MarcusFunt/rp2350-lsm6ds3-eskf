@@ -2,7 +2,7 @@
 
 **Target:** Raspberry Pi Pico 2 / RP2350 in ARM Cortex-M33 mode, Pico SDK 2.x, original ST LSM6DS3 (`WHO_AM_I=0x69`). This is a concrete revision of the previous example, informed by *Sensor Fusion for Attitude and Navigation*, Research-Expanded Edition (7 November 2026). See [`REVIEW_2026.md`](REVIEW_2026.md) for the audit and source mapping.
 
-**Status:** Host compilation, numerical synthetic tests and deterministic replay have passed. A Pico SDK 2.2.0 RP2350 cross-build has **passed in GitHub Actions**; real accelerometer/gyro calibration, physical timing and hardware-in-the-loop validation **have not been performed**. Do not use as a flight-safety controller.
+**Status:** Bundle A Pico 2 cross-build and host checks previously passed in GitHub Actions. Bundle B host tests, synthetic Monte Carlo comparisons and sanitizers pass locally; the revised firmware must pass a new Pico cross-build in CI. Real calibration, electrical timing and hardware-in-the-loop validation **have not been performed**. Do not use as a flight-safety controller.
 
 ## Files
 
@@ -11,11 +11,16 @@
 | `main.cpp` | SPI0 DMA acquisition, PIO gyro data-ready periods, dual-core queues, health/latency diagnostic stream |
 | `drdy_period.pio` | Relative data-ready edge counter (software timebase anchor, not absolute timestamps) |
 | `eskf15.hpp` | Heap-free 15-state ESKF and timestamp-aware aiding interface |
-| `tests/test_eskf15.cpp` | Nine host test cases including uncertainty and failure handling |
+| `tests/test_eskf15.cpp` | Existing regression tests including uncertainty and failure handling |
 | `tools/replay_imu_csv.cpp` | Offline timestamped CSV IMU replay |
 | `tools/create_fixture.py` | Deterministic synthetic IMU fixture generator |
 | `fixtures/stationary_then_yaw.csv` | Synthetic input trace; not measured IMU evidence |
 | `REVIEW_2026.md` | Audit against the 7 November 2026 report; remaining risks |
+| `tests/test_bundle_b.cpp` | Startup bias and motion-aware gravity regression tests |
+| `tools/benchmark_bundle_b.cpp` | Shared synthetic IMU stream, ESKF/Mahony matched comparison and tilt NEES diagnostics |
+| `tools/summarize_bundle_b.py` | Reproducible report/JSON summaries from per-seed CSV |
+| `BENCHMARK_B.md` | Synthetic benchmark summary and interpretation limits |
+| `benchmarks/` | Raw per-seed CSV and machine-readable summaries |
 
 ## Wiring (Pico 2)
 
@@ -65,10 +70,10 @@ With raw streaming, the USB serial console sends approximately 208 CSV lines/s. 
 
 1. **Initialization:** the filter requires 80 approximately stationary IMU readings (default ~0.38 s at 208 Hz) instead of initializing from one accelerometer vector. It still cannot distinguish rest from sustained linear acceleration purely from a six-axis IMU. It does not infer absolute yaw or preexisting velocity.
 2. **Propagation:** quaternion exponential rotation, midpoint orientation for acceleration, second-order transition approximation and noise-driven 15×15 covariance growth. Coning/sculling corrections are **not** implemented.
-3. **Gravity-direction update:** after a conservative quasi-stationary gate, the filter compares *normalized* accelerometer specific force to predicted up-direction, yielding at most 2 tilt constraints. It does not pretend to measure absolute yaw, translation, or force magnitude. Constant acceleration can still mimic gravity; turn this correction off or aid with other sensors during sustained maneuvering. Incomplete bias observability remains.
+3. **Gravity-direction update:** after a conservative quasi-stationary gate and a 0.08-radian innovation-angle limit (by default), the filter compares *normalized* accelerometer specific force to predicted up-direction, yielding at most 2 tilt constraints. It does not pretend to measure absolute yaw, translation, or force magnitude. Constant acceleration can still mimic gravity; turn this correction off or aid with other sensors during sustained maneuvering. Incomplete bias observability remains.
 4. **Numerical update:** Cholesky innovation solve, NIS gating, Joseph covariance update, right-error reset Jacobian, symmetry enforcement and separately callable Cholesky covariance positive-definiteness diagnostic. The diagnostic does **not** prove filter consistency or observability.
 5. **Health:** `Aligning`, `Nominal`, `Degraded`, `Fault`. Missing data and duplicate timestamps mark the filter degraded; near-full-scale ±4g/±245dps measurements mark it faulted. Outages cause heuristic covariance inflation. State remains degraded/faulted until explicit `reset()`—it never silently declares a faulted trajectory safe again. A larger application must implement actual recovery/arbitration.
-6. **Gap time:** for skipped long intervals, the last received timestamp advances but `state_timestamp_us()` does **not** advance unless a prediction occurs. When data return, prediction resumes but the missing dynamics cannot be recovered. The conservative output health is therefore sticky.
+6. **Gap time:** for skipped long intervals, the last received timestamp advances but `state_timestamp_us()` does **not** advance unless a prediction occurs. The filter latches `Fault` and refuses to resume propagation until an explicit `reset()`. Lost dynamics cannot be recovered automatically. Shorter gaps within the threshold still use a zero-order hold and degraded health.
 7. **External aiding:** `_at()` APIs require a measurement timestamp approximately equal to the current propagated state time (default within 1 ms) and optional matching calibration ID. Stale/future aid is rejected; the code **does not** implement delayed-state rewind/replay, clock synchronization or cross-correlation-aware fusion of IMU-dependent VIO estimates.
 8. **Provenance:** accepted aiding's source ID and timestamp can be queried. Source ownership, conditional-information accounting and covariance cross-correlations must be enforced by the **calling application** before accepting estimates from a shared-IMU VIO pipeline.
 9. **Performance:** Core 1 tracks the longest observed `process()` execution time (`fusion_max_us`) and publication timestamps. A USB summary exposes fusion time, state age, NIS, aid counts, gap counts, saturations and queue drops. A missing gyro DRDY for over 100 ms also forces the **reported** health to `Fault` on core 0 even though core 1 cannot receive a missing sample. Consumers must independently apply their own estimate-age deadlines. This is instrumentation, **not** a measured control deadline bound.
@@ -110,7 +115,7 @@ Replay input: `timestamp_us,ax_mps2,ay_mps2,az_mps2,gx_rps,gy_rps,gz_rps`, with 
 
 ## Priority work remaining
 
-1. Repeat the passing SDK 2.2.0 cross-build on relevant firmware configurations; check stack high-water and runtime timing on eventual hardware.
+1. Re-run Pico 2 cross-build on each revision; only Bundle A has a verified previous CI build.
 2. Validate INT1 GPIO polarity, SPI waveform, DMA timing, and PIO period counter against a logic analyzer. Verify no sample duplication/overwrites.
 3. Implement and test LSM6DS3 FIFO watermark, timestamp and overrun handling; quantify losslessness. Preserve a calibration hash, timebase ID, full raw sample identity and fault flags in recorded data.
 4. Measure gyro/accelerometer noise and bias drift at multiple temperatures; calibrate axes/scales. Refit `Settings` and verify NIS/NEES with independent truth.
@@ -131,8 +136,8 @@ This revision implements the four software-only correctness priorities from the 
 Run **all** hardware-free checks:
 
 ```sh
-bash tools/run_bundle_a_checks.sh
-BUNDLE_A_SANITIZERS=1 bash tools/run_bundle_a_checks.sh
+./tools/run_bundle_a_checks.sh
+BUNDLE_A_SANITIZERS=1 ./tools/run_bundle_a_checks.sh
 ```
 
 Cross-build locally when Pico SDK 2.2.0 and the ARM GNU toolchain are available:
@@ -144,3 +149,31 @@ cmake --build build
 ```
 
 The shipped firmware still reads the latest registers (not FIFO); PIO/SPI timing, electrical operation, real LSM6DS3 calibration, WCET, and physical estimator accuracy are unverified. An outage *shorter* than the latch threshold is integrated using the latest sample as a zero-order hold; this is only an approximation and remains flagged as degraded if a missing sample is detected. No camera/VIO delayed-state replay is implemented.
+
+## Bundle B (November 2026): motion-aware fusion and synthetic benchmarks
+
+**Gravity policy:** default `Settings::gravity_policy=GravityPolicy::Conservative`. It retains the low-motion detector but rejects unverified accelerometer directions more than 0.08 rad from expected gravity, and inflates the gravity measurement noise when the norm/step approach heuristic limits. This is deliberately conservative and may delay legitimate correction after a large orientation error. The 6-axis IMU **cannot** distinguish constant lateral acceleration from tilt in general. The baseline `LegacyHeuristic` and the strict `ConfirmedOnly` alternatives remain available. `set_external_stationary_confirmed(true)` may only be used when **independent evidence** establishes that the entire device is stationary; clear it as soon as that condition is no longer true.
+
+**Startup gyro-bias estimation:** default **off**. Enable `Settings::startup_gyro_bias_calibration=true` and assert `set_external_stationary_confirmed(true)` for **every sample** of the startup alignment window, using an independent stationary condition. The filter rejects unstable gyro startup windows and retains a nonzero bias covariance floor. Slowly rotating hardware with no external stationary confirmation must not be calibrated as zero rate. This is not a self-calibration solution for a freely moving device.
+
+The firmware still defaults to its normal operational configuration; no synthetic truth or reference sensor is injected on the RP2350. The simulator can provide a known verified-stationary window, which is only an idealized test condition.
+
+Run software-only Bundle B validation, which also compares exact repeated runs:
+
+```bash
+./tools/run_bundle_a_checks.sh
+./tools/run_bundle_b_checks.sh
+BUNDLE_B_SANITIZERS=1 ./tools/run_bundle_b_checks.sh
+```
+
+Regenerate the checked-in Monte Carlo evidence (6 scenarios x 8 seeds x 3 variants per mode):
+
+```bash
+g++ -std=c++17 -O2 -Wall -Wextra -Wpedantic -Werror tools/benchmark_bundle_b.cpp -o benchmark_bundle_b
+./benchmark_bundle_b --trials 8 --seed 20261110 --output benchmarks/bundle_b_no_startup_bias.csv
+./benchmark_bundle_b --trials 8 --seed 20261110 --startup-bias --output benchmarks/bundle_b_verified_startup_bias.csv
+python3 tools/summarize_bundle_b.py benchmarks/bundle_b_verified_startup_bias.csv --markdown BENCHMARK_B.md --json benchmarks/summary_verified_startup_bias.json
+python3 tools/summarize_bundle_b.py benchmarks/bundle_b_no_startup_bias.csv --json benchmarks/summary_no_startup_bias.json
+```
+
+The simulator explicitly models sensor noise, bias random walk, a period of verified-stationary startup, synthetic motion and specific force, vibration and +-150 us timing-label perturbations. Its simplified timing jitter does not represent measured hardware. It reports causal attitude errors, missing estimates, gravity innovation statistics and **2-DOF horizontal-attitude NEES** (yaw is a gauge). The gravity pseudo-measurement shares the same sensor data as propagation; the usual independent Gaussian NIS/NEES chi-squared coverage assumptions do not exactly apply. See [BENCHMARK_B.md](BENCHMARK_B.md) for matched results and caveats.

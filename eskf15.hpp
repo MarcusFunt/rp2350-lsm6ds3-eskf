@@ -85,6 +85,15 @@ struct Imu {
     Vec3 gyro_rps{};
 };
 
+// Gravity direction is only a valid absolute tilt observation when linear
+// acceleration is negligible. The default conservative heuristic explicitly
+// limits its influence; a constant small acceleration remains unobservable.
+enum class GravityPolicy : uint8_t {
+    Conservative=0,       // automatic, strongly gated and adaptively downweighted
+    LegacyHeuristic=1,    // Bundle-A comparison baseline: norm/gyro/step tests
+    ConfirmedOnly=2      // updates ONLY when independently asserted stationary
+};
+
 struct Settings {
     // White-noise densities (per sqrt(Hz)); initial engineering tuning values,
     // NOT certified LSM6DS3 noise specs. Calibrate from your own stationary logs.
@@ -99,6 +108,12 @@ struct Settings {
     float static_accel_step_limit=0.20f; // m/s^2 between adjacent samples
     unsigned static_min_samples=35;    // ~170 ms at 208 Hz
     unsigned aid_every_samples=21;     // ~10 Hz at 208 Hz
+    GravityPolicy gravity_policy=GravityPolicy::Conservative;
+    float gravity_unverified_max_angle_rad=0.08f; // ~4.6 deg, not motion detection
+    float gravity_motion_noise_multiplier=4.0f; // soft downweight near heuristic limits
+    bool startup_gyro_bias_calibration=false; // require externally VERIFIED static startup
+    float startup_gyro_stddev_limit=0.020f;   // reject noisy/transient startup window
+    float startup_bias_sigma_floor=0.015f;    // floor on std dev after initialization
     bool heuristic_zero_rate=false;    // unsafe during very slow rotation; opt in
     unsigned init_min_samples=80;     // require stable ~0.38s before alignment at 208Hz
     float init_gyro_limit=0.12f;      // only a provisional quasi-static test
@@ -150,7 +165,14 @@ public:
         saturation_count_=0;
         invalid_imu_count_=0;
         init_count_=0;
+        init_verified_count_=0;
         init_accel_sum_={};
+        init_gyro_sum_={};
+        init_gyro_sq_sum_={};
+        startup_bias_calibrated_=false;
+        external_stationary_confirmed_=false;
+        gravity_suppressed_updates_=0;
+        gravity_applied_updates_=0;
         init_last_accel_={};
         health_=Health::Aligning;
         last_nis_=NAN;
@@ -212,8 +234,18 @@ public:
                 (!init_count_ || (imu.accel_mps2-init_last_accel_).norm()<config_.init_accel_step_limit);
             last_time_us_=imu.timestamp_us;
             init_last_accel_=imu.accel_mps2;
-            if (!stable) { init_count_=0; init_accel_sum_={}; return false; }
+            if (!stable) {
+                init_count_=0; init_verified_count_=0; init_accel_sum_={};
+                init_gyro_sum_={}; init_gyro_sq_sum_={};
+                return false;
+            }
+            if (external_stationary_confirmed_)++init_verified_count_;
             init_accel_sum_=init_accel_sum_+imu.accel_mps2;
+            init_gyro_sum_=init_gyro_sum_+imu.gyro_rps;
+            init_gyro_sq_sum_=init_gyro_sq_sum_ + Vec3{
+                imu.gyro_rps.x*imu.gyro_rps.x,
+                imu.gyro_rps.y*imu.gyro_rps.y,
+                imu.gyro_rps.z*imu.gyro_rps.z};
             if (++init_count_ < config_.init_min_samples) return false;
             const Vec3 avg=init_accel_sum_*(1.0f/init_count_);
             state_.orientation=Quat::from_to(avg,{0,0,kGravity});
@@ -226,6 +258,26 @@ public:
             for(int i=0;i<3;i++) for(int j=0;j<3;j++)
                 P_[6+i][6+j]=(i==j?tilt_var:0.0f)
                     +(yaw_var-tilt_var)*u[i]*u[j];
+            // Bias initialization is OPT-IN: zero motion cannot be proven by
+            // gyro and acceleration readings on their own. The caller must
+            // independently confirm the start interval was actually still.
+            if (config_.startup_gyro_bias_calibration && init_verified_count_==init_count_) {
+                const Vec3 mean=init_gyro_sum_*(1.0f/init_count_);
+                const Vec3 squared=init_gyro_sq_sum_*(1.0f/init_count_);
+                const float limit2=config_.startup_gyro_stddev_limit*config_.startup_gyro_stddev_limit;
+                const Vec3 variance{squared.x-mean.x*mean.x,
+                    squared.y-mean.y*mean.y,squared.z-mean.z*mean.z};
+                if (std::isfinite(variance.x) && std::isfinite(variance.y) &&
+                    std::isfinite(variance.z) && variance.x>=-1e-8f &&
+                    variance.y>=-1e-8f && variance.z>=-1e-8f &&
+                    variance.x<=limit2 && variance.y<=limit2 && variance.z<=limit2) {
+                    state_.gyro_bias=mean;
+                    startup_bias_calibrated_=true;
+                    const float minimum=config_.startup_bias_sigma_floor;
+                    const float bound=minimum*minimum;
+                    for(int i=0;i<3;i++) P_[12+i][12+i]=bound;
+                }
+            }
             // Zero yaw is an arbitrary local gauge, not magnetic north.
             previous_accel_=imu.accel_mps2;
             have_previous_accel_=true;
@@ -278,15 +330,21 @@ public:
             step<config_.static_accel_step_limit;
         static_count_ = candidate ? static_count_+1 : 0;
         stationary_ = static_count_ >= config_.static_min_samples;
-        if (stationary_ && ++aid_count_ >= config_.aid_every_samples) {
+        // The independent stationarity hint may come from e.g. a verified
+        // stationary calibration rig. The normal IMU heuristic cannot prove
+        // stationary motion during a sustained translational acceleration.
+        const bool allow_gravity = (config_.gravity_policy==GravityPolicy::ConfirmedOnly) ?
+            external_stationary_confirmed_ : (stationary_ || external_stationary_confirmed_);
+        if (allow_gravity && ++aid_count_ >= config_.aid_every_samples) {
             aid_count_=0;
-            // Direction-only pseudo-measurement, not an assertion of zero
-            // world acceleration. Still unsafe in sustained acceleration.
-            correct_gravity_direction(imu.accel_mps2);
-            if (config_.heuristic_zero_rate)
+            // A true external confirmation permits gravity realignment even
+            // when the estimate has large roll/pitch error. Without one,
+            // reject large innovations rather than following apparent gravity.
+            correct_gravity_direction(imu.accel_mps2,an,step);
+            if (config_.heuristic_zero_rate && (stationary_ || external_stationary_confirmed_))
                 correct_zero_angular_rate(imu.gyro_rps,config_.zero_rate_sigma);
         }
-        if (!stationary_) aid_count_=0;
+        if (!allow_gravity) aid_count_=0;
         return true;
     }
 
@@ -354,6 +412,14 @@ public:
 
     const State &state() const { return state_; }
     bool ready() const { return initialized_; }
+    // This is an externally supplied assertion, NOT inferred from the IMU.
+    // It affects only future measurements; clear it as soon as motion begins.
+    void set_external_stationary_confirmed(bool confirmed) {
+        external_stationary_confirmed_=confirmed;
+    }
+    bool startup_bias_calibrated() const { return startup_bias_calibrated_; }
+    uint32_t gravity_applied_updates() const { return gravity_applied_updates_; }
+    uint32_t gravity_suppressed_updates() const { return gravity_suppressed_updates_; }
     bool imu_stationary_candidate() const { return stationary_; }
     uint32_t rejected_updates() const { return rejected_updates_; }
     uint32_t accepted_updates() const { return accepted_updates_; }
@@ -569,10 +635,33 @@ public:
         return true;
     }
 private:
-    void correct_gravity_direction(Vec3 accel) {
+    void correct_gravity_direction(Vec3 accel,float raw_accel_norm,float accel_step) {
         float residual[3],H[3][kDim];
-        if (gravity_measurement_model(state_.orientation,accel,state_.accel_bias,residual,H))
-            update(residual,H,3,config_.gravity_update_sigma,16.0f);
+        if (!gravity_measurement_model(state_.orientation,accel,state_.accel_bias,residual,H)) {
+            ++gravity_suppressed_updates_;return;
+        }
+        float sigma=config_.gravity_update_sigma;
+        const bool independently_stationary=external_stationary_confirmed_;
+        if (config_.gravity_policy==GravityPolicy::Conservative && !independently_stationary) {
+            const Vec3 g_body=state_.orientation.unrotate({0,0,1});
+            const Vec3 debiased=accel-state_.accel_bias;
+            const float n=debiased.norm();
+            if (!(n>1e-6f)) {++gravity_suppressed_updates_;return;}
+            const float c=dot(g_body,debiased)*(1.0f/n);
+            const float clipped=(c>1.0f?1.0f:(c< -1.0f?-1.0f:c));
+            const float angle=std::acos(clipped);
+            if (!std::isfinite(angle) || angle>config_.gravity_unverified_max_angle_rad) {
+                ++gravity_suppressed_updates_;return;
+            }
+            // Larger deviations from 1 g or more sample-to-sample motion
+            // reduce confidence; they do NOT prove absence of acceleration.
+            const float norm_ratio=std::fabs(raw_accel_norm-kGravity)/
+                (config_.static_accel_tolerance*kGravity);
+            const float step_ratio=accel_step/config_.static_accel_step_limit;
+            const float score=std::fmin(1.0f,std::fmax(norm_ratio,step_ratio));
+            sigma*=1.0f + config_.gravity_motion_noise_multiplier*score*score;
+        }
+        if (update(residual,H,3,sigma,16.0f)) ++gravity_applied_updates_;
     }
     bool correct_zero_angular_rate(Vec3 gyro,float sigma) {
         float residual[3]={gyro.x-state_.gyro_bias.x,
@@ -703,7 +792,10 @@ private:
     float last_nis_=NAN,last_nis_gate_=NAN;
     uint32_t last_accepted_aid_source_=0;
     uint64_t last_accepted_aid_time_us_=0;
-    unsigned init_count_=0;
+    unsigned init_count_=0,init_verified_count_=0;
     Vec3 init_accel_sum_{},init_last_accel_{};
+    Vec3 init_gyro_sum_{},init_gyro_sq_sum_{};
+    bool startup_bias_calibrated_=false,external_stationary_confirmed_=false;
+    uint32_t gravity_suppressed_updates_=0,gravity_applied_updates_=0;
 };
 } // namespace inertial

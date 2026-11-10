@@ -71,7 +71,11 @@ static void test_slow_yaw() {
     std::puts("PASS slow yaw remains enabled by default");
 }
 static void test_gravity_normalization() {
-    Eskf15 f;unsigned k=0;init(f,k);
+    // A sudden 10-degree change with zero gyro is not a physically credible
+    // IMU trajectory; exercise the legacy correction independently of the
+    // conservative motion-aware gate.
+    Settings config;config.gravity_policy=GravityPolicy::LegacyHeuristic;
+    Eskf15 f(config);unsigned k=0;init(f,k);
     constexpr float roll=0.1745329252f;
     const Vec3 rotated{0,std::sin(roll)*kGravity,std::cos(roll)*kGravity};
     for(int i=0;i<650;i++) f.process(at(++k,rotated));

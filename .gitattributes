@@ -1,0 +1,6 @@
+*.sh text eol=lf
+*.yml text eol=lf
+*.py text eol=lf
+*.cpp text eol=lf
+*.hpp text eol=lf
+*.pio text eol=lf
