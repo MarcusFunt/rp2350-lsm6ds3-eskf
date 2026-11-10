@@ -2,7 +2,7 @@
 
 **Target:** Raspberry Pi Pico 2 / RP2350 in ARM Cortex-M33 mode, Pico SDK 2.x, original ST LSM6DS3 (`WHO_AM_I=0x69`). This is a concrete revision of the previous example, informed by *Sensor Fusion for Attitude and Navigation*, Research-Expanded Edition (7 November 2026). See [`REVIEW_2026.md`](REVIEW_2026.md) for the audit and source mapping.
 
-**Status:** Bundle A Pico 2 cross-build and host checks previously passed in GitHub Actions. Bundle B host tests, synthetic Monte Carlo comparisons and sanitizers pass locally; the revised firmware must pass a new Pico cross-build in CI. Real calibration, electrical timing and hardware-in-the-loop validation **have not been performed**. Do not use as a flight-safety controller.
+**Status:** Bundle A/B/C host checks pass for the current source. Real calibration, electrical timing and hardware-in-the-loop validation **have not been performed**. The simulator is synthetic-only and does not certify firmware accuracy or safety.
 
 ## Files
 
@@ -18,7 +18,7 @@
 | `REVIEW_2026.md` | Audit against the 7 November 2026 report; remaining risks |
 | `tests/test_bundle_b.cpp` | Startup bias and motion-aware gravity regression tests |
 | `tools/benchmark_bundle_b.cpp` | Shared synthetic IMU stream, ESKF/Mahony matched comparison and tilt NEES diagnostics |
-| `tools/summarize_bundle_b.py` | Reproducible report/JSON summaries from per-seed CSV |
+| `tools/summarize_bundle_b.py` | Reproducible confidence-interval report/JSON summaries and dependency-free SVG plots |
 | `BENCHMARK_B.md` | Synthetic benchmark summary and interpretation limits |
 | `benchmarks/` | Raw per-seed CSV and machine-readable summaries |
 
@@ -166,17 +166,20 @@ Run software-only Bundle B validation, which also compares exact repeated runs:
 BUNDLE_B_SANITIZERS=1 ./tools/run_bundle_b_checks.sh
 ```
 
-Regenerate the checked-in Monte Carlo evidence (6 scenarios x 8 seeds x 3 variants per mode):
+Regenerate the checked-in Monte Carlo evidence (8 scenarios x 2 sensor profiles x 8 seeds x 3 estimator variants per startup mode):
 
 ```bash
+mkdir -p benchmarks/plots/no_startup_bias benchmarks/plots/verified_startup_bias
 g++ -std=c++17 -O2 -Wall -Wextra -Wpedantic -Werror tools/benchmark_bundle_b.cpp -o benchmark_bundle_b
-./benchmark_bundle_b --trials 8 --seed 20261110 --output benchmarks/bundle_b_no_startup_bias.csv
-./benchmark_bundle_b --trials 8 --seed 20261110 --startup-bias --output benchmarks/bundle_b_verified_startup_bias.csv
-python3 tools/summarize_bundle_b.py benchmarks/bundle_b_verified_startup_bias.csv --markdown BENCHMARK_B.md --json benchmarks/summary_verified_startup_bias.json
-python3 tools/summarize_bundle_b.py benchmarks/bundle_b_no_startup_bias.csv --json benchmarks/summary_no_startup_bias.json
+./benchmark_bundle_b --trials 8 --seed 20261110 --sensor-profile both --output benchmarks/bundle_b_no_startup_bias.csv --metadata benchmarks/metadata_no_startup_bias.json
+./benchmark_bundle_b --trials 8 --seed 20261110 --startup-bias --sensor-profile both --output benchmarks/bundle_b_verified_startup_bias.csv --metadata benchmarks/metadata_verified_startup_bias.json
+python3 tools/summarize_bundle_b.py benchmarks/bundle_b_no_startup_bias.csv --json benchmarks/summary_no_startup_bias.json --metadata benchmarks/metadata_no_startup_bias.json --plots-dir benchmarks/plots/no_startup_bias
+python3 tools/summarize_bundle_b.py benchmarks/bundle_b_verified_startup_bias.csv --markdown BENCHMARK_B.md --json benchmarks/summary_verified_startup_bias.json --metadata benchmarks/metadata_verified_startup_bias.json --plots-dir benchmarks/plots/verified_startup_bias
 ```
 
-The simulator explicitly models sensor noise, bias random walk, a period of verified-stationary startup, synthetic motion and specific force, vibration and +-150 us timing-label perturbations. Its simplified timing jitter does not represent measured hardware. It reports causal attitude errors, missing estimates, gravity innovation statistics and **2-DOF horizontal-attitude NEES** (yaw is a gauge). The gravity pseudo-measurement shares the same sensor data as propagation; the usual independent Gaussian NIS/NEES chi-squared coverage assumptions do not exactly apply. See [BENCHMARK_B.md](BENCHMARK_B.md) for matched results and caveats.
+The simulator retains the nominal white-noise and bias-random-walk equations and adds a synthetic stress profile with residual scale and cross-axis errors, a smooth 6 °C temperature ramp, quantization, and illustrative ±60 m/s² and ±10 rad/s clipping limits. Those limits are not LSM6DS3 specifications; normal scenarios do not clip, and saturation is tested separately. Pass `--sensor-profile nominal` or `--sensor-profile stress` to isolate one profile (the default is `both`). Motion coverage includes smooth stop/start pulses and combined three-axis rotation and translation alongside the existing scenarios. The new trajectories stay below 1 rad/s and 7 m/s²; the stop/start speed pulses peak at 1.2 m/s and 0.75 m/s. Translation is represented only through acceleration for attitude testing; the simulator does not estimate position or velocity. Every result row carries trial identity, validity counts and a valid-sample mask; paired estimator and stress-minus-nominal comparisons are withheld when evaluation masks differ. The report gives mean per-trial RMS, between-trial SD, exact finite-sample 95% Student-t intervals, and paired differences. The checked-in eight-trial intervals are preliminary descriptive uncertainty under the simulator assumptions, not real-world accuracy bounds. It also reports **2-DOF horizontal-attitude NEES** as a diagnostic, with sample counts and coverage; gyro bias error is relative to injected additive bias and may also reflect scale and cross-axis effects. Gravity aiding reuses IMU data, so independent-noise NIS/NEES chi-squared coverage assumptions are not rigorous.
+
+Metric definition v2 measures inclination from the angle between gravity/up vectors in the body frame. Truth integration v2 uses midpoint angular rates; this changes some time-varying-rotation accelerometer samples relative to the historical endpoint-rate v1 simulator, even though the original six Gaussian draw sequences are preserved. Historical v1 `tilt_rms_deg` also used world-frame body-Z deviation and can include common world-yaw error. v1 and v2 performance values are not directly comparable for either reason. Yaw RMS is relative to the chosen synthetic initial yaw gauge; gravity alone cannot observe absolute heading. The host benchmark runs at **200 Hz** for 16 seconds, while the target firmware configures the IMU at **208 Hz**. Seed schedule v1 preserves the legacy `base_seed + 1009*trial_id + 103*scenario_name_length` offsets for the original scenarios; same seed, code, and toolchain produce byte-stable outputs, while cross-toolchain identity is not promised. The archived [nominal noise hash fixture](benchmarks/historical_v1/nominal_noise_draw_hashes.json) pins the six original Gaussian draw sequences for GCC 11.4 with libstdc++ 20230528. See [BENCHMARK_B.md](BENCHMARK_B.md) and [benchmarks/historical_v1/README.md](benchmarks/historical_v1/README.md) for the metric and truth version changes and evidence history.
 
 ## Bundle C (2026-11-10) — hardware-independent sensor interfaces
 
