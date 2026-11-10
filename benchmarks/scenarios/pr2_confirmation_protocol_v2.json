@@ -1,0 +1,82 @@
+{
+  "protocol": "pr2_confirmation_protocol_v2",
+  "protocol_version": 2,
+  "status": "FROZEN_UNEXECUTED",
+  "parent_branch": "test/eskf-remediation-pr1",
+  "parent_sha": "b749a8aa0e40718ab7b163cad29d9c550b088265",
+  "scenario_generator_source_sha": "c43c52671fa350cf8d095e93fa3b012331cd62f5",
+  "inherits": "benchmarks/scenarios/pr1_core_regressions_protocol_v2.json",
+  "sampling": {
+    "sample_rate_hz": 200,
+    "sample_period_us": 5000,
+    "epoch_us": 1000000,
+    "samples_per_trial": 2400,
+    "expected_evaluation_samples": 2001,
+    "evaluation_time_inclusive_s": [2.0, 12.0],
+    "timestamp_rule": "epoch_us + sample_index * sample_period_us; sample_index starts at 1"
+  },
+  "scenarios": [
+    "static",
+    "pure_roll",
+    "lateral_accel_0p2g",
+    "slow_yaw"
+  ],
+  "noise_modes": [
+    "accel_only",
+    "gyro_only",
+    "combined"
+  ],
+  "seeds": {
+    "development": [
+      101, 102, 103, 104, 105, 106, 107, 108,
+      109, 110, 111, 112, 113, 114, 115, 116
+    ],
+    "confirmation": [
+      2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008,
+      2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016
+    ]
+  },
+  "matrix": {
+    "trials_per_split": 192,
+    "rows_per_estimator_per_split": 192,
+    "estimator_variants": 18,
+    "input_modes": ["IMU_ONLY", "TRUSTED_AIDED"],
+    "startup_knowledge": ["UNKNOWN", "EXTERNALLY_VERIFIED_STATIC"],
+    "startup_calibration": ["OFF", "ON when startup is EXTERNALLY_VERIFIED_STATIC"],
+    "runtime_aid": ["NONE", "synthetic independent heading at 1 Hz when TRUSTED_AIDED"],
+    "gravity_policies": ["Conservative", "LegacyHeuristic", "ConfirmedOnly"]
+  },
+  "noise_model": {
+    "accelerometer_white_noise_density_mps2_per_sqrt_hz": 0.0015,
+    "gyroscope_white_noise_density_radps_per_sqrt_hz": 0.00025,
+    "accelerometer_bias_walk_mps2_per_sqrt_s": 0.00008,
+    "gyroscope_bias_walk_radps_per_sqrt_s": 0.00003,
+    "source": "PR1 protocol-v2 generator; do not alter"
+  },
+  "comparison": {
+    "pairing": "same frozen raw IMU and heading records for PR1-parent and PR2-candidate evaluators",
+    "metrics": [
+      "expected", "valid", "unavailable", "stale", "health_end",
+      "tilt_rms_deg", "tilt_p95_deg", "tilt_max_deg", "attitude_rms_deg",
+      "yaw_rms_deg", "yaw_abs_p95_deg", "yaw_abs_max_deg",
+      "position_rms_m", "position_p95_m", "velocity_rms_m_s",
+      "gravity_nis_mean", "gravity_nis_count", "gravity_applied",
+      "gravity_suppressed", "aid_accepted", "aid_rejected",
+      "accel_bias_error_end_m_s2", "gyro_bias_error_end_rad_s"
+    ],
+    "expected_denominator_is_fixed": true,
+    "conditional_accuracy_must_be_reported_with_availability": true
+  },
+  "bundle_b_development": {
+    "scenarios": ["static", "slow_yaw", "pure_roll", "lateral_accel", "maneuver", "stop_start"],
+    "seed": 20261111,
+    "trials": 5,
+    "startup_bias_modes": ["OFF", "externally verified ON"],
+    "baseline_and_candidate_must_use_identical_generated_inputs": true
+  },
+  "exposure_controls": {
+    "pr1_heldout_seeds_1001_to_1016": "EXPOSED; excluded from candidate selection and this confirmation run",
+    "confirmation_seeds": "Do not evaluate until candidate source and evaluator are committed and their SHAs recorded",
+    "if_confirmation_informs_revision": "Mark this set exposed; preserve its report; use a new disjoint uninspected confirmation set"
+  }
+}
