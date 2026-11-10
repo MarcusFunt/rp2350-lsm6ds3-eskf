@@ -131,8 +131,8 @@ This revision implements the four software-only correctness priorities from the 
 Run **all** hardware-free checks:
 
 ```sh
-./tools/run_bundle_a_checks.sh
-BUNDLE_A_SANITIZERS=1 ./tools/run_bundle_a_checks.sh
+bash tools/run_bundle_a_checks.sh
+BUNDLE_A_SANITIZERS=1 bash tools/run_bundle_a_checks.sh
 ```
 
 Cross-build locally when Pico SDK 2.2.0 and the ARM GNU toolchain are available:
