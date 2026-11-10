@@ -4,3 +4,9 @@
 *.cpp text eol=lf
 *.hpp text eol=lf
 *.pio text eol=lf
+benchmarks/scenarios/pr1_core_regressions_protocol_v2.json text eol=lf
+benchmarks/manifests/pr1*.json text eol=lf
+benchmarks/reports/pr1*.csv text eol=lf
+remediation/*.md text eol=lf
+remediation/evidence/*.md text eol=lf
+remediation/evidence/*.log text eol=lf

@@ -1,0 +1,25 @@
+# Resource budgets — PR 1 snapshot
+
+## Firmware baseline evidence
+
+The available pinned RP2350 CI run is for the pre-PR-1 `origin/main` commit `c397fec8f5df3fb612ea6aa92547d484e9e48c06`, with Pico SDK 2.2.0. Its direct-register configuration built successfully. `arm-none-eabi-size` reported `.text=79,092`, `.data=0`, and `.bss=25,552` bytes (reported section sum 104,644 bytes). The run also built FIFO and binary-log variants, but did not emit their individual section sizes. The CI did not record compiler stack-use output or physical stack high-water.
+
+Evidence: [pinned CI run](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42816672377), cross-build job `129831387144`; the manifest records the direct UF2 SHA-256 and toolchain version.
+
+| Configuration / metric | Baseline value | PR 1 value | Status |
+|---|---:|---:|---|
+| Direct-register `.text` | 79,092 B | Not measured on PR 1 branch | Baseline verified; branch cross-build not run |
+| Direct-register `.data` | 0 B | Not measured on PR 1 branch | Baseline verified; branch cross-build not run |
+| Direct-register `.bss` | 25,552 B | Not measured on PR 1 branch | Baseline verified; branch cross-build not run |
+| FIFO and binary-log section sizes | Not emitted | Not measured | `NOT_RECORDED` |
+| Compiler stack-use estimate | Not recorded | Not measured | `NOT_RECORDED` |
+| Heap/dynamic allocation audit | Not measured in this step | Not measured | `NOT_RECORDED` |
+| ESKF execution/acquisition latency and stack high-water | No board measurements | No board measurements | `NOT_MEASURED_ON_DEVICE` / `BLOCKED_HARDWARE` |
+
+PR 1 changes host-only tools, tests and documentation; no firmware source or estimator equations changed. A zero firmware size delta is therefore expected from source scope, but has not been measured and is not reported as a build result. The Windows/WSL environment used for host checks did not have `arm-none-eabi-g++` or `PICO_SDK_PATH`, so the branch itself was not cross-built.
+
+## Provisional constraints
+
+The frozen simulation cadence is 200 Hz (5 ms), which defines the host scenario timestep only; it does not establish an on-device deadline budget. This PR does not set an acceptable timing or stack limit because the controller freshness requirement, task/core allocation, interrupt load, and board-level stack allocation have not been measured. The ledger remains provisional until those requirements and hardware evidence are supplied.
+
+Before any firmware optimization or resource claim, measure all direct/FIFO/binary configurations with the pinned SDK, save map files and section sizes, enable `-fstack-usage` where supported, and audit allocation paths. On hardware, record process time p50/p95/p99/max, acquisition and end-to-end age, queue peaks/drops, deadline misses, and per-context stack high-water. Host wall-clock measurements are not a substitute for those values.

@@ -1,5 +1,7 @@
 # Bundle B: synthetic estimator comparison
 
+> **Superseded for tilt evaluation:** This checked-in table was generated under evaluation protocol v1, whose world-frame body-up metric was shown to count relative world yaw as tilt at nonzero pitch/roll. The source CSV/JSON artifacts are preserved with hashes in `benchmarks/manifests/pr1_protocol_v1_superseded.json`; `tools/summarize_bundle_b.py` rejects v1 CSVs. Use regenerated protocol-v2 outputs for tilt comparisons. The older results below are retained as historical records and must not be interpreted as v2 tilt results.
+
 Source CSV: `bundle_b_verified_startup_bias.csv`. Results are simulated, not measured on RP2350 hardware.
 
 | Scenario | Estimator | Trials | Mean tilt RMS (deg) | Between-trial SD (deg) | Mean yaw RMS (deg) | Valid fraction |

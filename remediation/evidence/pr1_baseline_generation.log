@@ -1,0 +1,14 @@
+Wrote protocol-v2 PR1 baseline: 4 scenarios, 292 input streams, 16 development and 16 held-out seeds per noisy motion cell, 3 gravity policies, IMU_ONLY and TRUSTED_AIDED
+fatal: not a git repository: /mnt/c/Users/marcu/rp2350-eskf-pr1/C:/Users/marcu/rp2350-lsm6ds3-eskf/.git/worktrees/rp2350-eskf-pr1
+Traceback (most recent call last):
+  File "/mnt/c/Users/marcu/rp2350-eskf-pr1/tools/finalize_pr1_manifest.py", line 230, in <module>
+    main()
+  File "/mnt/c/Users/marcu/rp2350-eskf-pr1/tools/finalize_pr1_manifest.py", line 151, in main
+    base_sha = git(root, "merge-base", "HEAD", "origin/main")
+  File "/mnt/c/Users/marcu/rp2350-eskf-pr1/tools/finalize_pr1_manifest.py", line 27, in git
+    return subprocess.check_output(["git", *args], cwd=root, text=True).strip()
+  File "/usr/lib/python3.10/subprocess.py", line 421, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', 'merge-base', 'HEAD', 'origin/main']' returned non-zero exit status 128.

@@ -4,6 +4,7 @@ import csv
 import hashlib
 import json
 import math
+import os
 import platform
 import shutil
 import subprocess
@@ -48,6 +49,7 @@ def main() -> None:
     trace_path = report_dir / "pr1_representative_traces_protocol_v2.csv"
     index_path = report_dir / "pr1_sample_index_protocol_v2.csv"
     samples_path = report_dir / "pr1_imu_samples_protocol_v2.bin"
+    legacy_path = report_dir / "pr1_historical_default_protocol_v2.csv"
     manifest_path = manifest_dir / "pr1_baseline_protocol_v2.json"
     manifest_dir.mkdir(parents=True, exist_ok=True)
 
@@ -61,6 +63,8 @@ def main() -> None:
         index_rows = list(csv.DictReader(stream))
     with trace_path.open(newline="", encoding="utf-8") as stream:
         trace_rows = list(csv.DictReader(stream))
+    with legacy_path.open(newline="", encoding="utf-8") as stream:
+        legacy_rows = list(csv.DictReader(stream))
 
     ensure(len(index_rows) == 292, f"expected 292 shared input streams, found {len(index_rows)}")
     ensure(len(summary_rows) == 292 * VARIANTS_PER_TRIAL,
@@ -80,6 +84,15 @@ def main() -> None:
                    "yaw p95 exceeds per-trial maximum")
     ensure(all(int(row["record_count"]) == RECORD_COUNT for row in index_rows),
            "sample stream length changed")
+    ensure(len(legacy_rows) == 97, f"expected 97 historical replay rows, found {len(legacy_rows)}")
+    ensure(all(row["legacy_core_commit"] == "e90c80eb47e5002738f4a16450714b3149798e28"
+               for row in legacy_rows), "historical replay core commit changed")
+    ensure(all(int(row["expected"]) == EXPECTED_SAMPLES and int(row["valid"]) == EXPECTED_SAMPLES
+               for row in legacy_rows), "historical replay has missing or invalid outputs")
+    ensure(sum(row["scenario"] == "lateral_accel_0p2g" for row in legacy_rows) == 1,
+           "historical replay must include one clean lateral-acceleration reference")
+    ensure(sum(row["scenario"] == "pure_roll" for row in legacy_rows) == 96,
+           "historical replay must include all development and held-out pure-roll streams")
 
     required_noisy = {
         (scenario, noise, split)
@@ -181,7 +194,8 @@ def main() -> None:
     head_sha = git(root, "rev-parse", "HEAD")
     branch = git(root, "branch", "--show-current")
     core_sha256 = sha256(root / "eskf15.hpp")
-    compiler_version = subprocess.check_output(["g++", "--version"], text=True).splitlines()[0]
+    cxx = os.environ.get("CXX", "g++")
+    compiler_version = subprocess.check_output([cxx, "--version"], text=True).splitlines()[0]
     scenario_hash = sha256(scenario_path)
     manifest = {
         "schema_version": 1,
@@ -196,7 +210,7 @@ def main() -> None:
             "sha256": scenario_hash,
         },
         "command": "bash ./tools/run_pr1_baseline.sh",
-        "compile_command": "g++ -std=c++17 -UNDEBUG -O2 -Wall -Wextra -Wpedantic -Werror tools/pr1_baseline.cpp -o ${TMPDIR}/pr1_baseline",
+        "compile_command": "${CXX} -std=c++17 -UNDEBUG -O2 -Wall -Wextra -Wpedantic -Werror tools/pr1_baseline.cpp -o ${TMPDIR}/pr1_baseline",
         "host": {
             "platform": platform.platform(),
             "python": platform.python_version(),
@@ -218,7 +232,32 @@ def main() -> None:
         },
         "artifacts": {
             path.name: {"sha256": sha256(path), "bytes": path.stat().st_size}
-            for path in (summary_path, trace_path, index_path, samples_path)
+            for path in (summary_path, trace_path, index_path, samples_path, legacy_path)
+        },
+        "historical_default_replay": {
+            "core_commit": "e90c80eb47e5002738f4a16450714b3149798e28",
+            "core_file": "eskf15.hpp",
+            "core_blob_sha1": "4fd1e1fd78e0953a77b09870bf686a8f0bbb0307",
+            "runner_sources": {
+                "tools/pr1_legacy_compare.cpp": sha256(root / "tools" / "pr1_legacy_compare.cpp"),
+                "tools/run_pr1_legacy_compare.sh": sha256(root / "tools" / "run_pr1_legacy_compare.sh"),
+            },
+            "input_artifacts": {
+                samples_path.name: sha256(samples_path),
+                index_path.name: sha256(index_path),
+            },
+            "protocol": "protocol-v2 evaluator; identical frozen protocol-v2 raw IMU samples",
+            "input_mode": "IMU_ONLY",
+            "startup_knowledge": "UNKNOWN",
+            "startup_calibration": "OFF",
+            "runtime_aid": "NONE",
+            "trials": len(legacy_rows),
+            "command": "bash ./tools/run_pr1_legacy_compare.sh",
+            "compile_command": "${CXX} -std=c++17 -UNDEBUG -O2 -Wall -Wextra -Wpedantic -Werror -I${PR1_BUILD_DIR} tools/pr1_legacy_compare.cpp -o ${PR1_BUILD_DIR}/pr1_legacy_compare",
+            "limitations": [
+                "The historical core replay uses the new frozen scenario/input set; it is not the unavailable historical noise/time history.",
+                "Only clean lateral acceleration and noisy pure-roll cells are replayed through the historical default core."
+            ],
         },
         "sample_streams": [
             {"trial_id": row["trial_id"], "sha256": row["sample_sha256"],

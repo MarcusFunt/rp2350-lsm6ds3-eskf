@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/mnt/c/Users/marcu/rp2350-eskf-pr1/tests/test_summarizer_protocol.py", line 27, in <module>
+    test_protocol_v1_csv_is_rejected()
+  File "/mnt/c/Users/marcu/rp2350-eskf-pr1/tests/test_summarizer_protocol.py", line 23, in test_protocol_v1_csv_is_rejected
+    raise AssertionError("protocol-v1 results must not be silently summarized as v2")
+AssertionError: protocol-v1 results must not be silently summarized as v2

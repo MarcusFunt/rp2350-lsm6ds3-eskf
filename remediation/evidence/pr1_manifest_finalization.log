@@ -1,0 +1,4 @@
+PASS PR1 artifact validation: 5256 summary rows, 42021 trace rows, 292 hashed sample streams
+summary_sha256=702356bfd1bbe65a8ed18d164fd96e4336a420f4ec8346b18d40e3fd22998b6f
+sample_stream_sha256=5a0534c469340b6675d767d3e80da4b6b812b779fb3ecf9a40c21b652d12b2c4
+manifest=benchmarks/manifests/pr1_baseline_protocol_v2.json

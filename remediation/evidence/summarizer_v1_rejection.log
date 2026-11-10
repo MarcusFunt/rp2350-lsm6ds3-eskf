@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/mnt/c/Users/marcu/rp2350-eskf-pr1/tools/summarize_bundle_b.py", line 76, in <module>
+    if __name__=='__main__':main()
+  File "/mnt/c/Users/marcu/rp2350-eskf-pr1/tools/summarize_bundle_b.py", line 71, in main
+    summary=summarize(read(args.csv))
+  File "/mnt/c/Users/marcu/rp2350-eskf-pr1/tools/summarize_bundle_b.py", line 17, in read
+    raise ValueError('This summarizer requires evaluation protocol v2; protocol-v1 results are superseded for tilt metrics')
+ValueError: This summarizer requires evaluation protocol v2; protocol-v1 results are superseded for tilt metrics

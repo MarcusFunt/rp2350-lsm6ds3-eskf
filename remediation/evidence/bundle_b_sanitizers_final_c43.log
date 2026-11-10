@@ -1,0 +1,17 @@
+PASS startup gyro-bias estimation requires explicit opt-in
+PASS sustained 0.17 g false tilt suppressed without external aiding
+PASS independently confirmed stationary-only gravity aiding
+PASS excessive gyro variance rejects startup calibration
+Bundle B unit tests passed.
+PASS summarizer rejects superseded protocol-v1 CSV
+Wrote /tmp/rp2350_bundle_b_checks/no_bias.csv: 5 trials per scenario, 6 scenarios, 3 estimator variants; startup bias disabled
+Wrote /tmp/rp2350_bundle_b_checks/with_bias.csv: 5 trials per scenario, 6 scenarios, 3 estimator variants; startup bias enabled
+Wrote /tmp/rp2350_bundle_b_checks/repeated.csv: 5 trials per scenario, 6 scenarios, 3 estimator variants; startup bias enabled
+PASS matched Monte Carlo regression, truth metrics and deterministic replay
+PASS startup gyro-bias estimation requires explicit opt-in
+PASS sustained 0.17 g false tilt suppressed without external aiding
+PASS independently confirmed stationary-only gravity aiding
+PASS excessive gyro variance rejects startup calibration
+Bundle B unit tests passed.
+Wrote /tmp/rp2350_bundle_b_checks/ubsan.csv: 2 trials per scenario, 6 scenarios, 3 estimator variants; startup bias enabled
+PASS Bundle B sanitizers

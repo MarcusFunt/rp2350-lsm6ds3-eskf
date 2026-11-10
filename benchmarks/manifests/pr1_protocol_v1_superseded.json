@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "evaluation_protocol_version": 1,
+  "status": "SUPERSEDED",
+  "source_commit": "c397fec8f5df3fb612ea6aa92547d484e9e48c06",
+  "reason": "The v1 tilt metric compared world-frame body-up vectors. At nonzero true roll/pitch, a relative world-yaw-only change alters that metric even though the body-frame gravity direction is unchanged. The v2 oracle test exposes this evaluator defect.",
+  "replacement_protocol": "benchmarks/scenarios/pr1_core_regressions_protocol_v2.json",
+  "superseded_files_preserved_unchanged": [
+    {
+      "path": "benchmarks/bundle_b_no_startup_bias.csv",
+      "sha256": "554c8af603329e65dcbb5ce3d3606e4526d26d060cb44f81c19799b0675c07a8",
+      "scope": "tilt metrics are superseded; non-tilt fields remain historical results"
+    },
+    {
+      "path": "benchmarks/bundle_b_verified_startup_bias.csv",
+      "sha256": "fb51f5ef275bf83fb01c7c98f642a4c57e7089370d10394bd807640986a0aaaac",
+      "scope": "tilt metrics are superseded; non-tilt fields remain historical results"
+    },
+    {
+      "path": "benchmarks/summary_no_startup_bias.json",
+      "sha256": "7b1df72235ca0ffd1cde3ba3bbf60955980136724fd418741fafdac5c4d4a4d34",
+      "scope": "summary references v1 measurements and remains preserved as historical"
+    },
+    {
+      "path": "benchmarks/summary_verified_startup_bias.json",
+      "sha256": "794a65110f7b9657d085a9535a46f68730cb45d7e044d03bb4f54839df67e2b3",
+      "scope": "summary references v1 measurements and remains preserved as historical"
+    }
+  ],
+  "historical_external_eight_figure_set": {
+    "status": "HISTORICAL_UNREPRODUCED",
+    "available_raw_trial_data": false,
+    "available_generator_source": false
+  }
+}
