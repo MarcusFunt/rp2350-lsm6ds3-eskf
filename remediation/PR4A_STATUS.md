@@ -2,7 +2,7 @@
 
 ## Gate
 
-**PR4A software checks: PASS. Target cross-build and hardware validation: pending/blocked.** The FIFO implementation remains behind `RP2350_USE_FIFO=ON`; direct-register DMA remains the default path. FIFO timestamps are reconstructed estimates, not sensor-provided timestamps.
+**PR4A host and target build gates: PASS. Physical validation: BLOCKED — hardware required.** The FIFO implementation remains behind `RP2350_USE_FIFO=ON`; direct-register DMA remains the default path. FIFO timestamps are reconstructed estimates, not sensor-provided timestamps.
 
 This branch is stacked on PR3 final-confirmation evidence at base `a9e58286eb320687ae53959052c466a5da18feaa`. PR3 and PR2 acceptance gates remain open and are not changed by this firmware work.
 
@@ -19,7 +19,7 @@ This branch is stacked on PR3 final-confirmation evidence at base `a9e58286eb320
 - Test-first timestamp helper check: expected missing `reconstruct_timestamps()` API at base; implemented and then passed exact 208 Hz rational offsets, chunk continuation, monotonicity, null/zero/range/underflow checks.
 - Mock FIFO checks pass for complete signed samples, partial-word wait, pattern flush, FIFO full/overrun flags, bus read/write errors, capacity truncation, and a 50-frame original snapshot with five later arrivals left unread.
 - Bundle A/B/C host and sanitizer suites passed. Bundle C was rerun after the final FIFO fault-path test additions.
-- CI is configured to cross-build direct-register, FIFO, and binary-FIFO variants and now prints `arm-none-eabi-size` for all three. The local environment has no `PICO_SDK_PATH` or ARM compiler, so target sizes and stack-use data are not yet measured here.
+- Pinned Pico SDK 2.2.0 CI run [42922199617](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42922199617) passed host/sanitizer checks and all direct-register, FIFO, and binary-FIFO builds on stacked merge commit `7984be8f55dd23453f0786933003bc414785936e` (PR4A head `610dfde6de4ded783414d81f17b67897ad28f64a`). `arm-none-eabi-size` reported direct `77,940/0/25,560 B`, FIFO `80,048/0/25,548 B`, and binary-FIFO `71,244/0/25,548 B` for `.text/.data/.bss`. The direct-register comparison to the historical `c397fec` reference is cumulative; it is not a PR4A-only delta. Separate `.rodata`, link maps and `-fstack-usage` remain unrecorded. See [resource budgets](RESOURCE_BUDGETS.md).
 - No physical Pico 2/LSM6DS3 was available. FIFO loss, actual edge alignment, interrupt/acquisition latency, and controller suitability remain blocked; see [hardware validation](HARDWARE_VALIDATION.md).
 
 ## Remaining risk

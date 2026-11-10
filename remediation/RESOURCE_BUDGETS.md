@@ -43,11 +43,11 @@ PR4A is stacked on PR3 base `a9e58286eb320687ae53959052c466a5da18feaa`. It chang
 
 | Configuration / metric | PR 1 reference | PR4A result | Status |
 |---|---:|---:|---|
-| Direct-register `.text/.data/.bss` | `79,092/0/25,552 B` at `c397fec` | Pending pinned ARM CI output | `NOT_MEASURED_LOCALLY` |
-| FIFO `.text/.data/.bss` | Not emitted | Pending pinned ARM CI output | `NOT_MEASURED_LOCALLY` |
-| Binary FIFO `.text/.data/.bss` | Not emitted | Pending pinned ARM CI output | `NOT_MEASURED_LOCALLY` |
+| Direct-register `.text/.data/.bss` | `79,092/0/25,552 B` at `c397fec` | `77,940/0/25,560 B` | `PASS` pinned CI |
+| FIFO `.text/.data/.bss` | Not emitted | `80,048/0/25,548 B` | `PASS` pinned CI |
+| Binary FIFO `.text/.data/.bss` | Not emitted | `71,244/0/25,548 B` | `PASS` pinned CI |
 | Compiler stack-use estimates | Not recorded | `-fstack-usage` not yet enabled | `NOT_RECORDED` |
 | FIFO drain and ESKF duration | No board measurements | No Pico 2/LSM6DS3 available | `NOT_MEASURED_ON_DEVICE` |
 | DRDY-to-publication latency, queue peaks/drops, FIFO age | No board measurements | Telemetry counters are present; no physical capture | `BLOCKED_HARDWARE` |
 
-The CI cross-build now prints `arm-none-eabi-size` for direct, FIFO, and binary-FIFO variants. The unchanged PR 1 size is a historical comparison point, not a measured PR4A baseline. No host binary size is substituted. The FIFO timestamp helper uses a 208 Hz integer period model; its code-size and stack impact await the pinned target build. See [PR4A status](PR4A_STATUS.md) and [hardware validation](HARDWARE_VALIDATION.md).
+Pinned Pico SDK 2.2.0 CI run [42922199617](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42922199617) built the stacked PR4A merge commit `7984be8f55dd23453f0786933003bc414785936e` (PR4A head `610dfde6de4ded783414d81f17b67897ad28f64a`). `arm-none-eabi-size` reports the values above. At the same commit/configuration, FIFO adds 2,108 bytes of `text` and uses 12 fewer bytes of `bss` than direct-register; `text` includes read-only data in this tool output, so `.rodata` is not separately reported. The direct-register `.text` total is 1,152 bytes lower than the historical `c397fec` baseline, while `.bss` is 8 bytes higher; this is a cumulative stacked comparison and does not isolate PR4A. The workflow does not yet produce link maps or `-fstack-usage` output. No host binary size is substituted. See [PR4A status](PR4A_STATUS.md) and [hardware validation](HARDWARE_VALIDATION.md).
