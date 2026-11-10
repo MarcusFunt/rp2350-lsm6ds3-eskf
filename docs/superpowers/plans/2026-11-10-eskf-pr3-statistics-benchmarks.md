@@ -25,14 +25,14 @@ PR2's pass gate is OPEN for repeated LegacyHeuristic yaw/bias regressions, synth
 - State the white-noise spectral convention and sample conversion, bias random-walk model, factor labels, and per-trial provenance fields.
 - Freeze disjoint development, held-out, and final-confirmation seed ranges before new runs; keep prior seed sets untouched.
 - Add a schema validator and tests that reject missing or inconsistent protocol fields.
-- [x] Protocol v1 remains immutable and is retained as superseded evidence. Protocol v2 freezes the same scenario model plus the paired-bootstrap method and exact per-trial RNG seed derivation before held-out/final runs. The four CI golden seed IDs remain fixed. Nine schema tests pass.
+- [x] Protocol v1 and v2 remain immutable. Protocol v2 freezes the paired-bootstrap method and exact per-trial RNG derivation. A 100-seed v2 development run exposed that its vibration measurement disturbance started during stationary startup; protocol v3 now supersedes v2 with a required `start_s=2.0`, while preserving v2 artifacts as superseded evidence. Version validation, malformed start-time rejection, and v3 codegen/runtime tests pass.
 
 ### Task 2: Generate shared, data-driven scenario inputs
 
 - Make the versioned protocol drive truth and sample generation for all eight scenarios, rates, stress modes, and declared timestamp schedules.
 - Reuse one generated input stream per trial across estimator variants and preserve raw samples only once.
 - Add deterministic golden checks and strict provenance validation.
-- [x] Protocol v2 generates fixed 128-byte records with truth, physical/reported/nominal timestamps, biases, IMU, independent heading and oracle heading. Each stream carries the protocol SHA; the evaluator rejects malformed headers, bad grids, nonfinite records, disordered timestamps and out-of-split seeds. Paired gravity-policy runs reuse one file and are tied to its SHA-256. Deterministic regeneration and PSD sample-variance tests pass.
+- [x] Protocol v3 generates fixed 128-byte records with truth, physical/reported/nominal timestamps, biases, IMU, independent heading and oracle heading. Each stream carries the protocol SHA; the evaluator rejects malformed v3 headers, bad grids, nonfinite records, disordered timestamps and out-of-split seeds. Paired gravity-policy runs reuse one file and are tied to its SHA-256. Deterministic regeneration and PSD sample-variance tests pass. V1/v2 validation remains covered.
 
 ### Task 3: Add failure-aware, tiered evaluation
 
@@ -46,7 +46,7 @@ PR2's pass gate is OPEN for repeated LegacyHeuristic yaw/bias regressions, synth
 - Independently verify tilt NEES, NIS, covariance validity, noise discretization, and nonfinite-state failure behavior.
 - Use at least 100 deterministic seeds for primary distributions, with separate development, held-out, and untouched final-confirmation sets.
 - Report per-trial distributions and paired confidence intervals with the method and assumptions stated.
-- [~] An analytic yaw-gauge tilt-NEES check, two-sided-PSD noise test and deterministic percentile-bootstrap summarizer are implemented. The 100-seed primary distributions and untouched held-out/final-confirmation runs remain NOT_RUN.
+- [~] An analytic yaw-gauge tilt-NEES check, two-sided-PSD noise test and deterministic percentile-bootstrap summarizer are implemented. V3 baseline development seeds 4001–4100 and disjoint held-out seeds 5001–5100 now have full 208 Hz nominal runs, paired intervals, and preserved reports. The final-confirmation set, other rates/stress modes, and orthogonal startup/aiding profiles remain NOT_RUN. Both completed sets have roughly 1,500 incomplete rows each, so the results characterize failures and do not pass PR3.
 
 ### Task 5: Reproduce reports and PR3 gate evidence
 
@@ -54,10 +54,12 @@ PR2's pass gate is OPEN for repeated LegacyHeuristic yaw/bias regressions, synth
 - Produce machine-readable reports and reproducible time-series/distribution figures.
 - Preserve PR1 held-out artifacts and prior confirmations unchanged; record exact commit/config/input/output hashes.
 - Keep the PR3 pass gate OPEN until the handoff's pass criteria and an independent branch review are complete.
-- [~] One command builds the generator/evaluator, writes shared streams and hashes, summarizes paired rows, emits JSON and SVG. The PR3 gate remains OPEN pending 100-seed runs, missing estimator variants/diagnostic tiers, completion of upstream PR2, and independent review.
+- [~] One command builds the generator/evaluator, writes shared streams and hashes, summarizes paired rows, emits JSON and SVG; v3 development and held-out artifacts are checked in with their manifests. The PR3 gate remains OPEN pending final confirmation, missing estimator variants/diagnostic tiers, full factor coverage, unresolved covariance/availability failures, upstream PR2 closure, and independent review.
 
 ## Current negative findings and limits
 
 - Stress white-noise scaling can prevent startup initialization: the static 3x-noise seed-4001 smoke stream produced zero propagated samples in the 14-second fixed evaluation window. No startup threshold was tuned from this result.
+- Protocol-v2 vibration disturbance was active before its two-second startup completed. The v2 100-seed result is preserved unchanged as superseded evidence; protocol v3 starts that disturbance at 2.0 seconds. V3 development vibration availability increased to 0.724/0.736/0.808 (Conservative/Legacy/ConfirmedOnly) but no policy completed all 100 trials. The v3 held-out set has 0/2/0 complete trials. This fixes the simulator startup defect, not the estimator covariance failures.
+- The v3 development run has 1,499 incomplete/failed rows of 2,400; the v3 held-out run has 1,492. Fixed expected denominators and invalid covariance rows are retained. The held-out set is exposed; do not tune on it.
 - In the seed-4001 `slow_yaw`, 200 Hz, nominal, UNKNOWN/OFF/NONE run, `eskf_confirmed_only` propagated and reported operationally current state on all 2,801 expected samples, but only 1,576 covariance matrices passed Cholesky positive-definiteness; the other 1,225 are an open implementation risk. The other two gravity policies passed all covariance checks on that stream. This is a development diagnostic, not a held-out result.
 - PR2 remains OPEN for the documented LegacyHeuristic yaw/bias regressions, synthetic-heading-aid degradation and missing held-out false-hint/zero-dwell coverage. PR3 has not resolved these issues.

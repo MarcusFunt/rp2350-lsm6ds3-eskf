@@ -2,29 +2,41 @@
 
 ## Gate
 
-**PR3: OPEN. PR2: OPEN.** The work here characterizes the accepted PR2 candidate and does not remediate or waive its known yaw/bias, synthetic-heading-aid, or false-hint/zero-dwell risks. All measurements are synthetic host simulations.
+**PR3: OPEN. PR2: OPEN.** Results are synthetic host simulations and do not waive the known LegacyHeuristic yaw/bias regressions, synthetic-heading degradation, false-hint/zero-dwell coverage gaps, or covariance failures. The corrected protocol is frozen; the held-out results are exposed and will not be used for tuning.
 
 ## Protocol and generator
 
-- Protocol v1 remains unchanged as superseded evidence. Protocol v2 preregisters the paired percentile-bootstrap method (10,000 resamples, PRNG seed 20261110) and exact FNV-1a derivation for separate sensor and independent-heading random streams before any held-out or final-confirmation use.
-- `tools/run_pr3_benchmarks.py` validates the protocol, builds the host generator/evaluator, generates one shared binary input per scenario/rate/stress/seed, and writes a per-trial summary, JSON provenance manifest, JSON report, and SVG figure.
-- Binary inputs include truth, nominal/physical/reported timestamps, biases, IMU values, and independent/oracle heading values. Each file records the protocol digest; paired estimator rows share the input digest.
-- The evaluator runs the three ESKF gravity policies: `eskf_conservative`, `eskf_legacy`, and `eskf_confirmed_only`. Protocol-listed Mahony and gyro-only estimates are **NOT_RUN**. Selected diagnostic traces and full failure-oracle covariance output are **NOT_IMPLEMENTED**.
+- Protocol v1 and v2 remain unchanged. Protocol v2 froze paired percentile bootstrap intervals and independent FNV-1a sensor/heading RNG streams.
+- Protocol v2 omitted a disturbance start time for vibration. Its generator applied the 43 Hz additive accelerometer disturbance from the first sample, including the intended two-second stationary startup; all three ESKF policies remained in Aligning. The full v2 output is preserved and superseded by protocol v3.
+- Protocol v3 adds `measurement_disturbances.start_s = 2.0` for vibration and leaves the estimator, seeds, noise, truth, and scoring unchanged. Its SHA-256 is `1fd3998d99a5d58ea8dd5b6149a38aad0ec90fa56a1d722ccf77280e9dc21cca`. The validator requires that exact start time; codegen gates only the v3 vibration disturbance. Input records use `PR3INP03` and carry the v3 protocol hash.
+- Each command builds one generator and evaluator, creates one shared stream per trial, evaluates three ESKF policies on identical inputs, and emits CSV, JSON, provenance manifest, and SVG. Mahony and gyro-only, selected diagnostic traces, and full failure-oracle covariance capture are not implemented.
 
-## Current evidence
+## Frozen run evidence
 
-- Protocol validator, generated scenario runtime, exact NEES yaw-gauge reference, deterministic input regeneration, sample-noise PSD conversion, fixed-denominator evaluator, provenance checks, paired summary, bootstrap interval, and SVG output have smoke tests.
-- The development seed `4001` static/200 Hz nominal smoke run produced 2,801 expected/propagated/valid samples for all three ESKF policies. It is a pipeline check only and does not establish statistical confidence.
-- The development seed `4001` slow-yaw/200 Hz nominal run found 1,225 samples where `eskf_confirmed_only` covariance failed the positive-definite check while its operational state remained current. This remains open for PR2-level mathematical investigation.
-- A static 3x-white-noise smoke input did not initialize any estimator within the declared startup interval. This is retained as a negative characterization result; startup thresholds were not changed.
-- The 100-seed development distributions, 100-seed held-out distributions, untouched final-confirmation run, full PR3 factor matrix, and independent review are **NOT_RUN**.
+| Run | Seeds and conditions | Rows / shared inputs | Incomplete or failed | Vibration result | Evidence |
+|---|---|---:|---:|---|---|
+| Superseded v2 development | 4001–4100; 208 Hz nominal; baseline profile | 2,400 / 800 | 1,499 | 0% availability and 0/100 complete for each policy | [v2 report](../benchmarks/reports/pr3_protocol_v2_dev100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v2_dev100_208_nominal.json), [figure](../benchmarks/figures/pr3_protocol_v2_dev100_208_nominal.svg) |
+| v3 development | 4001–4100; 208 Hz nominal; baseline profile | 2,400 / 800 | 1,499 | Conservative: 72.40% availability, 0/100 complete; Legacy: 73.64%, 0/100; ConfirmedOnly: 80.77%, 0/100 | [v3 report](../benchmarks/reports/pr3_protocol_v3_dev100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v3_dev100_208_nominal.json), [figure](../benchmarks/figures/pr3_protocol_v3_dev100_208_nominal.svg) |
+| v3 held-out | 5001–5100; 208 Hz nominal; baseline profile | 2,400 / 800 | 1,492 | Conservative: 70.65% availability, 0/100 complete; Legacy: 77.87%, 2/100; ConfirmedOnly: 81.02%, 0/100 | [v3 held-out report](../benchmarks/reports/pr3_protocol_v3_heldout100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v3_heldout100_208_nominal.json), [figure](../benchmarks/figures/pr3_protocol_v3_heldout100_208_nominal.svg) |
+
+For paired mean differences, the report uses the preregistered 10,000-resample paired percentile bootstrap. Its 95% interval is not an individual-run bound. The evaluation window fixes 2,913 expected samples per 208 Hz trial; incomplete runs remain in the denominator.
+
+## Remaining findings and limits
+
+- **Fixed simulation defect:** v3 applies the vibration disturbance only after the stationary startup. Vibration availability is no longer zero, but near-total trial incompleteness remains; this is an estimator/output-validity failure signal, not a reason to change the simulation again.
+- **Covariance validity:** in the v3 development vibration group, all three policies have zero complete trials despite nonzero state availability. The held-out group has only two complete LegacyHeuristic trials. The run summaries retain valid/covariance-valid counts and do not discard failed samples.
+- **Slow-yaw diagnostic:** the seed-4001 200 Hz nominal case previously found 1,225 of 2,801 `eskf_confirmed_only` samples with non-positive-definite covariance while operational state remained current. This remains an unresolved implementation risk.
+- **Stress startup:** the static 3x-white-noise seed-4001 smoke input did not initialize an estimator within the declared startup interval. No thresholds were tuned.
+- These runs cover only baseline IMU-only/unknown-startup/no-aid at 208 Hz nominal. Other rates, stress modes, startup/aid factors, and the final-confirmation split are **NOT_RUN**. The 100-seed development and held-out sets satisfy the current two-split statistical screen, but broad factor coverage, Mahony/gyro-only comparisons, trace tiers, and a final untouched confirmation remain outstanding.
+- Physical sensor behavior, RP2350 timing, FIFO reliability, resource measurements for the revised firmware, and control suitability remain unverified or **BLOCKED_HARDWARE**.
 
 ## Reproduction
 
+Run from a clean checkout of the named source commit. The run manifest records compiler, protocol, generator/evaluator hashes, source SHA, seed split, per-input hashes, and `working_tree_dirty_at_run`.
+
 ```sh
-python3 tests/test_pr3_scenario_protocol.py
-python3 tests/test_pr3_scenario_codegen.py
-python3 tools/run_pr3_benchmarks.py --split development --first-seed 4001 --last-seed 4001 --scenarios static --rate-modes uniform_208hz --stress-modes nominal --profiles baseline --output-dir /tmp/pr3-smoke
+python3 tools/run_pr3_benchmarks.py --split development --first-seed 4001 --last-seed 4100 --rate-modes uniform_208hz --stress-modes nominal --profiles baseline --output-dir benchmarks/generated/pr3_dev100_208_nominal_v3 --source-commit 21782bb102203e5f807a72eddb97085ce1a9b13c --tree-dirty no
+python3 tools/run_pr3_benchmarks.py --split held_out --first-seed 5001 --last-seed 5100 --rate-modes uniform_208hz --stress-modes nominal --profiles baseline --output-dir benchmarks/generated/pr3_heldout100_208_nominal_v3 --source-commit e75f94713fba54cc83e66132c105e31f39a19a98 --tree-dirty no
 ```
 
-Run broader seed/scenario/rate/stress selections by changing the command arguments. Do not use held-out or final-confirmation outputs for estimator selection. Physical sensor behavior, RP2350 timing, FIFO reliability, and control safety remain unverified.
+Run the v1/v2/v3 protocol and codegen tests plus Bundle A/B/C checks before publishing new results. Do not run or inspect final-confirmation seeds until a new acceptance attempt is explicitly frozen. The current PR3 and PR2 gates remain open.
