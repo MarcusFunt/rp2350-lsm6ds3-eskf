@@ -12,7 +12,7 @@
   "sensor_profiles": ["nominal", "stress"],
   "compiler": "11.4.0",
   "standard_library_version": "libstdc++-20230528",
-  "git_sha": "85e6d22ca3475885a1958ac8f8669868e8c331ec",
+  "git_sha": "e058946aff934ddd83b110065b14d59c8b462fe2",
   "git_worktree_state": "dirty",
   "seed_schedule": "base_seed + 1009*trial_id + 103*scenario_name_length; version 1 preserves legacy offsets",
   "configuration_hash_fnv1a64": "38b5cfb223616126",

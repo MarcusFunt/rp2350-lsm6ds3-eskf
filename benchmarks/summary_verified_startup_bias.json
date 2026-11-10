@@ -3614,7 +3614,7 @@
     "compiler": "11.4.0",
     "configuration_hash_fnv1a64": "38b5cfb223616126",
     "duration_seconds": 16,
-    "git_sha": "85e6d22ca3475885a1958ac8f8669868e8c331ec",
+    "git_sha": "e058946aff934ddd83b110065b14d59c8b462fe2",
     "git_worktree_state": "dirty",
     "metric_definition_version": 2,
     "sample_rate_hz": 200,

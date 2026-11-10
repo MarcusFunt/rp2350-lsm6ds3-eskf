@@ -64,7 +64,7 @@ Each cell summarizes the arithmetic mean of per-trial RMS values with a two-side
 
 - Seed: `20261110`; 8 trials per scenario/profile; schedule v1 (`base_seed + 1009*trial_id + 103*scenario_name_length; version 1 preserves legacy offsets`).
 - Simulator rate and duration: 200 Hz, 16 s; truth integration v2; startup bias: true; profiles: nominal, stress.
-- Compiler: `11.4.0`; Git SHA: `85e6d22ca3475885a1958ac8f8669868e8c331ec`; working tree: `dirty`.
+- Compiler: `11.4.0`; Git SHA: `e058946aff934ddd83b110065b14d59c8b462fe2`; working tree: `dirty`.
 - C++ standard library: `libstdc++-20230528`.
 - Sensor configuration hash (FNV-1a 64): `38b5cfb223616126`.
 
@@ -313,10 +313,12 @@ The limits are deliberately illustrative and are not sensor full-scale specifica
 
 #### nominal profile
 
-- Tilt RMS: [SVG](benchmarks/plots/verified_startup_bias/tilt_rms_nominal.svg)
-- Yaw RMS: [SVG](benchmarks/plots/verified_startup_bias/yaw_rms_nominal.svg)
+![Tilt RMS across scenarios — nominal, verified startup bias](benchmarks/plots/verified_startup_bias/tilt_rms_nominal.svg)
+
+![Yaw RMS across scenarios — nominal, verified startup bias](benchmarks/plots/verified_startup_bias/yaw_rms_nominal.svg)
 
 #### stress profile
 
-- Tilt RMS: [SVG](benchmarks/plots/verified_startup_bias/tilt_rms_stress.svg)
-- Yaw RMS: [SVG](benchmarks/plots/verified_startup_bias/yaw_rms_stress.svg)
+![Tilt RMS across scenarios — stress, verified startup bias](benchmarks/plots/verified_startup_bias/tilt_rms_stress.svg)
+
+![Yaw RMS across scenarios — stress, verified startup bias](benchmarks/plots/verified_startup_bias/yaw_rms_stress.svg)
