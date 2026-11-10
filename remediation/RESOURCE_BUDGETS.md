@@ -60,9 +60,11 @@ PR4B is stacked on PR4A `fix/eskf-fifo-timing` at `26315b4732b920356c279137c057f
 
 | Configuration / metric | PR4A | PR4B | Status |
 |---|---:|---:|---|
-| Direct-register `.text/.data/.bss` | `77,940/0/25,560 B` | Pending | `NOT_RUN` |
-| FIFO `.text/.data/.bss` | `80,048/0/25,548 B` | Pending | `NOT_RUN` |
-| Binary FIFO `.text/.data/.bss` | `71,244/0/25,548 B` | Pending | `NOT_RUN` |
+| Direct-register `.text/.data/.bss` | `77,940/0/25,560 B` | `78,948/0/25,568 B` | `PASS` pinned CI |
+| FIFO `.text/.data/.bss` | `80,048/0/25,548 B` | `81,080/0/25,556 B` | `PASS` pinned CI |
+| Binary FIFO `.text/.data/.bss` | `71,244/0/25,548 B` | `71,452/0/25,556 B` | `PASS` pinned CI |
 | Separate `.rodata`, linker maps and compiler stack-use files | Not recorded | Pending | `NOT_RECORDED` |
 | Heap/dynamic allocation audit | Not run | Not run | `NOT_RECORDED` |
 | Hardware latency, queue high-water and stack high-water | Not measured | Not measured | `BLOCKED_HARDWARE` |
+
+Pinned Pico SDK 2.2.0 run [42925544474](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42925544474) built stacked merge commit `a91abe5ec00028688afea554bad7d19be39f4d70` (PR4B head `5072de0bece33f4fafd62f9a1d76a1733d04b20`). Relative to PR4A, the direct/FIFO/binary `.text` deltas are `+1,008/+1,032/+208 B`; `.data` deltas are zero and `.bss` increases by 8 B for each. These are feature-branch cumulative deltas at the PR merge commits. Standard `size` aggregates read-only data into `text`; PR4C will emit section-level `.rodata`, map files and `-fstack-usage` evidence.
