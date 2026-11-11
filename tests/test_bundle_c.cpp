@@ -17,6 +17,12 @@
 #endif
 #include "../lsm6ds3_fifo.hpp"
 #include "../binary_log.hpp"
+#if __has_include("../runtime_metrics.hpp")
+#include "../runtime_metrics.hpp"
+#define TEST_HAS_RUNTIME_METRICS 1
+#else
+#define TEST_HAS_RUNTIME_METRICS 0
+#endif
 using namespace inertial;
 static bool near(float a,float b,float eps=1e-4f){return std::fabs(a-b)<eps;}
 template<class T,class=void> struct HasCalibrationWireFormat:std::false_type{};
@@ -204,16 +210,62 @@ static void test_log(){
     uint8_t bytes[imu_log::kRecordSize]{};
     imu_log::encode_header(h,bytes);
     assert(imu_log::decode_header(bytes,imu_log::kHeaderSize,hout));
-    assert(hout.calibration_id==1234 && hout.sample_rate_hz==208);
+    assert(hout.calibration_id==1234 && hout.sample_rate_hz==208 && hout.version==imu_log::kVersion);
+    imu_log::u16(bytes+8,imu_log::kLegacyVersion);imu_log::u32(bytes+28,imu_log::crc32(bytes,28));
+    assert(imu_log::decode_header(bytes,imu_log::kHeaderSize,hout) && hout.version==imu_log::kLegacyVersion);
+    imu_log::encode_header(h,bytes);
     bytes[17]^=1;assert(!imu_log::decode_header(bytes,imu_log::kHeaderSize,hout));
     imu_log::Record r{};r.capture_us=100;r.publication_us=140;r.sequence=5;
     r.accel_mps2={1,2,3};r.gyro_rps={4,5,6};
     imu_log::encode_record(r,bytes);
     imu_log::Record y{};assert(imu_log::decode_record(bytes,imu_log::kRecordSize,y));
     assert(y.sequence==5 && near(y.accel_mps2.y,2));
+    uint8_t legacy[imu_log::kRecordSize]{};std::memcpy(legacy,bytes,sizeof(legacy));
+    imu_log::u32(legacy,0x314d5549u);imu_log::u16(legacy+4,imu_log::kLegacyVersion);
+    imu_log::u16(legacy+6,0);imu_log::u32(legacy+28,0x12345678u);
+    imu_log::u32(legacy+60,imu_log::crc32(legacy,60));
+    imu_log::Record old{};assert(imu_log::decode_record(legacy,sizeof(legacy),old));
+    assert(old.version==imu_log::kLegacyVersion && old.flags==0x12345678u && old.dropped_records_before==0);
     bytes[44]^=4;assert(!imu_log::decode_record(bytes,imu_log::kRecordSize,y));
     assert(!imu_log::decode_record(bytes,18,y));
     std::cout<<"PASS binary log roundtrip, CRC and short-record rejection\n";
+}
+template<class T,class=void> struct HasLogLossMetadata:std::false_type{};
+template<class T> struct HasLogLossMetadata<T,std::void_t<
+    decltype(std::declval<T&>().dropped_records_before),
+    decltype(std::declval<T&>().version)
+>>:std::true_type{};
+template<class T> static void test_log_loss_metadata_impl(){
+    if constexpr(HasLogLossMetadata<T>::value){
+        T input{};input.capture_us=1000;input.publication_us=1010;input.sequence=10;
+        input.dropped_records_before=7;
+        uint8_t bytes[imu_log::kRecordSize]{};imu_log::encode_record(input,bytes);
+        T decoded{};assert(imu_log::decode_record(bytes,sizeof(bytes),decoded));
+        assert(decoded.version==2 && decoded.dropped_records_before==7);
+        input.sequence=13;input.dropped_records_before=0;
+        imu_log::encode_record(input,bytes);assert(imu_log::decode_record(bytes,sizeof(bytes),decoded));
+        assert(decoded.sequence==13 && decoded.dropped_records_before==0);
+    }else{
+        assert(HasLogLossMetadata<T>::value && "versioned loss metadata is missing from binary records");
+    }
+}
+static void test_log_loss_metadata(){
+    assert(imu_log::kVersion==2);
+    test_log_loss_metadata_impl<imu_log::Record>();
+    std::cout<<"PASS binary log version-2 loss metadata and sequence provenance\n";
+}
+static void test_runtime_metrics(){
+#if TEST_HAS_RUNTIME_METRICS
+    inertial::metrics::LatencyHistogram h;
+    assert(h.sample_count()==0 && h.max_us()==0 && h.percentile_upper_bound(5000)==0);
+    for(uint32_t value:{1u,2u,3u,4u,5u,8u,16u,32u}) h.observe(value);
+    assert(h.sample_count()==8 && h.max_us()==32);
+    assert(h.percentile_upper_bound(5000)==7);
+    assert(h.percentile_upper_bound(9500)==63);
+#else
+    assert(TEST_HAS_RUNTIME_METRICS && "fixed-memory latency histogram is missing");
+#endif
+    std::cout<<"PASS fixed-memory latency percentile buckets and maximum\n";
 }
 static void test_aiding(){
     Settings settings{};settings.calibration_id=1234;
@@ -299,4 +351,4 @@ static void test_runtime_health(){
     assert(TEST_HAS_RUNTIME_HEALTH && "runtime health assessment API is missing");
 #endif
 }
-int main(){test_calibration();test_fifo();test_fifo_capacity_truncation();test_fifo_snapshot_capacity();test_fifo_snapshot_leaves_new_arrivals_for_next_edge();test_fifo_timestamp_reconstruction();test_log();test_aiding();test_aiding_configured_age();test_runtime_health();std::cout<<"Bundle C host tests passed\n";}
+int main(){test_calibration();test_fifo();test_fifo_capacity_truncation();test_fifo_snapshot_capacity();test_fifo_snapshot_leaves_new_arrivals_for_next_edge();test_fifo_timestamp_reconstruction();test_log();test_log_loss_metadata();test_runtime_metrics();test_aiding();test_aiding_configured_age();test_runtime_health();std::cout<<"Bundle C host tests passed\n";}

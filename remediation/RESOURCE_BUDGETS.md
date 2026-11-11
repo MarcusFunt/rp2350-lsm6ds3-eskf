@@ -26,13 +26,13 @@ Before any firmware optimization or resource claim, measure all direct/FIFO/bina
 
 ## PR 2 branch status
 
-PR 2 is stacked on PR 1 commit `b749a8aa0e40718ab7b163cad29d9c550b088265`. The latest candidate/evaluator freeze is `55eed3252e3e2af72bd61be66aa14501d9f17399`. This branch changes the ESKF covariance reset and gravity bias Jacobians, guards contradictory external stationary hints, and adds one conflict diagnostic counter; it does not change sensor transport or firmware scheduling. A target-resource delta is **not measured**. The PR 1 CI size numbers above belong to `c397fec`, not this branch.
+PR 2 is stacked on PR 1 commit `b749a8aa0e40718ab7b163cad29d9c550b088265`. The latest candidate/evaluator freeze is `55eed3252e3e2af72bd61be66aa14501d9f17399`. This branch changes the ESKF covariance reset and gravity bias Jacobians, guards contradictory external stationary hints, and adds one conflict diagnostic counter; it does not change sensor transport or firmware scheduling. PR2 head `4d023d0` passed all three RP2350 target builds in pinned CI run [42948451978](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42948451978). An isolated PR2 resource delta remains **not measured**; the latest cumulative PR4C measurements are below. The PR 1 CI size numbers above belong to `c397fec`, not this branch.
 
 | PR 2 metric | Status | Evidence / limitation |
 |---|---|---|
-| RP2350 `.text`, `.rodata`, `.data`, `.bss` and map file | `NOT_RUN` | `arm-none-eabi-g++` is unavailable and `PICO_SDK_PATH` is unset in this environment. No host size result is substituted. |
-| Compiler stack-use estimate | `NOT_RUN` | Requires the pinned ARM build and `-fstack-usage`; no estimate is inferred from host tests. |
-| Heap/dynamic-allocation audit | `NOT_RUN` | PR 2 adds no estimator-owned dynamic allocation by inspection, but a complete target/link audit was not executed. |
+| RP2350 target builds | `PASS` | PR2 head built direct-register, FIFO and binary-FIFO variants in pinned CI run [42948451978](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42948451978). The final-stack resource report below includes PR2 but does not isolate its delta. |
+| Compiler stack-use estimate | `PASS cumulative estimate` | Final stacked report: 9,496 B largest individual frame in `Eskf15::predict`; this is not a whole-call-chain bound. |
+| Heap/dynamic-allocation audit | `NOT_MEASURED` | Target resource reports do not audit runtime allocation paths. |
 | ESKF/acquisition latency and stack high-water | `NOT_MEASURED_ON_DEVICE` | Requires the Pico 2, the original LSM6DS3, and workload instrumentation. |
 
 The fixed covariance reset evaluates trigonometric coefficients for nonzero correction vectors, and the finite-innovation gravity Jacobian normalizes the measured direction; no embedded timing or flash/RAM impact is claimed. The software checks ran under host GCC 11.4.0 in WSL2 and do not establish target deadlines or hardware reliability.
@@ -67,4 +67,20 @@ PR4B is stacked on PR4A `fix/eskf-fifo-timing` at `26315b4732b920356c279137c057f
 | Heap/dynamic allocation audit | Not run | Not run | `NOT_RECORDED` |
 | Hardware latency, queue high-water and stack high-water | Not measured | Not measured | `BLOCKED_HARDWARE` |
 
-Pinned Pico SDK 2.2.0 run [42925544474](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42925544474) built stacked merge commit `a91abe5ec00028688afea554bad7d19be39f4d70` (PR4B head `5072de0bece33f4fafd62f9a1d76a1733d04b20`). Relative to PR4A, the direct/FIFO/binary `.text` deltas are `+1,008/+1,032/+208 B`; `.data` deltas are zero and `.bss` increases by 8 B for each. These are feature-branch cumulative deltas at the PR merge commits. Standard `size` aggregates read-only data into `text`; PR4C will emit section-level `.rodata`, map files and `-fstack-usage` evidence.
+Pinned Pico SDK 2.2.0 run [42925544474](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42925544474) built stacked merge commit `a91abe5ec00028688afea554bad7d19be39f4d70` (PR4B head `5072de0bece33f4fafd62f9a1d76a1733d04b20`). Relative to PR4A, the direct/FIFO/binary `.text` deltas are `+1,008/+1,032/+208 B`; `.data` deltas are zero and `.bss` increases by 8 B for each. These are feature-branch cumulative deltas at the PR merge commits. Standard `size` aggregates read-only data into `text`; the cumulative PR4C report below emits section-level `.rodata`, linker maps and `-fstack-usage` evidence.
+
+## PR 4C resource report method and target evidence
+
+PR4C adds `-fstack-usage` to the firmware target and writes a linker map for each configured build directory. `tools/report_firmware_resources.py` uses `arm-none-eabi-size -A` to report separate `.text`, `.rodata`, `.data`, and `.bss` byte counts, binary image size and linker-map flash capacity/headroom, main-RAM capacity remaining after `.data + .bss`, and the largest individual compiler-reported function frame from the `.su` files. Pinned CI runs it for direct-register, FIFO, and binary-FIFO configurations and uploads each ELF, map, `.su` files, UF2/BIN, and JSON report.
+
+Pinned Pico SDK 2.2.0 run [42957404275](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42957404275) passed host tests and all three ARM build variants at cumulative PR4C source head `efa6a62fbf8929eb85307582d937aa9ff3305308`; artifact [13827657562](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42957404275/artifacts/13827657562) contains the reports and build products. Sizes below are from this artifact, which includes the PR3 startup-alignment correction. Unlike the older `arm-none-eabi-size` aggregate `text/data/bss` rows, this report separates `.text` from `.rodata` and includes initialized `.data`; do not compare the columns directly to the older aggregate values.
+
+| Configuration | `.text` | `.rodata` | `.data` | `.bss` | Flash image | Flash remaining / 4 MiB | Static RAM `.data + .bss` | Main RAM remaining / 512 KiB | Largest per-function frame |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Direct-register | 72,648 B | 3,568 B | 11,324 B | 24,872 B | 88,148 B | 4,106,156 B | 36,196 B | 488,092 B | 9,496 B |
+| FIFO | 75,276 B | 3,592 B | 11,300 B | 24,860 B | 90,780 B | 4,103,524 B | 36,160 B | 488,128 B | 9,496 B |
+| Binary FIFO | 66,348 B | 2,324 B | 11,300 B | 24,864 B | 80,584 B | 4,113,720 B | 36,164 B | 488,124 B | 9,496 B |
+
+The raw `.su` records and corrected JSON identify `void inertial::Eskf15::predict(inertial::Vec3, inertial::Vec3, float)` as the 9,496-byte frame in all three variants. This is 1,936 bytes larger than the prior artifact after the FP64 covariance change. Core 1 is allocated a 16,384-byte stack, so the largest single frame is 58.0% of that allocation and leaves 6,888 bytes before nested calls, interrupts, and other stack use. This per-function estimate is not a whole-call-chain bound. The JSON report's function-name parser initially truncated C++ qualified names; a regression test now covers namespace separators, comma-separated parameters, and Windows drive paths, and the fix is verified in the current pinned CI artifact.
+
+These numbers are compile/link evidence, not measured usable headroom. Individual `.su` frames do not describe maximum whole-call-chain stack depth or dynamic stack effects. The linker map and static sections do not establish physical high-water. Only the dedicated core-1 stack has a sentinel watermark hook; core-0 stack high-water remains unmeasured. The 4,808 µs diagnostic service threshold is a provisional 208 Hz sample interval, not an application deadline. Heap use, hardware timing, and actual stack use remain unmeasured.

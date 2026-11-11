@@ -43,7 +43,7 @@ Important limitations:
 
 ## 4. Binary capture/replay (`binary_log.hpp`, `tools/binary_log_tool.cpp`)
 
-Deterministic fixed-size records are encoded little-endian, with version, capture and publication timestamps, source/timebase/calibration metadata in a 32-byte file header, plus per-record sequence, flags, six physical SI channels, optional temperature and CRC32. Each record is 64 bytes. No ABI padding or host-endian dumping.
+Deterministic fixed-size records are encoded little-endian, with version, capture and publication timestamps, source/timebase/calibration metadata in a 32-byte file header, plus per-record sequence, flags, six physical SI channels, optional temperature and CRC32. Each record is 64 bytes. Version 2 records also carry `dropped_records_before`; the reader remains compatible with version 1 records and headers. No ABI padding or host-endian dumping. Replay writes sequence gaps and explicit dropped-record counts to CSV and totals both in its summary.
 
 On a development PC:
 
@@ -54,13 +54,15 @@ On a development PC:
 /tmp/rp2350_bundle_c_checks/binary_log_tool replay /tmp/example.bin 1234 > /tmp/estimates.csv
 ```
 
-`RP2350_STREAM_BINARY_LOG=ON` optionally sends a binary header and record stream over Pico USB CDC. It is explicitly **debug only**: `putchar_raw` can stall acquisition, the receiving host must attach before reset, and disconnections can corrupt/truncate the stream (CRC/truncation checks fail safely). This is not a production-grade, persistent, lossless logger. Console text diagnostics are disabled while binary mode is selected. For robust unattended collection, provide a nonblocking buffer/transport in a later milestone.
+`RP2350_STREAM_BINARY_LOG=ON` optionally sends a binary header and record stream over Pico USB CDC. It is explicitly **debug only**: `putchar_raw` can stall acquisition. When the host is disconnected, skipped sample records are counted and the logger retries a fresh header after reconnect; the next written record carries the pending count. Pico stdio does not report partial write completion, so a timeout while the connection still appears active cannot be exactly counted. Record CRCs, sequence gaps and strict replay/truncation checks expose corrupt or incomplete captures, but this is not a production-grade, persistent, lossless logger. Console text diagnostics are disabled while binary mode is selected.
+
+In text-diagnostic mode, `main.cpp` reports fixed-memory log2 histogram upper bounds for ESKF process duration, SPI transfer duration, per-edge acquisition service duration, IRQ-to-main dispatch latency, and sample timestamp-to-publication age. It also reports queue occupancy sampled immediately after successful inserts, sample-period service overruns, and a sentinel-derived high-water estimate for the dedicated core-1 stack. A consumer may drain a queue between insertion and occupancy sampling, so reported queue peaks are observed samples rather than atomic exact maxima. Histogram percentiles are bucket upper bounds, not exact quantiles. The 4,808 µs overrun threshold is the nominal 208 Hz sensor service interval only; it is **not a controller deadline**. Core-0 stack watermark and all physical measurements remain unavailable until a board run.
 
 ## Verification
 
 - `tools/run_bundle_a_checks.sh`: existing estimator mathematical/fixture tests.
 - `tools/run_bundle_b_checks.sh`: motion/Monte Carlo comparison.
-- `tools/run_bundle_c_checks.sh`: calibration, matrix validation, temperature gate, aiding frame/time/calibration/provenance checks, mock FIFO configuration/overrun/pattern recovery, log encoding/CRC/corruption/truncation, and 1,200-sample replay.
+- `tools/run_bundle_c_checks.sh`: calibration, matrix validation, temperature gate, aiding frame/time/calibration/provenance checks, mock FIFO configuration/overrun/pattern recovery, version-1/2 log compatibility, loss provenance, CRC/corruption/truncation, and 1,200-sample replay.
 - `BUNDLE_C_SANITIZERS=1 ./tools/run_bundle_c_checks.sh`: ASan/UBSan host checks.
 - GitHub Actions builds both legacy and `RP2350_USE_FIFO=ON` firmware variants using a pinned Pico SDK. No hardware accuracy or timing result is implied.
 

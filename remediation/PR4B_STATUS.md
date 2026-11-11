@@ -2,7 +2,7 @@
 
 ## Gate
 
-**PR4B host, sanitizer and target cross-build gates: PASS. Physical validation: BLOCKED — hardware required.** This branch is stacked on PR4A commit `26315b4732b920356c279137c057f4e88b148632` (`fix/eskf-fifo-timing`). PR2/PR3 statistical acceptance findings remain open and are not hidden by these firmware-boundary changes.
+**PR4B host, sanitizer and target cross-build gates: PASS at branch head `703895e`. Physical validation: BLOCKED — hardware required.** This branch is stacked on updated PR4A head `29c2fc5` (`fix/eskf-fifo-timing`), which includes the PR3 startup-alignment correction and post-fix baseline stress evidence. PR2/PR3 accuracy and full-factor acceptance findings remain open and are not hidden by these firmware-boundary changes.
 
 ## Changes
 
@@ -17,7 +17,8 @@
 - Test-first regressions observed the positive-determinant near-singular calibration acceptance, absent wire-format API, router rejection of a 2 ms aid despite a configured 4 ms age, and absent runtime-health API. Each was corrected and its regression now passes.
 - Bundle A/B/C host suites passed in WSL2 with GCC 11.4.0.
 - Bundle A/B/C sanitizer suites passed; Bundle C additionally covers calibration serialization CRC/version/truncation, missing-temperature behavior, source/frame/timebase/ordering/stale/correlated aids, configured aid age, missing sensor edge, stale cross-core publication, calibration validity, and unobservable yaw/position flags.
-- Pinned Pico SDK 2.2.0 run [42925544474](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42925544474) passed host/sanitizer checks and direct-register, FIFO and binary-FIFO builds on merge commit `a91abe5ec00028688afea554bad7d19be39f4d70` (PR4B head `5072de0bece33f4fafd62f9a1d76a1733d04b20e`). `arm-none-eabi-size` reported direct `78,948/0/25,568 B`, FIFO `81,080/0/25,556 B`, and binary FIFO `71,452/0/25,556 B` for `.text/.data/.bss`. Separate `.rodata`, linker maps and stack-use files remain unrecorded pending PR4C tooling. See [resource budgets](RESOURCE_BUDGETS.md).
+- Pinned Pico SDK 2.2.0 run [42925544474](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42925544474) passed host/sanitizer checks and all target builds on the earlier PR4B snapshot. Updated stack head `a690c343ef374b8727f094370c74250220b667b8` also passed host and target jobs in cumulative run [42948470760](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42948470760). `arm-none-eabi-size` reported direct `78,948/0/25,568 B`, FIFO `81,080/0/25,556 B`, and binary FIFO `71,452/0/25,556 B` for `.text/.data/.bss`. That PR4B run did not emit separate `.rodata`, linker maps or stack-use files; the later cumulative PR4C report records them. See [resource budgets](RESOURCE_BUDGETS.md).
+- The updated PR4B head passed all host/sanitizer and three target jobs in pinned cumulative PR4C run [42957404275](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42957404275). Current cumulative resources are in [resource budgets](RESOURCE_BUDGETS.md); the PR4B-specific historical delta above is retained as evidence for its earlier snapshot.
 - On-device calibration accuracy, aiding transport/provenance and control suitability remain unmeasured without hardware and an application-specific controller contract.
 
 ## Remaining limits

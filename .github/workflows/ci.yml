@@ -70,6 +70,7 @@ jobs:
         run: |
           cmake --build build --parallel 2
           arm-none-eabi-size build/rp2350_lsm6ds3_fusion.elf
+          python3 tools/report_firmware_resources.py --build-dir build --label direct-register
           test -s build/rp2350_lsm6ds3_fusion.uf2
           sha256sum build/rp2350_lsm6ds3_fusion.uf2
       - name: Cross-build experimental FIFO path
@@ -80,10 +81,12 @@ jobs:
           cmake -S . -B build_fifo -G Ninja -DCMAKE_BUILD_TYPE=Release -DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350 -DRP2350_USE_FIFO=ON
           cmake --build build_fifo --parallel 2
           arm-none-eabi-size build_fifo/rp2350_lsm6ds3_fusion.elf
+          python3 tools/report_firmware_resources.py --build-dir build_fifo --label fifo
           test -s build_fifo/rp2350_lsm6ds3_fusion.uf2
           cmake -S . -B build_binary -G Ninja -DCMAKE_BUILD_TYPE=Release -DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350 -DRP2350_STREAM_BINARY_LOG=ON -DRP2350_USE_FIFO=ON
           cmake --build build_binary --parallel 2
           arm-none-eabi-size build_binary/rp2350_lsm6ds3_fusion.elf
+          python3 tools/report_firmware_resources.py --build-dir build_binary --label binary-fifo
           test -s build_binary/rp2350_lsm6ds3_fusion.uf2
       - uses: actions/upload-artifact@v4
         with:
@@ -92,3 +95,18 @@ jobs:
             firmware/build/rp2350_lsm6ds3_fusion.uf2
             firmware/build/rp2350_lsm6ds3_fusion.elf
             firmware/build/rp2350_lsm6ds3_fusion.bin
+            firmware/build/rp2350_lsm6ds3_fusion.map
+            firmware/build/**/*.su
+            firmware/build/resource_report.json
+            firmware/build_fifo/rp2350_lsm6ds3_fusion.uf2
+            firmware/build_fifo/rp2350_lsm6ds3_fusion.elf
+            firmware/build_fifo/rp2350_lsm6ds3_fusion.bin
+            firmware/build_fifo/rp2350_lsm6ds3_fusion.map
+            firmware/build_fifo/**/*.su
+            firmware/build_fifo/resource_report.json
+            firmware/build_binary/rp2350_lsm6ds3_fusion.uf2
+            firmware/build_binary/rp2350_lsm6ds3_fusion.elf
+            firmware/build_binary/rp2350_lsm6ds3_fusion.bin
+            firmware/build_binary/rp2350_lsm6ds3_fusion.map
+            firmware/build_binary/**/*.su
+            firmware/build_binary/resource_report.json
