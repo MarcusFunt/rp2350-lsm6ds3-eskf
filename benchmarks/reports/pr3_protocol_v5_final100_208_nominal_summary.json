@@ -1,0 +1,6108 @@
+{
+  "report_protocol": "pr3_summary_v5",
+  "source_summary": "benchmarks/reports/pr3_protocol_v5_final100_208_nominal_trials.csv",
+  "trial_row_count": 4000,
+  "input_stream_count": 800,
+  "minimum_seed_count_per_factor_group": 100,
+  "distribution_groups": [
+    {
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_conservative",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.1416959031,
+          "median": 0.14098483,
+          "p95": 0.16521487,
+          "max": 0.18922809
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.7655258153,
+          "median": 9.71069813,
+          "p95": 13.41570568,
+          "max": 16.12546539
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.7644012949,
+          "median": 9.70956516,
+          "p95": 13.41505146,
+          "max": 16.1250248
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 1.5413356936,
+          "median": 1.53751218,
+          "p95": 1.59406006,
+          "max": 1.65576398
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 0.2518780136,
+          "median": 0.25187919,
+          "p95": 0.25964415,
+          "max": 0.26770717
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0053497975,
+          "median": 0.00526577,
+          "p95": 0.00743105,
+          "max": 0.00969132
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0023570605,
+          "median": 0.00235669,
+          "p95": 0.00262994,
+          "max": 0.00272562
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.1921866455,
+          "median": 0.19077408,
+          "p95": 0.22985019,
+          "max": 0.29275221
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.2313955123,
+          "median": 0.22381176,
+          "p95": 0.30066589,
+          "max": 0.34264067
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0350140072,
+          "median": 0.03488697,
+          "p95": 0.03612711,
+          "max": 0.0368447
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0180351752,
+          "median": 0.01802631,
+          "p95": 0.01823823,
+          "max": 0.01844827
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 0.1416959031,
+        "median": 0.14098483,
+        "p95": 0.16521487,
+        "max": 0.18922809
+      }
+    },
+    {
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_legacy",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.1413733614,
+          "median": 0.14198469,
+          "p95": 0.16781957,
+          "max": 0.20175751
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.91082762,
+          "median": 9.62778091,
+          "p95": 15.11192799,
+          "max": 17.48761368
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.9096132776,
+          "median": 9.62652206,
+          "p95": 15.1112709,
+          "max": 17.48727226
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 1.6462320166,
+          "median": 1.64299679,
+          "p95": 1.70330179,
+          "max": 1.75729847
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 0.2675105188,
+          "median": 0.26701924,
+          "p95": 0.275702,
+          "max": 0.28277919
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0058204996,
+          "median": 0.00568784,
+          "p95": 0.00832043,
+          "max": 0.01191731
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0039502842,
+          "median": 0.00393663,
+          "p95": 0.00448317,
+          "max": 0.00487437
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.19108805499999998,
+          "median": 0.18974563,
+          "p95": 0.22985019,
+          "max": 0.28324032
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.22756579070000002,
+          "median": 0.22381176,
+          "p95": 0.29870713,
+          "max": 0.34661514
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0368336373,
+          "median": 0.03661867,
+          "p95": 0.038622,
+          "max": 0.03995591
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.018042700000000002,
+          "median": 0.01802172,
+          "p95": 0.01829585,
+          "max": 0.01860882
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 0.1413733614,
+        "median": 0.14198469,
+        "p95": 0.16781957,
+        "max": 0.20175751
+      }
+    },
+    {
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_confirmed_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 5.4440455626999995,
+          "median": 5.44249868,
+          "p95": 5.52120495,
+          "max": 5.55765533
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 11.2419323732,
+          "median": 11.24296474,
+          "p95": 11.32573986,
+          "max": 11.40967369
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.682290392,
+          "median": 9.68231773,
+          "p95": 9.7600584,
+          "max": 9.85441017
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 24.797470264799998,
+          "median": 24.7972374,
+          "p95": 25.24637413,
+          "max": 25.4306736
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 5.6288409327,
+          "median": 5.62820292,
+          "p95": 5.71911907,
+          "max": 5.74677277
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0237497412,
+          "median": 0.0237754,
+          "p95": 0.02443799,
+          "max": 0.02474403
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.5209097477,
+          "median": 8.52670765,
+          "p95": 8.64822197,
+          "max": 8.71591282
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.919941463799999,
+          "median": 8.92374325,
+          "p95": 9.04808903,
+          "max": 9.12552452
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0322988418,
+          "median": 0.03227021,
+          "p95": 0.03282039,
+          "max": 0.03311764
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0206127379,
+          "median": 0.02058473,
+          "p95": 0.02080693,
+          "max": 0.02091523
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 5.4440455626999995,
+        "median": 5.44249868,
+        "p95": 5.52120495,
+        "max": 5.55765533
+      }
+    },
+    {
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "mahony",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.4349340345,
+          "median": 0.43532887,
+          "p95": 0.44198945,
+          "max": 0.44725764
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.2013899226,
+          "median": 10.20017719,
+          "p95": 10.29335213,
+          "max": 10.37885571
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.191540975,
+          "median": 10.19018555,
+          "p95": 10.28321648,
+          "max": 10.36898232
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.5339251103,
+          "median": 0.53302497,
+          "p95": 0.54965222,
+          "max": 0.56266993
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.5454103602,
+          "median": 0.54428607,
+          "p95": 0.56232208,
+          "max": 0.57607287
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0186011406,
+          "median": 0.01857679,
+          "p95": 0.01879087,
+          "max": 0.01889086
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 0.4349340345,
+        "median": 0.43532887,
+        "p95": 0.44198945,
+        "max": 0.44725764
+      }
+    },
+    {
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "gyro_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 5.6427747442,
+          "median": 5.64601326,
+          "p95": 5.72367239,
+          "max": 5.7673111
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 11.645487232099999,
+          "median": 11.64795971,
+          "p95": 11.72841263,
+          "max": 11.81423855
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.0242991636,
+          "median": 10.02220821,
+          "p95": 10.11252022,
+          "max": 10.20084763
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.744225616,
+          "median": 8.73988152,
+          "p95": 8.86308384,
+          "max": 8.93652534
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.1439125252,
+          "median": 9.13426208,
+          "p95": 9.26531029,
+          "max": 9.34670353
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0206127379,
+          "median": 0.02058473,
+          "p95": 0.02080693,
+          "max": 0.02091523
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 5.6427747442,
+        "median": 5.64601326,
+        "p95": 5.72367239,
+        "max": 5.7673111
+      }
+    },
+    {
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_conservative",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.1439652586,
+          "median": 0.14325304,
+          "p95": 0.16826327,
+          "max": 0.18622962
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.8883300091,
+          "median": 9.8993597,
+          "p95": 14.26538277,
+          "max": 15.72407818
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.8871795199,
+          "median": 9.89849472,
+          "p95": 14.26496601,
+          "max": 15.72346878
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 1.5421207609,
+          "median": 1.53876019,
+          "p95": 1.60280597,
+          "max": 1.61797059
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 0.2517469155,
+          "median": 0.25139377,
+          "p95": 0.26117125,
+          "max": 0.26208031
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0055366192000000005,
+          "median": 0.00546147,
+          "p95": 0.00738619,
+          "max": 0.00912821
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0023545715,
+          "median": 0.00235204,
+          "p95": 0.0026423,
+          "max": 0.00280188
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.1908727979,
+          "median": 0.18974563,
+          "p95": 0.23984832,
+          "max": 0.2741124
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.2312464508,
+          "median": 0.22728194,
+          "p95": 0.29408595,
+          "max": 0.32685834
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0355516779,
+          "median": 0.0355832,
+          "p95": 0.03656879,
+          "max": 0.03728626
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0180417978,
+          "median": 0.01802166,
+          "p95": 0.01824537,
+          "max": 0.01836597
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 0.1439652586,
+        "median": 0.14325304,
+        "p95": 0.16826327,
+        "max": 0.18622962
+      }
+    },
+    {
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_legacy",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.1428306634,
+          "median": 0.14131653,
+          "p95": 0.17518984,
+          "max": 0.18227631
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.0302168181,
+          "median": 10.09645557,
+          "p95": 15.41141033,
+          "max": 18.28268433
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.028889813,
+          "median": 10.0958147,
+          "p95": 15.41070747,
+          "max": 18.28233147
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 1.6477061994,
+          "median": 1.64385509,
+          "p95": 1.71420872,
+          "max": 1.74017274
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 0.2675061253,
+          "median": 0.26677999,
+          "p95": 0.27611592,
+          "max": 0.28023726
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.005943217200000001,
+          "median": 0.00572887,
+          "p95": 0.00887525,
+          "max": 0.00949029
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0039512728,
+          "median": 0.00395857,
+          "p95": 0.00444359,
+          "max": 0.00467719
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.1896622073,
+          "median": 0.18767186,
+          "p95": 0.23656255,
+          "max": 0.26244262
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.2237312264,
+          "median": 0.2229358,
+          "p95": 0.28116018,
+          "max": 0.32385129
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0374088863,
+          "median": 0.03732256,
+          "p95": 0.03968113,
+          "max": 0.04032863
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0180510396,
+          "median": 0.01802654,
+          "p95": 0.01831268,
+          "max": 0.01837101
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 0.1428306634,
+        "median": 0.14131653,
+        "p95": 0.17518984,
+        "max": 0.18227631
+      }
+    },
+    {
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_confirmed_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 5.3388711931,
+          "median": 5.3414669,
+          "p95": 5.41603613,
+          "max": 5.44233418
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 11.211784610899999,
+          "median": 11.21127605,
+          "p95": 11.27771282,
+          "max": 11.3417263
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.7252815631,
+          "median": 9.71963215,
+          "p95": 9.78706932,
+          "max": 9.85171318
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 24.423858947499998,
+          "median": 24.45597839,
+          "p95": 24.79496956,
+          "max": 25.05072594
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 5.5223591763,
+          "median": 5.52629423,
+          "p95": 5.60140944,
+          "max": 5.63880301
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.023499387500000003,
+          "median": 0.02353215,
+          "p95": 0.02417759,
+          "max": 0.02443857
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.2882362362,
+          "median": 8.28946304,
+          "p95": 8.41078472,
+          "max": 8.46689129
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.655366001400001,
+          "median": 8.65786934,
+          "p95": 8.80285645,
+          "max": 8.83609009
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0322764104,
+          "median": 0.03228536,
+          "p95": 0.0328256,
+          "max": 0.03316524
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0206013125,
+          "median": 0.02059219,
+          "p95": 0.02080128,
+          "max": 0.02085878
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 5.3388711931,
+        "median": 5.3414669,
+        "p95": 5.41603613,
+        "max": 5.44233418
+      }
+    },
+    {
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "mahony",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.4335165559,
+          "median": 0.43299574,
+          "p95": 0.44048044,
+          "max": 0.44408384
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.2042926982,
+          "median": 10.20020103,
+          "p95": 10.27398586,
+          "max": 10.33594131
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.1945221427,
+          "median": 10.19019413,
+          "p95": 10.26428413,
+          "max": 10.32615471
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.5327742236999999,
+          "median": 0.53192252,
+          "p95": 0.54679686,
+          "max": 0.55107439
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.5442573500000001,
+          "median": 0.54464543,
+          "p95": 0.56057948,
+          "max": 0.56820679
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0186092351,
+          "median": 0.01859845,
+          "p95": 0.01880437,
+          "max": 0.01889195
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 0.4335165559,
+        "median": 0.43299574,
+        "p95": 0.44048044,
+        "max": 0.44408384
+      }
+    },
+    {
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "gyro_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 5.5502723403,
+          "median": 5.55087996,
+          "p95": 5.62950706,
+          "max": 5.65960121
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 11.6233486275,
+          "median": 11.62090874,
+          "p95": 11.69447899,
+          "max": 11.75081635
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.068404988800001,
+          "median": 10.06490803,
+          "p95": 10.13754177,
+          "max": 10.19856167
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.5293171597,
+          "median": 8.52935696,
+          "p95": 8.66489983,
+          "max": 8.69160652
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.8973686403,
+          "median": 8.90013409,
+          "p95": 9.04028893,
+          "max": 9.07283306
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0206013125,
+          "median": 0.02059219,
+          "p95": 0.02080128,
+          "max": 0.02085878
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 5.5502723403,
+        "median": 5.55087996,
+        "p95": 5.62950706,
+        "max": 5.65960121
+      }
+    },
+    {
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_conservative",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 1.0007733313,
+          "median": 1.00607455,
+          "p95": 1.43436384,
+          "max": 1.69873857
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.6734010456,
+          "median": 9.66854382,
+          "p95": 11.75818825,
+          "max": 13.55386162
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.612277326700001,
+          "median": 9.59250259,
+          "p95": 11.66682339,
+          "max": 13.477911
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 6.2241005203999995,
+          "median": 5.83584404,
+          "p95": 10.60180759,
+          "max": 14.45321178
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 1.1621271905000001,
+          "median": 1.12535024,
+          "p95": 1.73510432,
+          "max": 2.1663208
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0079163113,
+          "median": 0.00737965,
+          "p95": 0.0136745,
+          "max": 0.01928267
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0024608317,
+          "median": 0.00250072,
+          "p95": 0.00315235,
+          "max": 0.00343757
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 1.8120505699,
+          "median": 1.83653629,
+          "p95": 2.57686234,
+          "max": 3.09831977
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 1.9357321495,
+          "median": 1.96831536,
+          "p95": 2.74188256,
+          "max": 3.30748439
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0333574364,
+          "median": 0.03339377,
+          "p95": 0.03393264,
+          "max": 0.0341481
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0179897382,
+          "median": 0.01800642,
+          "p95": 0.01844177,
+          "max": 0.01856978
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 1.0007733313,
+        "median": 1.00607455,
+        "p95": 1.43436384,
+        "max": 1.69873857
+      }
+    },
+    {
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_legacy",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 11.110265235899998,
+          "median": 11.16965103,
+          "p95": 11.48681355,
+          "max": 11.66906166
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 85.9967179111,
+          "median": 87.28593445,
+          "p95": 88.13394928,
+          "max": 88.92224121
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 85.504257507,
+          "median": 86.79373932,
+          "p95": 87.60725403,
+          "max": 88.39574432
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 86.8274860379,
+          "median": 86.08692932,
+          "p95": 92.26004028,
+          "max": 111.68454742
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 14.0996912766,
+          "median": 14.00179958,
+          "p95": 14.93176937,
+          "max": 17.53276062
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 109.93719457339999,
+          "median": 111.27261897,
+          "p95": 133.68531385,
+          "max": 140.41772626
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 0.033299,
+          "median": 0.033299,
+          "p95": 0.033299,
+          "max": 0.033299
+        },
+        "nis_mean": {
+          "finite_trial_count": 100,
+          "mean": 1.067139231,
+          "median": 1.06811491,
+          "p95": 1.10813809,
+          "max": 1.48796783
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 12.564582767300001,
+          "median": 12.64566803,
+          "p95": 12.82424545,
+          "max": 12.86296082
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 12.7529605866,
+          "median": 12.83711624,
+          "p95": 12.99942303,
+          "max": 13.05125999
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 1.9635123219,
+          "median": 1.96036518,
+          "p95": 2.02471113,
+          "max": 2.20891595
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.2082182426,
+          "median": 0.21082132,
+          "p95": 0.22725959,
+          "max": 0.23348385
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 11.110265235899998,
+        "median": 11.16965103,
+        "p95": 11.48681355,
+        "max": 11.66906166
+      }
+    },
+    {
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_confirmed_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 5.4419512222,
+          "median": 5.44269466,
+          "p95": 5.51137686,
+          "max": 5.59685183
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 11.2327753164,
+          "median": 11.23343563,
+          "p95": 11.30734062,
+          "max": 11.36637783
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.6730923269,
+          "median": 9.67298698,
+          "p95": 9.7505703,
+          "max": 9.79942799
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 20.1262945179,
+          "median": 20.14780045,
+          "p95": 20.5635643,
+          "max": 20.70160294
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 4.6978950361,
+          "median": 4.70669794,
+          "p95": 4.78024483,
+          "max": 4.83113575
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0237406972,
+          "median": 0.02381466,
+          "p95": 0.02439094,
+          "max": 0.02507526
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.5150672721,
+          "median": 8.51744366,
+          "p95": 8.64072418,
+          "max": 8.76192474
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.9128816601,
+          "median": 8.91294956,
+          "p95": 9.03102684,
+          "max": 9.17525959
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0322769817,
+          "median": 0.03225704,
+          "p95": 0.03276997,
+          "max": 0.03297284
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.020595534999999998,
+          "median": 0.02058225,
+          "p95": 0.02079285,
+          "max": 0.02090316
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 5.4419512222,
+        "median": 5.44269466,
+        "p95": 5.51137686,
+        "max": 5.59685183
+      }
+    },
+    {
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "mahony",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.3383275126,
+          "median": 8.33896637,
+          "p95": 8.34525204,
+          "max": 8.34834099
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 13.4900084684,
+          "median": 13.49308014,
+          "p95": 13.55570412,
+          "max": 13.59768677
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.6051399423,
+          "median": 10.60458279,
+          "p95": 10.68755245,
+          "max": 10.73626328
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.362485704200001,
+          "median": 10.36146832,
+          "p95": 10.37736797,
+          "max": 10.38453197
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.3743749903,
+          "median": 10.37416458,
+          "p95": 10.39070606,
+          "max": 10.40467167
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0189709155,
+          "median": 0.01896341,
+          "p95": 0.01913106,
+          "max": 0.01926694
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 8.3383275126,
+        "median": 8.33896637,
+        "p95": 8.34525204,
+        "max": 8.34834099
+      }
+    },
+    {
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "gyro_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 5.643225860799999,
+          "median": 5.64532709,
+          "p95": 5.7211647,
+          "max": 5.79150629
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 11.637106628900002,
+          "median": 11.63508129,
+          "p95": 11.71725845,
+          "max": 11.77767181
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.0144460488,
+          "median": 10.01651573,
+          "p95": 10.09924126,
+          "max": 10.14731693
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.741218767,
+          "median": 8.73979187,
+          "p95": 8.86565495,
+          "max": 8.98113251
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.1396813014,
+          "median": 9.14428234,
+          "p95": 9.2777319,
+          "max": 9.39506912
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.020595534999999998,
+          "median": 0.02058225,
+          "p95": 0.02079285,
+          "max": 0.02090316
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 5.643225860799999,
+        "median": 5.64532709,
+        "p95": 5.7211647,
+        "max": 5.79150629
+      }
+    },
+    {
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_conservative",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.6804466082,
+          "median": 3.68273377,
+          "p95": 3.91815376,
+          "max": 4.02142096
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.0705271338,
+          "median": 9.0717411,
+          "p95": 9.88814735,
+          "max": 10.40224934
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.595459118,
+          "median": 9.61357403,
+          "p95": 10.44388103,
+          "max": 11.0799427
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 7.1593831012999996,
+          "median": 7.09815693,
+          "p95": 9.10881996,
+          "max": 10.20030785
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 2.4363401463,
+          "median": 2.44438696,
+          "p95": 2.80232358,
+          "max": 3.03484464
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0400830124,
+          "median": 0.039121,
+          "p95": 0.04617109,
+          "max": 0.05436548
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 6.9507618331000005,
+          "median": 6.94003296,
+          "p95": 7.27766657,
+          "max": 7.41312122
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 7.399439215999999,
+          "median": 7.3710494,
+          "p95": 7.70558405,
+          "max": 7.83097792
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0328324054,
+          "median": 0.03284303,
+          "p95": 0.03340945,
+          "max": 0.03367038
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0183418557,
+          "median": 0.01829063,
+          "p95": 0.01872689,
+          "max": 0.01921817
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 3.6804466082,
+        "median": 3.68273377,
+        "p95": 3.91815376,
+        "max": 4.02142096
+      }
+    },
+    {
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_legacy",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.7598679586999997,
+          "median": 3.74815822,
+          "p95": 4.05890226,
+          "max": 4.20203972
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.0844285822,
+          "median": 9.06660271,
+          "p95": 10.47346306,
+          "max": 11.44773388
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.6530985161,
+          "median": 9.62684727,
+          "p95": 11.18570614,
+          "max": 12.09179306
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 8.0474436329,
+          "median": 7.99550581,
+          "p95": 10.58920574,
+          "max": 11.71172905
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 2.6118036381,
+          "median": 2.59362173,
+          "p95": 3.04606438,
+          "max": 3.3374207
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0450789164,
+          "median": 0.04398114,
+          "p95": 0.05389287,
+          "max": 0.06341503
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 6.9662767554,
+          "median": 6.93081331,
+          "p95": 7.35268545,
+          "max": 7.54940796
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 7.388405109000001,
+          "median": 7.36939812,
+          "p95": 7.7561059,
+          "max": 7.92176628
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0329649876,
+          "median": 0.03295695,
+          "p95": 0.03355565,
+          "max": 0.03398246
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.018245990700000003,
+          "median": 0.01820097,
+          "p95": 0.01861625,
+          "max": 0.01904425
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 3.7598679586999997,
+        "median": 3.74815822,
+        "p95": 4.05890226,
+        "max": 4.20203972
+      }
+    },
+    {
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_confirmed_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.2001184963000004,
+          "median": 3.19612527,
+          "p95": 3.25043678,
+          "max": 3.29773498
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.0455309964,
+          "median": 9.04772758,
+          "p95": 9.11322117,
+          "max": 9.15646648
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.9795615387,
+          "median": 8.97771072,
+          "p95": 9.05873585,
+          "max": 9.12077999
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 7.0082026862,
+          "median": 6.99422789,
+          "p95": 7.44976091,
+          "max": 7.68284464
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 1.1838859106,
+          "median": 1.18539762,
+          "p95": 1.19938827,
+          "max": 1.20606387
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0234003518,
+          "median": 0.02337051,
+          "p95": 0.02417114,
+          "max": 0.02493044
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 6.6363836336999995,
+          "median": 6.62844706,
+          "p95": 6.76329422,
+          "max": 6.84051371
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 7.2738972995,
+          "median": 7.26430988,
+          "p95": 7.40708351,
+          "max": 7.48511362
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0323791908,
+          "median": 0.03241087,
+          "p95": 0.03275992,
+          "max": 0.03348574
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.020575561699999998,
+          "median": 0.02058318,
+          "p95": 0.02075909,
+          "max": 0.0208585
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 3.2001184963000004,
+        "median": 3.19612527,
+        "p95": 3.25043678,
+        "max": 3.29773498
+      }
+    },
+    {
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "mahony",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 2.9640096827999995,
+          "median": 2.96350455,
+          "p95": 2.97014403,
+          "max": 2.97245884
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.9924686522,
+          "median": 8.99317551,
+          "p95": 9.06462955,
+          "max": 9.09274483
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.0185489843,
+          "median": 10.01791954,
+          "p95": 10.09572792,
+          "max": 10.12533569
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 4.0140875585,
+          "median": 4.01415014,
+          "p95": 4.02841902,
+          "max": 4.03652906
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 4.0845689103,
+          "median": 4.08283854,
+          "p95": 4.10751438,
+          "max": 4.12696838
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0145830791,
+          "median": 0.01457563,
+          "p95": 0.01475171,
+          "max": 0.01484699
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 2.9640096827999995,
+        "median": 2.96350455,
+        "p95": 2.97014403,
+        "max": 2.97245884
+      }
+    },
+    {
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "gyro_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.1109064748999997,
+          "median": 3.10898042,
+          "p95": 3.15788841,
+          "max": 3.20613766
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.3634512615,
+          "median": 9.36326027,
+          "p95": 9.43477154,
+          "max": 9.47372818
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.2643538479,
+          "median": 9.26251316,
+          "p95": 9.34164715,
+          "max": 9.41486931
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 6.3930471187,
+          "median": 6.38094711,
+          "p95": 6.51562691,
+          "max": 6.60841656
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 7.030267262500001,
+          "median": 7.01889467,
+          "p95": 7.16319323,
+          "max": 7.25290346
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.020575561699999998,
+          "median": 0.02058318,
+          "p95": 0.02075909,
+          "max": 0.0208585
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 3.1109064748999997,
+        "median": 3.10898042,
+        "p95": 3.15788841,
+        "max": 3.20613766
+      }
+    },
+    {
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_conservative",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.970842943,
+          "median": 0.91980416,
+          "p95": 1.2192812,
+          "max": 1.31366658
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.6091237167,
+          "median": 9.60613346,
+          "p95": 10.57034683,
+          "max": 11.13539982
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.6225531723,
+          "median": 9.623312,
+          "p95": 10.59550285,
+          "max": 11.1871233
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 5.0685860753,
+          "median": 5.11617851,
+          "p95": 6.99915075,
+          "max": 7.66995239
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 0.9347886773,
+          "median": 0.91591525,
+          "p95": 1.3156321,
+          "max": 1.49293447
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0096845817,
+          "median": 0.0093138,
+          "p95": 0.01284903,
+          "max": 0.01549171
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 1.5059847226,
+          "median": 1.47790229,
+          "p95": 1.91468847,
+          "max": 2.27744007
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 1.588722715,
+          "median": 1.5466162,
+          "p95": 2.05395126,
+          "max": 2.41864657
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0327401305,
+          "median": 0.03273567,
+          "p95": 0.0333288,
+          "max": 0.03378047
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0182900175,
+          "median": 0.01827211,
+          "p95": 0.01859703,
+          "max": 0.01878442
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 0.970842943,
+        "median": 0.91980416,
+        "p95": 1.2192812,
+        "max": 1.31366658
+      }
+    },
+    {
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_legacy",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 1.1006502108,
+          "median": 1.05482888,
+          "p95": 1.53122008,
+          "max": 1.652017
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.5877073239,
+          "median": 9.55559254,
+          "p95": 11.23034763,
+          "max": 12.2756052
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.6044912101,
+          "median": 9.56047249,
+          "p95": 11.27577972,
+          "max": 12.30605125
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 5.0288422265,
+          "median": 5.0651741,
+          "p95": 7.29119539,
+          "max": 7.89566088
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 1.0483212899999999,
+          "median": 1.0110271,
+          "p95": 1.52249193,
+          "max": 1.65519273
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0127005566,
+          "median": 0.01182293,
+          "p95": 0.01750112,
+          "max": 0.0196693
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 1.6502527129,
+          "median": 1.55771112,
+          "p95": 2.25498533,
+          "max": 2.93618321
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 1.7576806332000001,
+          "median": 1.64960051,
+          "p95": 2.40330315,
+          "max": 3.07434344
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.032883837900000004,
+          "median": 0.03283926,
+          "p95": 0.0335619,
+          "max": 0.03386587
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0181957429,
+          "median": 0.01819394,
+          "p95": 0.01844662,
+          "max": 0.01871004
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 1.1006502108,
+        "median": 1.05482888,
+        "p95": 1.53122008,
+        "max": 1.652017
+      }
+    },
+    {
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_confirmed_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 2.7235260415,
+          "median": 2.72380567,
+          "p95": 2.79788518,
+          "max": 2.81521082
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.2857123948,
+          "median": 10.28539944,
+          "p95": 10.36124611,
+          "max": 10.37456989
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.823227682199999,
+          "median": 9.82245064,
+          "p95": 9.9037714,
+          "max": 9.917243
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 18.4967760853,
+          "median": 18.4901104,
+          "p95": 19.01341057,
+          "max": 19.19961166
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 3.3719424912,
+          "median": 3.37493753,
+          "p95": 3.46337724,
+          "max": 3.50840735
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0147397205,
+          "median": 0.01470693,
+          "p95": 0.01539708,
+          "max": 0.01567337
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.2321785878000004,
+          "median": 3.23216295,
+          "p95": 3.3038125,
+          "max": 3.33800554
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.2551755994000002,
+          "median": 3.25112677,
+          "p95": 3.32684302,
+          "max": 3.36848283
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0322741354,
+          "median": 0.03225375,
+          "p95": 0.03269377,
+          "max": 0.03317291
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0205983519,
+          "median": 0.02059018,
+          "p95": 0.0207934,
+          "max": 0.02084535
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 2.7235260415,
+        "median": 2.72380567,
+        "p95": 2.79788518,
+        "max": 2.81521082
+      }
+    },
+    {
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "mahony",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 1.4181438558,
+          "median": 1.41738927,
+          "p95": 1.42472112,
+          "max": 1.42577302
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.2088847448,
+          "median": 10.21050835,
+          "p95": 10.28864765,
+          "max": 10.31297684
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.2142579559,
+          "median": 10.21587753,
+          "p95": 10.2942543,
+          "max": 10.32030964
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 1.8397381400000001,
+          "median": 1.83909202,
+          "p95": 1.85371888,
+          "max": 1.86014783
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 1.9076942338,
+          "median": 1.90854585,
+          "p95": 1.93127751,
+          "max": 1.93674195
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0192165114,
+          "median": 0.01920115,
+          "p95": 0.01941151,
+          "max": 0.0194701
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 1.4181438558,
+        "median": 1.41738927,
+        "p95": 1.42472112,
+        "max": 1.42577302
+      }
+    },
+    {
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "gyro_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 2.9195878963,
+          "median": 2.91735768,
+          "p95": 2.99233079,
+          "max": 3.00968695
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.6830466272,
+          "median": 10.68547916,
+          "p95": 10.75328255,
+          "max": 10.78021717
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.1654216101,
+          "median": 10.16576958,
+          "p95": 10.24881554,
+          "max": 10.26734161
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.4537009495,
+          "median": 3.45473742,
+          "p95": 3.52164412,
+          "max": 3.5419898
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.476189256,
+          "median": 3.47327638,
+          "p95": 3.54187918,
+          "max": 3.57138658
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0205983519,
+          "median": 0.02059018,
+          "p95": 0.0207934,
+          "max": 0.02084535
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 2.9195878963,
+        "median": 2.91735768,
+        "p95": 2.99233079,
+        "max": 3.00968695
+      }
+    },
+    {
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_conservative",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.7151074312,
+          "median": 3.71182013,
+          "p95": 3.97618461,
+          "max": 4.12650347
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.9812236209,
+          "median": 8.98745918,
+          "p95": 9.82467365,
+          "max": 10.65420532
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.518488526,
+          "median": 9.53945732,
+          "p95": 10.46871662,
+          "max": 11.28304672
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 7.4524135424999995,
+          "median": 7.46584558,
+          "p95": 9.47020435,
+          "max": 10.30258465
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 2.5014665739,
+          "median": 2.49457002,
+          "p95": 2.89286971,
+          "max": 3.09187579
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0402757656,
+          "median": 0.03977147,
+          "p95": 0.04558854,
+          "max": 0.04864165
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 6.9701837446,
+          "median": 6.96398783,
+          "p95": 7.28959942,
+          "max": 7.37809992
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 7.4033035566,
+          "median": 7.3969574,
+          "p95": 7.70986271,
+          "max": 7.78056288
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.032770959999999995,
+          "median": 0.03281505,
+          "p95": 0.03331964,
+          "max": 0.03349505
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0182891911,
+          "median": 0.01826036,
+          "p95": 0.018676,
+          "max": 0.01909605
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 3.7151074312,
+        "median": 3.71182013,
+        "p95": 3.97618461,
+        "max": 4.12650347
+      }
+    },
+    {
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_legacy",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.7923856255999997,
+          "median": 3.78858328,
+          "p95": 4.10990858,
+          "max": 4.21350431
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.9602309415,
+          "median": 8.96615028,
+          "p95": 10.50888634,
+          "max": 11.88574982
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.5371624372,
+          "median": 9.50926685,
+          "p95": 11.21907139,
+          "max": 12.56638145
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 8.3679710528,
+          "median": 8.53390408,
+          "p95": 10.90566444,
+          "max": 11.81885242
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 2.6784856432999997,
+          "median": 2.67024922,
+          "p95": 3.19042706,
+          "max": 3.37542534
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0452034622,
+          "median": 0.04468408,
+          "p95": 0.05333766,
+          "max": 0.05668223
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 6.9776487975,
+          "median": 6.96773243,
+          "p95": 7.33729887,
+          "max": 7.47391033
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 7.3844876098,
+          "median": 7.3757596,
+          "p95": 7.70685816,
+          "max": 7.79674101
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0329013217,
+          "median": 0.03295658,
+          "p95": 0.03348453,
+          "max": 0.03361953
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0182061422,
+          "median": 0.01817039,
+          "p95": 0.01860296,
+          "max": 0.01889876
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 3.7923856255999997,
+        "median": 3.78858328,
+        "p95": 4.10990858,
+        "max": 4.21350431
+      }
+    },
+    {
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_confirmed_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.196640749,
+          "median": 3.19583011,
+          "p95": 3.24784017,
+          "max": 3.27438879
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.045254573800001,
+          "median": 9.04624271,
+          "p95": 9.12566376,
+          "max": 9.17092991
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.981136751400001,
+          "median": 8.97769928,
+          "p95": 9.08346176,
+          "max": 9.13414955
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 6.996212668099999,
+          "median": 6.96423388,
+          "p95": 7.43325233,
+          "max": 7.80397224
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 1.1826525493,
+          "median": 1.18184125,
+          "p95": 1.19663978,
+          "max": 1.2090286
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0233221716,
+          "median": 0.02331218,
+          "p95": 0.02403693,
+          "max": 0.02437791
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 6.6323155022,
+          "median": 6.63388872,
+          "p95": 6.73155355,
+          "max": 6.8080368
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 7.2671130324,
+          "median": 7.27243423,
+          "p95": 7.36971855,
+          "max": 7.44502735
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0323440884,
+          "median": 0.03232614,
+          "p95": 0.03289408,
+          "max": 0.03301643
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0205762205,
+          "median": 0.02056923,
+          "p95": 0.02075451,
+          "max": 0.02099907
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 3.196640749,
+        "median": 3.19583011,
+        "p95": 3.24784017,
+        "max": 3.27438879
+      }
+    },
+    {
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "mahony",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 2.9633643050000003,
+          "median": 2.96314526,
+          "p95": 2.96897173,
+          "max": 2.97367954
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.9939749245,
+          "median": 8.99692917,
+          "p95": 9.07248783,
+          "max": 9.10989571
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.0200828742,
+          "median": 10.02153206,
+          "p95": 10.10353661,
+          "max": 10.14050007
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 4.0117687918,
+          "median": 4.0104413,
+          "p95": 4.03050852,
+          "max": 4.03987503
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 4.0828203583,
+          "median": 4.08274221,
+          "p95": 4.10150242,
+          "max": 4.11251736
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0145812326,
+          "median": 0.01458129,
+          "p95": 0.01473382,
+          "max": 0.01495701
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 2.9633643050000003,
+        "median": 2.96314526,
+        "p95": 2.96897173,
+        "max": 2.97367954
+      }
+    },
+    {
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "gyro_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.1065239402,
+          "median": 3.10786247,
+          "p95": 3.15267777,
+          "max": 3.17721415
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.3638047786,
+          "median": 9.36447811,
+          "p95": 9.44065571,
+          "max": 9.49277592
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.2660956284,
+          "median": 9.26470184,
+          "p95": 9.36787224,
+          "max": 9.41653252
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 6.3864495275,
+          "median": 6.38923883,
+          "p95": 6.48800135,
+          "max": 6.55364847
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 7.0209920311,
+          "median": 7.01864338,
+          "p95": 7.12494087,
+          "max": 7.19044638
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0205762205,
+          "median": 0.02056923,
+          "p95": 0.02075451,
+          "max": 0.02099907
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 3.1065239402,
+        "median": 3.10786247,
+        "p95": 3.15267777,
+        "max": 3.17721415
+      }
+    },
+    {
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_conservative",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.3207052232,
+          "median": 0.31785944,
+          "p95": 0.45844215,
+          "max": 0.55499744
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.1315766383,
+          "median": 10.2565546,
+          "p95": 12.57005596,
+          "max": 13.66600323
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.1258513645,
+          "median": 10.25363445,
+          "p95": 12.56212807,
+          "max": 13.65977383
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 1.5112496318000002,
+          "median": 1.50503469,
+          "p95": 1.60756838,
+          "max": 1.65189803
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 0.27244207719999997,
+          "median": 0.26928943,
+          "p95": 0.29736266,
+          "max": 0.30877617
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0062692443,
+          "median": 0.00604707,
+          "p95": 0.01078026,
+          "max": 0.01221989
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0024827709,
+          "median": 0.00246202,
+          "p95": 0.00290293,
+          "max": 0.00313971
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.6883964456,
+          "median": 0.66705304,
+          "p95": 1.02469301,
+          "max": 1.30925477
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.7802175135999999,
+          "median": 0.7613045,
+          "p95": 1.17469859,
+          "max": 1.47299492
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0272922293,
+          "median": 0.02694548,
+          "p95": 0.03019153,
+          "max": 0.03133649
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0179736229,
+          "median": 0.01799662,
+          "p95": 0.01821204,
+          "max": 0.01826148
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 0.3207052232,
+        "median": 0.31785944,
+        "p95": 0.45844215,
+        "max": 0.55499744
+      }
+    },
+    {
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_legacy",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.2719954403,
+          "median": 0.2628727,
+          "p95": 0.47406197,
+          "max": 0.54009742
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.220112324399999,
+          "median": 10.2254343,
+          "p95": 13.19135475,
+          "max": 15.80912113
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.2156805064,
+          "median": 10.22361851,
+          "p95": 13.18973351,
+          "max": 15.80810547
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 1.5489815055,
+          "median": 1.54249358,
+          "p95": 1.63433516,
+          "max": 1.67454505
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 0.2736329905,
+          "median": 0.27057576,
+          "p95": 0.30073592,
+          "max": 0.30738524
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0069713765,
+          "median": 0.00622201,
+          "p95": 0.01302346,
+          "max": 0.01650496
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0040694558,
+          "median": 0.0040766,
+          "p95": 0.00470021,
+          "max": 0.00532931
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.5558297718,
+          "median": 0.55178404,
+          "p95": 1.06035602,
+          "max": 1.26470375
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 0.6280324914,
+          "median": 0.61770642,
+          "p95": 1.19844639,
+          "max": 1.41637433
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.028304695999999997,
+          "median": 0.02777916,
+          "p95": 0.03146824,
+          "max": 0.03368904
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0179766931,
+          "median": 0.01800683,
+          "p95": 0.01827052,
+          "max": 0.01841082
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 0.2719954403,
+        "median": 0.2628727,
+        "p95": 0.47406197,
+        "max": 0.54009742
+      }
+    },
+    {
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_confirmed_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 4.997102885,
+          "median": 4.9974227,
+          "p95": 5.07943058,
+          "max": 5.10565376
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 11.0279393579,
+          "median": 11.02426243,
+          "p95": 11.10055351,
+          "max": 11.14126587
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.7449774935,
+          "median": 9.7480917,
+          "p95": 9.8085041,
+          "max": 9.86803913
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 22.5808214765,
+          "median": 22.54901123,
+          "p95": 23.04774284,
+          "max": 23.21747398
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 5.1101366997,
+          "median": 5.10670614,
+          "p95": 5.19659472,
+          "max": 5.24337959
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.022980478500000002,
+          "median": 0.0229595,
+          "p95": 0.02367137,
+          "max": 0.02403245
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 7.8852039672,
+          "median": 7.88819361,
+          "p95": 8.00464344,
+          "max": 8.06659794
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.2757540514,
+          "median": 8.27592659,
+          "p95": 8.41169453,
+          "max": 8.47484303
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.032339493899999995,
+          "median": 0.03234317,
+          "p95": 0.03289792,
+          "max": 0.0331921
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0205890334,
+          "median": 0.02057385,
+          "p95": 0.02080684,
+          "max": 0.02087017
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 4.997102885,
+        "median": 4.9974227,
+        "p95": 5.07943058,
+        "max": 5.10565376
+      }
+    },
+    {
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "mahony",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 1.8633284009,
+          "median": 1.86255848,
+          "p95": 1.87021136,
+          "max": 1.8735311
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.340438938499998,
+          "median": 10.34603977,
+          "p95": 10.41394901,
+          "max": 10.46078205
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.1758238888,
+          "median": 10.18084431,
+          "p95": 10.25098896,
+          "max": 10.29845619
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.1157820271,
+          "median": 3.11633801,
+          "p95": 3.12962747,
+          "max": 3.1389966
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.4458573389,
+          "median": 3.44452143,
+          "p95": 3.46870756,
+          "max": 3.47699523
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0187736092,
+          "median": 0.01877815,
+          "p95": 0.01896527,
+          "max": 0.01908034
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 1.8633284009,
+        "median": 1.86255848,
+        "p95": 1.87021136,
+        "max": 1.8735311
+      }
+    },
+    {
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "gyro_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 5.2165459258,
+          "median": 5.21766996,
+          "p95": 5.28908825,
+          "max": 5.31920195
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 11.4459902385,
+          "median": 11.44377041,
+          "p95": 11.51591778,
+          "max": 11.567029
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.0955605319,
+          "median": 10.1017561,
+          "p95": 10.16730309,
+          "max": 10.21591187
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.128663149,
+          "median": 8.13617325,
+          "p95": 8.24335861,
+          "max": 8.31167603
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.5191239734,
+          "median": 8.52447319,
+          "p95": 8.65485191,
+          "max": 8.70296764
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0205890334,
+          "median": 0.02057385,
+          "p95": 0.02080684,
+          "max": 0.02087017
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 5.2165459258,
+        "median": 5.21766996,
+        "p95": 5.28908825,
+        "max": 5.31920195
+      }
+    },
+    {
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_conservative",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 5.2053004357,
+          "median": 5.22610235,
+          "p95": 5.6341548,
+          "max": 6.07027197
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.8893533461,
+          "median": 8.83464432,
+          "p95": 9.92269325,
+          "max": 10.97000694
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 15.8003108025,
+          "median": 15.74691772,
+          "p95": 17.22000313,
+          "max": 17.81905365
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 18.6935888383,
+          "median": 18.57193565,
+          "p95": 20.76285934,
+          "max": 22.15693283
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 4.7188869955,
+          "median": 4.69374418,
+          "p95": 5.15770292,
+          "max": 5.47653246
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0686459329,
+          "median": 0.06739937,
+          "p95": 0.08356904,
+          "max": 0.09289151
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.0051318026,
+          "median": 9.01765728,
+          "p95": 9.65141678,
+          "max": 10.32414818
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.671502476,
+          "median": 9.6808672,
+          "p95": 10.28231335,
+          "max": 10.96722126
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0327596681,
+          "median": 0.03276004,
+          "p95": 0.03336494,
+          "max": 0.03391558
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.018308742700000002,
+          "median": 0.01830504,
+          "p95": 0.01866289,
+          "max": 0.01892083
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 5.2053004357,
+        "median": 5.22610235,
+        "p95": 5.6341548,
+        "max": 6.07027197
+      }
+    },
+    {
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_legacy",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 5.1011831094,
+          "median": 5.0951972,
+          "p95": 5.66752768,
+          "max": 5.90282869
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.8471671867,
+          "median": 8.72693539,
+          "p95": 10.50644875,
+          "max": 11.6934042
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 16.0778639696,
+          "median": 15.95450687,
+          "p95": 18.02215004,
+          "max": 18.97356415
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 17.8022188379,
+          "median": 17.65793228,
+          "p95": 20.19274521,
+          "max": 21.73880386
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 4.5457157304999996,
+          "median": 4.54012012,
+          "p95": 5.14334583,
+          "max": 5.33844185
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0702159664,
+          "median": 0.06864703,
+          "p95": 0.09028654,
+          "max": 0.10226606
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 8.904079323,
+          "median": 8.87630558,
+          "p95": 9.7185688,
+          "max": 10.17198467
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 9.5655340385,
+          "median": 9.5510664,
+          "p95": 10.37063599,
+          "max": 10.81723404
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.032907202999999996,
+          "median": 0.03286786,
+          "p95": 0.03362845,
+          "max": 0.03410777
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.0182203663,
+          "median": 0.018198,
+          "p95": 0.01859144,
+          "max": 0.01878442
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 5.1011831094,
+        "median": 5.0951972,
+        "p95": 5.66752768,
+        "max": 5.90282869
+      }
+    },
+    {
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "eskf_confirmed_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": true,
+      "navigation_applicable": true,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 6.9010903168,
+          "median": 6.89503002,
+          "p95": 6.98008966,
+          "max": 6.99763918
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.0631231309,
+          "median": 10.0634594,
+          "p95": 10.13183784,
+          "max": 10.16231918
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 15.723577346499999,
+          "median": 15.70338917,
+          "p95": 15.96977901,
+          "max": 16.17436218
+        },
+        "position_rms_m": {
+          "finite_trial_count": 100,
+          "mean": 31.5652743533,
+          "median": 31.54459381,
+          "p95": 32.04244614,
+          "max": 32.20508194
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 100,
+          "mean": 7.166280222,
+          "median": 7.16173553,
+          "p95": 7.25097752,
+          "max": 7.2918005
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 100,
+          "mean": 0.0614951635,
+          "median": 0.06145755,
+          "p95": 0.06289524,
+          "max": 0.06326725
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 100,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.9831646442,
+          "median": 10.97542191,
+          "p95": 11.10508919,
+          "max": 11.12974358
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 11.7259457397,
+          "median": 11.72102547,
+          "p95": 11.84538078,
+          "max": 11.88323784
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 100,
+          "mean": 0.0322862622,
+          "median": 0.03230685,
+          "p95": 0.03272084,
+          "max": 0.03290707
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.020588570599999998,
+          "median": 0.02059347,
+          "p95": 0.02074854,
+          "max": 0.02093182
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 6.9010903168,
+        "median": 6.89503002,
+        "p95": 6.98008966,
+        "max": 6.99763918
+      }
+    },
+    {
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "mahony",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 2.0280904003,
+          "median": 2.02759719,
+          "p95": 2.03544688,
+          "max": 2.03806543
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 6.988714847400001,
+          "median": 6.99310446,
+          "p95": 7.05567074,
+          "max": 7.08889055
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 7.3334838298,
+          "median": 7.33237457,
+          "p95": 7.4041667,
+          "max": 7.43397999
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.0640906144,
+          "median": 3.06349921,
+          "p95": 3.08172107,
+          "max": 3.09730864
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 3.1444392875,
+          "median": 3.14360833,
+          "p95": 3.16434002,
+          "max": 3.17397666
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.009106874000000001,
+          "median": 0.00911366,
+          "p95": 0.0092548,
+          "max": 0.00938852
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 2.0280904003,
+        "median": 2.02759719,
+        "p95": 2.03544688,
+        "max": 2.03806543
+      }
+    },
+    {
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE",
+      "estimator": "gyro_only",
+      "trial_count": 100,
+      "finite_metric_count": 100,
+      "covariance_applicable": false,
+      "navigation_applicable": false,
+      "complete_count": 100,
+      "availability_mean": 1.0,
+      "metric_distributions": {
+        "tilt_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 7.1246787547,
+          "median": 7.12125826,
+          "p95": 7.20164204,
+          "max": 7.23262787
+        },
+        "attitude_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 10.475681286199999,
+          "median": 10.47148895,
+          "p95": 10.54662609,
+          "max": 10.57429981
+        },
+        "yaw_rms_deg": {
+          "finite_trial_count": 100,
+          "mean": 16.519855671000002,
+          "median": 16.49416924,
+          "p95": 16.7737484,
+          "max": 16.93162346
+        },
+        "position_rms_m": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "velocity_rms_m_s": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_nees_coverage95": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "nis_mean": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "tilt_p95_deg": {
+          "finite_trial_count": 100,
+          "mean": 11.2284771153,
+          "median": 11.22115898,
+          "p95": 11.35374451,
+          "max": 11.38347435
+        },
+        "tilt_max_deg": {
+          "finite_trial_count": 100,
+          "mean": 11.9716397093,
+          "median": 11.96694851,
+          "p95": 12.08514214,
+          "max": 12.1305666
+        },
+        "accel_bias_error_m_s2": {
+          "finite_trial_count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "gyro_bias_error_rad_s": {
+          "finite_trial_count": 100,
+          "mean": 0.020588570599999998,
+          "median": 0.02059347,
+          "p95": 0.02074854,
+          "max": 0.02093182
+        }
+      },
+      "tilt_rms_deg": {
+        "mean": 7.1246787547,
+        "median": 7.12125826,
+        "p95": 7.20164204,
+        "max": 7.23262787
+      }
+    }
+  ],
+  "paired_confidence_intervals": [
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.00032254170000000043,
+      "ci95_percentile": [
+        -0.0008277445999999994,
+        0.0015009201000000009
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_legacy",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.0011345952000000005,
+      "ci95_percentile": [
+        0.00012413769999999977,
+        0.002145697799999999
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_legacy",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -10.109491904599999,
+      "ci95_percentile": [
+        -10.1940845996,
+        -10.0218578425
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_legacy",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.0794213505,
+      "ci95_percentile": [
+        -0.0918362392,
+        -0.06716408639999998
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_legacy",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.1298072678,
+      "ci95_percentile": [
+        -0.1547185036,
+        -0.1048359616
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_legacy",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.0772781944,
+      "ci95_percentile": [
+        -0.08893421659999998,
+        -0.065548542
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_legacy",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.0487097829,
+      "ci95_percentile": [
+        0.04038971549999999,
+        0.057144785
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_legacy",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.10411732629999997,
+      "ci95_percentile": [
+        0.0821560289,
+        0.12613804769999995
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_legacy",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -5.3023496596,
+      "ci95_percentile": [
+        -5.3125331628,
+        -5.292143101300001
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -5.1949059345,
+      "ci95_percentile": [
+        -5.2048612757,
+        -5.185016882899999
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -4.4411778909,
+      "ci95_percentile": [
+        -4.4985380311,
+        -4.382848184999999
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.4803281119,
+      "ci95_percentile": [
+        0.4533818705,
+        0.5077059483
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -1.7526830985000001,
+      "ci95_percentile": [
+        -1.7773021153,
+        -1.7278672052
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.5184666822,
+      "ci95_percentile": [
+        0.4898201536,
+        0.5474660014
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -4.676397661799999,
+      "ci95_percentile": [
+        -4.6952883065,
+        -4.6569167836
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -1.6957898811,
+      "ci95_percentile": [
+        -1.7483028659000002,
+        -1.6392656091999998
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.2932381314,
+      "ci95_percentile": [
+        -0.29628733409999997,
+        -0.29009565039999996
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.2895512973,
+      "ci95_percentile": [
+        -0.2926123524,
+        -0.2864715791
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -7.3375541813,
+      "ci95_percentile": [
+        -7.3939138031,
+        -7.2805849159000005
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.7164369254,
+      "ci95_percentile": [
+        0.6886627251999999,
+        0.7443479279999999
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.44730091280000006,
+      "ci95_percentile": [
+        -0.46892437659999997,
+        -0.4250441851
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.7517431262,
+      "ci95_percentile": [
+        0.7219082401,
+        0.7817206725
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -1.5426231777000001,
+      "ci95_percentile": [
+        -1.5589890573,
+        -1.5259772809
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 3.1772100354,
+      "ci95_percentile": [
+        3.1243762451999997,
+        3.2336947798
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -5.5010788411,
+      "ci95_percentile": [
+        -5.5110990579,
+        -5.4910786736
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -5.4063070817000005,
+      "ci95_percentile": [
+        -5.415707939500001,
+        -5.3968381377000005
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -4.6424525295,
+      "ci95_percentile": [
+        -4.7000960724,
+        -4.583908582199999
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.5695401333,
+      "ci95_percentile": [
+        0.5425890615,
+        0.5968567133
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -1.9487449533,
+      "ci95_percentile": [
+        -1.9733540179,
+        -1.9238163104000001
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.608583491,
+      "ci95_percentile": [
+        0.5800752148,
+        0.6374631382
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -4.8958407026,
+      "ci95_percentile": [
+        -4.9141357691000005,
+        -4.8769769641
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -1.919378319,
+      "ci95_percentile": [
+        -1.9715903953,
+        -1.8636617997000002
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_conservative",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -5.302672201299999,
+      "ci95_percentile": [
+        -5.3129339274,
+        -5.2923293912
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -5.1960405297,
+      "ci95_percentile": [
+        -5.2058814351,
+        -5.1861545026
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 5.6683140137,
+      "ci95_percentile": [
+        5.5989188661,
+        5.7325816823
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.5597494624,
+      "ci95_percentile": [
+        0.5262873034000001,
+        0.5932759496
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -1.6228758307000002,
+      "ci95_percentile": [
+        -1.6647456021,
+        -1.5805896356
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.5957448766,
+      "ci95_percentile": [
+        0.5597062942000001,
+        0.6309451004000001
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -4.7251074447,
+      "ci95_percentile": [
+        -4.7457146003999995,
+        -4.7040631056
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -1.7999072074,
+      "ci95_percentile": [
+        -1.8645572942000002,
+        -1.7328563352000002
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "eskf_confirmed_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.2935606731,
+      "ci95_percentile": [
+        -0.2970946631,
+        -0.2899320096
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.2906858925,
+      "ci95_percentile": [
+        -0.2940638061,
+        -0.2873606172
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 2.7719377233,
+      "ci95_percentile": [
+        2.7041416649000003,
+        2.8350865274
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.7958582759000001,
+      "ci95_percentile": [
+        0.7619609003000001,
+        0.8295560867
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.317493645,
+      "ci95_percentile": [
+        -0.35676243300000005,
+        -0.2776608049
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.8290213206,
+      "ci95_percentile": [
+        0.792502327,
+        0.8652195501
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -1.5913329606,
+      "ci95_percentile": [
+        -1.6090578016000001,
+        -1.5727028150000002
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 3.0730927091,
+      "ci95_percentile": [
+        3.0080529173,
+        3.1408475929999997
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -5.5014013828,
+      "ci95_percentile": [
+        -5.511508269,
+        -5.4913061122
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -5.4074416769,
+      "ci95_percentile": [
+        -5.4168437222,
+        -5.3979906897
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 5.467039375100001,
+      "ci95_percentile": [
+        5.3975212098,
+        5.5318270877
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.6489614838,
+      "ci95_percentile": [
+        0.6155095381,
+        0.6826975314000001
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -1.8189376855000001,
+      "ci95_percentile": [
+        -1.8606735199,
+        -1.7767321285
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.6858616854,
+      "ci95_percentile": [
+        0.6500865719000001,
+        0.7208393981000001
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -4.9445504855,
+      "ci95_percentile": [
+        -4.9646525761,
+        -4.9237809723999995
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -2.0234956453,
+      "ci95_percentile": [
+        -2.0877111146000003,
+        -1.9567411853999999
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_legacy",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 5.0091115282,
+      "ci95_percentile": [
+        4.999885954,
+        5.0180124797
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 4.9053546372,
+      "ci95_percentile": [
+        4.8960588256,
+        4.914589293000001
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -2.8963762903999997,
+      "ci95_percentile": [
+        -2.9066366578000005,
+        -2.8862229211
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.2361088135,
+      "ci95_percentile": [
+        0.22997623279999996,
+        0.24213789930000001
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 1.3053821857,
+      "ci95_percentile": [
+        1.2972190843000002,
+        1.3135897668
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.233276444,
+      "ci95_percentile": [
+        0.2272645082,
+        0.2392130617
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 3.1337744841,
+      "ci95_percentile": [
+        3.1243016461999997,
+        3.1432963356
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 4.8729999164999995,
+      "ci95_percentile": [
+        4.8645865441,
+        4.8816289311
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "mahony",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.19872918149999996,
+      "ci95_percentile": [
+        -0.20168642499999997,
+        -0.1956946424000001
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.2114011472,
+      "ci95_percentile": [
+        -0.21461654130000002,
+        -0.208240108
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.2012746386,
+      "ci95_percentile": [
+        -0.20420575660000004,
+        -0.19836559249999997
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.08921202140000001,
+      "ci95_percentile": [
+        0.0877244707,
+        0.09070036370000001
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.19606185480000002,
+      "ci95_percentile": [
+        -0.19860143910000003,
+        -0.19350679730000003
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 0.0901168088,
+      "ci95_percentile": [
+        0.08876550769999998,
+        0.09144165100000003
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.21944304080000004,
+      "ci95_percentile": [
+        -0.2224559077,
+        -0.21658921810000006
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.22358843790000002,
+      "ci95_percentile": [
+        -0.2263641348,
+        -0.2208549638
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "eskf_confirmed_only",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -5.2078407097,
+      "ci95_percentile": [
+        -5.2168491887999995,
+        -5.1989081795
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "mahony",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -5.1167557844,
+      "ci95_percentile": [
+        -5.125468057000001,
+        -5.1079537078
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "mahony",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": 2.6951016518,
+      "ci95_percentile": [
+        2.6848802698000003,
+        2.7053186405000003
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "mahony",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.1468967921,
+      "ci95_percentile": [
+        -0.15267721840000004,
+        -0.14097972759999997
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "mahony",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -1.5014440405,
+      "ci95_percentile": [
+        -1.5097536887999998,
+        -1.4931807520999998
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "mahony",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -0.1431596352,
+      "ci95_percentile": [
+        -0.1487749223,
+        -0.13755820009999997
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "mahony",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -3.3532175249,
+      "ci95_percentile": [
+        -3.3625094934999997,
+        -3.3439006137000002
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "mahony",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    },
+    {
+      "n_pairs": 100,
+      "mean_difference": -5.096588354400001,
+      "ci95_percentile": [
+        -5.1051974795,
+        -5.0881578999
+      ],
+      "method": "paired percentile bootstrap, 10000 resamples, seed 20261110; CI for mean difference, not an individual-run bound",
+      "left_estimator": "mahony",
+      "right_estimator": "gyro_only",
+      "difference_definition": "left tilt RMS minus right tilt RMS",
+      "matched_trials": 100,
+      "invalid_pairs": 0,
+      "input_or_config_hash_mismatches": 0,
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "sensor_input": "IMU_ONLY",
+      "startup_knowledge": "UNKNOWN",
+      "startup_gyro_bias_calibration": "OFF",
+      "runtime_aid": "NONE"
+    }
+  ],
+  "incomplete_or_failed_trials": [],
+  "pr2_gate_status": "OPEN",
+  "pr3_gate_status": "OPEN_FOR_FULL_FACTOR_ACCEPTANCE_AND_INDEPENDENT_REVIEW",
+  "limitations": [
+    "Synthetic host inputs only; no physical sensor or RP2350 performance claims.",
+    "The v5 primary acceptance coverage is the nominal IMU-only/unknown-start baseline; other rate, stress, startup, calibration and runtime-aid factors lack 100-seed held-out/final coverage.",
+    "Mahony and gyro-only are attitude-only reference estimators; navigation states, covariance, and NEES/NIS are not applicable and are explicitly marked.",
+    "The reference Mahony uses fixed proportional and integral gains of 1.0 and 0.05; its heading correction gain is fixed at 0.25. These comparison baselines are not tuned products.",
+    "Tilt NEES and gravity NIS are consistency diagnostics because simulator truth, propagated IMU and gravity pseudo-measurements are not fully independent."
+  ],
+  "figures": [
+    "benchmarks/figures/pr3_protocol_v5_final100_208_nominal_tilt_rms.svg",
+    "benchmarks/figures/pr3_protocol_v5_final100_208_nominal_yaw_rms.svg",
+    "benchmarks/figures/pr3_protocol_v5_final100_208_nominal_availability.svg",
+    "benchmarks/figures/pr3_protocol_v5_final100_208_nominal_tilt_nees_mean.svg",
+    "benchmarks/figures/pr3_protocol_v5_final100_208_nominal_nis_mean.svg"
+  ]
+}

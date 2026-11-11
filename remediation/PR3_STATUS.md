@@ -1,45 +1,51 @@
 # PR3 statistical characterization status
 
-## Gate
+## Gate status
 
-**PR3: OPEN. PR2: OPEN.** Results are synthetic host simulations and do not waive the known LegacyHeuristic yaw/bias regressions, synthetic-heading degradation, false-hint/zero-dwell coverage gaps, or covariance failures. The corrected protocol and estimator candidate are frozen. Development, held-out, and final-confirmation outputs are exposed; no tuning was performed from held-out or final-confirmation results.
+**Primary v5 benchmark gate: PASS for the declared 208 Hz nominal baseline distributions. Full-factor acceptance and independent review: OPEN. PR2 gate: OPEN.** The runs are synthetic host simulations and do not establish hardware performance or control suitability.
 
-## Protocol and generator
+The frozen estimator candidate is `3efd3f89e244e152364773fb26cfb0c5749dce3d`. Protocol v5 SHA-256 is `1318acff98ac2641383ef6a568986e912020a6d4c6debeb145a9abf0f8fa4800`. V5 preserves the v3 motion, noise, timestamp, scoring and RNG definitions; it adds exact attitude-only Mahony and gyro-only reference definitions and disjoint acceptance seeds. V1–v4 protocols and their evidence remain unchanged.
 
-- Protocol v1 and v2 remain unchanged. Protocol v2 froze paired percentile bootstrap intervals and independent FNV-1a sensor/heading RNG streams.
-- Protocol v2 omitted a disturbance start time for vibration. Its generator applied the 43 Hz additive accelerometer disturbance from the first sample, including the intended two-second stationary startup; all three ESKF policies remained in Aligning. The full v2 output is preserved and superseded by protocol v3.
-- Protocol v3 adds `measurement_disturbances.start_s = 2.0` for vibration and leaves the estimator, seeds, noise, truth, and scoring unchanged. Its SHA-256 is `1fd3998d99a5d58ea8dd5b6149a38aad0ec90fa56a1d722ccf77280e9dc21cca`. The validator requires that exact start time; codegen gates only the v3 vibration disturbance. Input records use `PR3INP03` and carry the v3 protocol hash.
-- Each command builds one generator and evaluator, creates one shared stream per trial, evaluates three ESKF policies on identical inputs, and emits CSV, JSON, provenance manifest, and SVG. Mahony and gyro-only, selected diagnostic traces, and full failure-oracle covariance capture are not implemented.
+## V5 primary runs
 
-## Frozen run evidence
+Each split covers eight scenarios at uniform 208 Hz, nominal stress transform, IMU-only input, unknown startup, calibration off and no runtime aid. Each has 100 seeds, 800 shared input streams and 4,000 estimator rows (three ESKF policies plus Mahony and gyro-only). Every estimator completed all 800 trials. Each ESKF policy reported valid state and positive-definite covariance for all 2,330,400 expected samples in each split. The ESKF rows total 20,973,600 covariance-valid sample checks across all three splits.
 
-| Run | Seeds and conditions | Rows / shared inputs | Incomplete or failed | Vibration result | Evidence |
-|---|---|---:|---:|---|---|
-| Superseded v2 development | 4001–4100; 208 Hz nominal; baseline profile | 2,400 / 800 | 1,499 | 0% availability and 0/100 complete for each policy | [v2 report](../benchmarks/reports/pr3_protocol_v2_dev100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v2_dev100_208_nominal.json), [figure](../benchmarks/figures/pr3_protocol_v2_dev100_208_nominal.svg) |
-| v3 development | 4001–4100; 208 Hz nominal; baseline profile | 2,400 / 800 | 1,499 | Conservative: 72.40% availability, 0/100 complete; Legacy: 73.64%, 0/100; ConfirmedOnly: 80.77%, 0/100 | [v3 report](../benchmarks/reports/pr3_protocol_v3_dev100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v3_dev100_208_nominal.json), [figure](../benchmarks/figures/pr3_protocol_v3_dev100_208_nominal.svg) |
-| v3 held-out | 5001–5100; 208 Hz nominal; baseline profile | 2,400 / 800 | 1,492 | Conservative: 70.65% availability, 0/100 complete; Legacy: 77.87%, 2/100; ConfirmedOnly: 81.02%, 0/100 | [v3 held-out report](../benchmarks/reports/pr3_protocol_v3_heldout100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v3_heldout100_208_nominal.json), [figure](../benchmarks/figures/pr3_protocol_v3_heldout100_208_nominal.svg) |
-| v3 final confirmation | 6001–6100; 208 Hz nominal; baseline profile | 2,400 / 800 | 1,487 | Conservative: 72.47% availability, 1/100 complete; Legacy: 76.71%, 1/100; ConfirmedOnly: 81.46%, 0/100 | [v3 final report](../benchmarks/reports/pr3_protocol_v3_final100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v3_final100_208_nominal.json), [figure](../benchmarks/figures/pr3_protocol_v3_final100_208_nominal.svg) |
+| Split | Seeds | Incomplete rows | Estimator completion | Trial CSV SHA-256 | Summary JSON SHA-256 | Evidence |
+|---|---|---:|---:|---|---|---|
+| Development | 4001–4100 | 0 / 4,000 | 800 / 800 per estimator | `30709092ffcbecfd2a96bd524f9faed77bb6e1d68d2d965643d27ad2b294300b` | `b4440b0ec5e036a6ecd8259907b2e47d1db14170a1a18963fd3d24d514fc5cdd` | [report](../benchmarks/reports/pr3_protocol_v5_dev100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v5_dev100_208_nominal.json) |
+| Held-out | 9001–9100 | 0 / 4,000 | 800 / 800 per estimator | `bfbe1e3d89635992b080370e677e8e7e00b65025d08a843d3e5ee4a7a83a7083` | `fd818b5045a86ec5e39d0f89624e8a8311abeed5bb31da4d8a0bc363e69258e0` | [report](../benchmarks/reports/pr3_protocol_v5_heldout100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v5_heldout100_208_nominal.json) |
+| Final confirmation | 10001–10100 | 0 / 4,000 | 800 / 800 per estimator | `92b1d7a8c3797a6a9d96ee185f0f09ad319c9c4a1672e4d98dc7899314c367be` | `6ffc42f200f00f0a02dcbe17d1594fee3b92fec9d9e55bb440e4b86b80f2fe46` | [report](../benchmarks/reports/pr3_protocol_v5_final100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v5_final100_208_nominal.json) |
 
-For paired mean differences, the report uses the preregistered 10,000-resample paired percentile bootstrap. Its 95% interval is not an individual-run bound. The evaluation window fixes 2,913 expected samples per 208 Hz trial; incomplete runs remain in the denominator.
+The simple mean of per-trial RMS values across all eight scenario groups is consistent across the three splits:
 
-## Remaining findings and limits
+| Estimator | Tilt RMS mean | Yaw RMS mean | Covariance / navigation |
+|---|---:|---:|---|
+| Conservative ESKF | about 1.91° | about 10.5° | Provided |
+| Legacy ESKF | about 3.18° | about 20.1° | Provided |
+| ConfirmedOnly ESKF | about 4.65° | about 10.3° | Provided |
+| Mahony reference | about 2.56° | about 9.84° | Not provided |
+| Gyro-only reference | about 4.79° | about 10.67° | Not provided |
 
-- **Fixed simulation defect:** v3 applies the vibration disturbance only after the stationary startup. Vibration availability is no longer zero, but near-total trial incompleteness remains; this is an estimator/output-validity failure signal, not a reason to change the simulation again.
-- **Covariance validity:** across the v3 development, held-out, and final-confirmation splits, only 4 of 900 vibration estimator rows are complete (0/0/0, 0/2/0, and 1/1/0 by split for Conservative/Legacy/ConfirmedOnly). The three full 2,400-row runs contain 4,478 incomplete/failed rows of 7,200. The run summaries retain valid/covariance-valid counts and do not discard failed samples.
-- **Slow-yaw diagnostic:** the seed-4001 200 Hz nominal case previously found 1,225 of 2,801 `eskf_confirmed_only` samples with non-positive-definite covariance while operational state remained current. This remains an unresolved implementation risk.
-- **Stress startup:** the static 3x-white-noise seed-4001 smoke input did not initialize an estimator within the declared startup interval. No thresholds were tuned.
-- A separate 4-seed development-only factor pilot now covers all eight scenarios, three rate modes, nominal/stress settings, and seven startup/sensor/calibration/aiding profiles. It has 4,032 paired ESKF rows, of which 2,916 are incomplete/failed; all 2,016 stress rows fail completeness. This pilot is exploratory, too small for acceptance, and did not tune on held-out or final-confirmation seeds. Its CSV, JSON, figure and manifest are in [the factor-pilot report](PR3_FACTOR_PILOT.md).
-- The primary 100-seed held-out and final-confirmation distributions remain only the 208 Hz nominal baseline profile. Other axes do not yet have 100-seed held-out/confirmation coverage. Mahony/gyro-only comparisons, selected sample-level diagnostic traces, and full failure-oracle covariance capture remain outstanding.
-- Physical sensor behavior, RP2350 timing, FIFO reliability, resource measurements for the revised firmware, and control suitability remain unverified or **BLOCKED_HARDWARE**.
+These are means of per-trial RMS metrics, not per-sample pooled RMS. Availability is reported separately. The low mean tilt NEES and gravity NIS remain consistency diagnostics requiring interpretation; gravity updates reuse accelerometer information, so ideal independent-measurement coverage is not claimed. ConfirmedOnly has poor tilt accuracy in several cases despite complete finite/covariance-valid output (held-out mean trial tilt RMS is about 5.35° in slow yaw and 6.90° in compound motion).
+
+Five aggregate figures are generated for each primary set: tilt RMS, yaw RMS, finite-attitude availability, mean tilt NEES, and mean NIS. Selected development seed 4001 slow-yaw diagnostics add yaw-invariant tilt error, gyro/accelerometer bias error, attitude covariance diagonal, and gravity-update chronology figures. The [development diagnostic manifest](../benchmarks/manifests/pr3_protocol_v5_dev_slow_yaw_seed4001.json) ties these plots to its raw input and trace hashes.
+
+## Updated factor pilot
+
+A separate four-seed development pilot ran the v5 candidate across all eight scenarios, three sampling modes, both stress transforms and seven startup/sensor/calibration/runtime-aid profiles. It produced 192 shared streams and 6,720 rows. All 2,016 incomplete rows are ESKF stress rows: each ESKF policy completed 672 / 672 nominal rows and 0 / 672 stress rows. Mahony and gyro-only produced finite attitude outputs for all 1,344 rows each, but they do not estimate navigation or covariance. The stress failure is isolated to the consecutive-sample initialization acceleration-step gate: in the selected static stress reproducer, 659 / 3,327 adjacent steps exceed the 0.20 m/s² limit and the longest stable run is 35 samples, below the 80-sample initialization requirement. The fix remains open and was not tuned on these results. See [factor pilot report](PR3_FACTOR_PILOT.md), [CSV](../benchmarks/reports/pr3_protocol_v5_factor_pilot_dev4_trials.csv), and [manifest](../benchmarks/manifests/pr3_protocol_v5_factor_pilot_dev4.json).
+
+## Root-cause outcome and limits
+
+The observed loss of covariance positive-definiteness under long single-precision propagation is classified as `CONFIRMED_IMPLEMENTATION_DEFECT` / `FIXED` for the tested cases. Before the FP64 revision, the slow-yaw development reproducer passed covariance checks for 1,576 / 2,801 ConfirmedOnly samples. The v5 development, held-out and final sets all passed every ESKF covariance check. See [root-cause records](ROOT_CAUSES.md).
+
+PR3 remains open for 100-seed held-out/final coverage outside the nominal baseline profile, poor ESKF accuracy/consistency in disclosed modes, unresolved PR2 LegacyHeuristic yaw/bias and synthetic-heading-aid behavior, missing held-out false-hint/zero-dwell coverage, and independent review. Physical sensor accuracy, FIFO integrity, RP2350 timing, stack high-water and control suitability remain **BLOCKED_HARDWARE**.
+
+The 800 shared input streams per primary split are regenerated on demand rather than checked into Git; their SHA-256 values and exact commands are in the manifests. The selected diagnostic stream is checked in at `benchmarks/inputs/pr3_protocol_v5_dev_slow_yaw_seed4001.bin`.
 
 ## Reproduction
 
-Run from a clean checkout of the named source commit. The run manifest records compiler, protocol, generator/evaluator hashes, source SHA, seed split, per-input hashes, and `working_tree_dirty_at_run`.
+From a clean checkout, run one of the exact commands recorded in its manifest. For example:
 
-```sh
-python3 tools/run_pr3_benchmarks.py --split development --first-seed 4001 --last-seed 4100 --rate-modes uniform_208hz --stress-modes nominal --profiles baseline --output-dir benchmarks/generated/pr3_dev100_208_nominal_v3 --source-commit 21782bb102203e5f807a72eddb97085ce1a9b13c --tree-dirty no
-python3 tools/run_pr3_benchmarks.py --split held_out --first-seed 5001 --last-seed 5100 --rate-modes uniform_208hz --stress-modes nominal --profiles baseline --output-dir benchmarks/generated/pr3_heldout100_208_nominal_v3 --source-commit e75f94713fba54cc83e66132c105e31f39a19a98 --tree-dirty no
-python3 tools/run_pr3_benchmarks.py --split final_confirmation --first-seed 6001 --last-seed 6100 --rate-modes uniform_208hz --stress-modes nominal --profiles baseline --output-dir benchmarks/generated/pr3_final100_208_nominal_v3 --source-commit 763f026216c0511ad3dde9d5b591a336a155a688 --tree-dirty no
+```bash
+python3 tools/run_pr3_benchmarks.py --protocol benchmarks/scenarios/pr3_scenarios_protocol_v5.json --split held_out --first-seed 9001 --last-seed 9100 --scenarios static,slow_yaw,lateral_accel,maneuver,vibration,timing_jitter,stop_start,compound_motion --rate-modes uniform_208hz --stress-modes nominal --profiles baseline --output-dir benchmarks/generated/pr3_protocol_v5_heldout100_208_nominal --source-commit 3efd3f89e244e152364773fb26cfb0c5749dce3d --tree-dirty no --summary-source-label benchmarks/reports/pr3_protocol_v5_heldout100_208_nominal_trials.csv --figure-prefix pr3_protocol_v5_heldout100_208_nominal --figure-path-prefix benchmarks/figures/
 ```
-
-The v1/v2/v3 protocol and codegen tests plus Bundle A/B/C checks passed for this branch. All three v3 seed splits are now exposed; allocate new disjoint seeds before any further tuning. The current PR3 and PR2 gates remain open.

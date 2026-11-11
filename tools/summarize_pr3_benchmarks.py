@@ -98,7 +98,59 @@ def box_svg(groups, destination):
     destination.write_text("\n".join(elements) + "\n", encoding="utf-8")
 
 
-def summarize(input_path, output_dir):
+def metric_box_svg(groups, destination, title, ylabel, *, maximum=None):
+    width, height = 1160, 620
+    left, top, plot_w, plot_h = 90, 70, 1010, 440
+    colors = {"eskf_conservative": "#2563eb", "eskf_legacy": "#dc2626", "eskf_confirmed_only": "#059669", "mahony": "#7c3aed", "gyro_only": "#d97706"}
+    scenarios = sorted({key[0] for key in groups})
+    models = list(colors)
+    observed_max = max((max(values) for values in groups.values() if values), default=1.0)
+    if maximum is None:
+        maximum = max(1.0, math.ceil(observed_max / 5.0) * 5.0)
+    else:
+        maximum = max(maximum, observed_max)
+    minimum = min((min(values) for values in groups.values() if values), default=0.0)
+    minimum = min(0.0, minimum)
+    span = max(1e-12, maximum - minimum)
+    def y(value):
+        return top + plot_h - (value - minimum) / span * plot_h
+    elements = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
+        '<rect width="100%" height="100%" fill="white"/>',
+        f'<text x="90" y="34" font-family="sans-serif" font-size="22" font-weight="bold">{html.escape(title)}</text>',
+        '<text x="90" y="54" font-family="sans-serif" font-size="12">Synthetic host characterization; 208 Hz nominal; PR2 gate remains OPEN</text>',
+    ]
+    for tick in range(6):
+        value = minimum + span * tick / 5
+        yy = y(value)
+        elements.append(f'<line x1="{left}" y1="{yy:.1f}" x2="{left+plot_w}" y2="{yy:.1f}" stroke="#d1d5db"/>')
+        elements.append(f'<text x="{left-12}" y="{yy+4:.1f}" text-anchor="end" font-family="sans-serif" font-size="11">{value:.3g}</text>')
+    group_w = plot_w / max(1, len(scenarios))
+    model_offset = {model: (i - 2) * 16 for i, model in enumerate(models)}
+    for scenario_index, scenario in enumerate(scenarios):
+        center = left + group_w * (scenario_index + 0.5)
+        elements.append(f'<text x="{center:.1f}" y="{top+plot_h+24}" text-anchor="middle" font-family="sans-serif" font-size="10">{html.escape(scenario)}</text>')
+        for model in models:
+            values = groups.get((scenario, model), [])
+            if not values:
+                continue
+            x = center + model_offset[model]
+            lo, q1, med, q3, hi = [quantile(values, q) for q in (0, .25, .5, .75, 1)]
+            color = colors[model]
+            elements.append(f'<line x1="{x}" y1="{y(lo):.1f}" x2="{x}" y2="{y(hi):.1f}" stroke="{color}" stroke-width="2"/>')
+            elements.append(f'<rect x="{x-6}" y="{y(q3):.1f}" width="12" height="{max(1,y(q1)-y(q3)):.1f}" fill="{color}" fill-opacity=".24" stroke="{color}"/>')
+            elements.append(f'<line x1="{x-6}" y1="{y(med):.1f}" x2="{x+6}" y2="{y(med):.1f}" stroke="{color}" stroke-width="2"/>')
+    for i, model in enumerate(models):
+        x = left + i * 190
+        elements.append(f'<rect x="{x}" y="560" width="12" height="12" fill="{colors[model]}"/>')
+        elements.append(f'<text x="{x+18}" y="571" font-family="sans-serif" font-size="12">{model}</text>')
+    elements.append(f'<text transform="translate(22 320) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="13">{html.escape(ylabel)}</text>')
+    elements.append('</svg>')
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text("\n".join(elements) + "\n", encoding="utf-8")
+
+
+def summarize(input_path, output_dir, *, report_source=None, figure_prefix="pr3", figure_path_prefix="figures/"):
     with input_path.open(newline="", encoding="utf-8") as stream:
         rows = list(csv.DictReader(stream))
     required = {"scenario", "rate_mode", "stress_mode", "seed", "estimator", "input_sha256", "config_sha256", "expected", "produced", "valid", "control_valid", "covariance_valid", "missing", "unavailable", "complete_run", "tilt_rms_deg", "pr2_gate_status"}
@@ -111,6 +163,9 @@ def summarize(input_path, output_dir):
     configs = defaultdict(list)
     output_groups = defaultdict(list)
     tilt_plot_groups = defaultdict(list)
+    figure_columns = {"yaw_rms_deg": "yaw_rms.svg", "availability": "availability.svg",
+        "tilt_nees_mean": "tilt_nees_mean.svg", "nis_mean": "nis_mean.svg"}
+    figure_groups = {column: defaultdict(list) for column in figure_columns}
     failures = []
     seeds_by_group = defaultdict(set)
     for row in rows:
@@ -122,6 +177,10 @@ def summarize(input_path, output_dir):
         if row["rate_mode"] == "uniform_208hz" and row["stress_mode"] == "nominal" and row["sensor_input"] == "IMU_ONLY" and row["startup_knowledge"] == "UNKNOWN" and row["startup_gyro_bias_calibration"] == "OFF" and row["runtime_aid"] == "NONE":
             if value is not None:
                 tilt_plot_groups[(row["scenario"], row["estimator"])].append(value)
+        for column in figure_columns:
+            metric = number(row.get(column))
+            if metric is not None:
+                figure_groups[column][(row["scenario"], row["estimator"])].append(metric)
         if row["complete_run"].lower() != "true" or value is None:
             failures.append({"scenario": row["scenario"], "rate_mode": row["rate_mode"], "stress_mode": row["stress_mode"], "seed": int(row["seed"]), "estimator": row["estimator"], "expected": int(row["expected"]), "produced": int(row["produced"]), "valid": int(row["valid"]), "control_valid": int(row["control_valid"]), "covariance_valid": int(row["covariance_valid"]), "missing": int(row["missing"]), "unavailable": int(row["unavailable"])})
 
@@ -189,7 +248,7 @@ def summarize(input_path, output_dir):
     minimum_seed_count = min((len(seeds) for seeds in seeds_by_group.values()), default=0)
     report = {
         "report_protocol": f"pr3_summary_v{next(iter(protocol_versions))}",
-        "source_summary": str(input_path),
+        "source_summary": report_source or input_path.name,
         "trial_row_count": len(rows),
         "input_stream_count": len({row["input_sha256"] for row in rows}),
         "minimum_seed_count_per_factor_group": minimum_seed_count,
@@ -197,12 +256,26 @@ def summarize(input_path, output_dir):
         "paired_confidence_intervals": paired,
         "incomplete_or_failed_trials": failures,
         "pr2_gate_status": "OPEN",
-        "pr3_gate_status": "OPEN" if failures or minimum_seed_count < 100 else "OPEN_INDEPENDENT_REVIEW_REQUIRED",
-        "limitations": ["Synthetic host inputs only; no physical sensor or RP2350 performance claims.", "Mahony and gyro-only are attitude-only reference estimators; navigation states, covariance, and NEES/NIS are not applicable and are explicitly marked.", "The reference Mahony uses fixed proportional and integral gains of 1.0 and 0.05; its heading correction gain is fixed at 0.25. These comparison baselines are not tuned products.", "Tilt NEES and gravity NIS are consistency diagnostics because simulator truth, propagated IMU and gravity pseudo-measurements are not fully independent."],
+        "pr3_gate_status": "OPEN_FOR_FULL_FACTOR_ACCEPTANCE_AND_INDEPENDENT_REVIEW" if failures or minimum_seed_count < 100 or max(protocol_versions) >= 5 else "OPEN_INDEPENDENT_REVIEW_REQUIRED",
+        "limitations": ["Synthetic host inputs only; no physical sensor or RP2350 performance claims.", "The v5 primary acceptance coverage is the nominal IMU-only/unknown-start baseline; other rate, stress, startup, calibration and runtime-aid factors lack 100-seed held-out/final coverage.", "Mahony and gyro-only are attitude-only reference estimators; navigation states, covariance, and NEES/NIS are not applicable and are explicitly marked.", "The reference Mahony uses fixed proportional and integral gains of 1.0 and 0.05; its heading correction gain is fixed at 0.25. These comparison baselines are not tuned products.", "Tilt NEES and gravity NIS are consistency diagnostics because simulator truth, propagated IMU and gravity pseudo-measurements are not fully independent."],
     }
     output_dir.mkdir(parents=True, exist_ok=True)
+    figure_dir = output_dir / "figures"
+    figure_names = [f"{figure_prefix}_tilt_rms.svg"]
+    box_svg(tilt_plot_groups, figure_dir / figure_names[0])
+    metric_titles = {
+        "yaw_rms_deg": ("PR3 yaw RMS by scenario", "Yaw RMS (degrees), conditional on valid state", None),
+        "availability": ("PR3 attitude availability by scenario", "Available finite attitude outputs / expected samples", 1.0),
+        "tilt_nees_mean": ("PR3 mean tilt NEES by scenario", "Per-trial mean 2D tilt NEES; consistency diagnostic", None),
+        "nis_mean": ("PR3 mean NIS by scenario", "Per-trial mean NIS; consistency diagnostic", None),
+    }
+    for column, filename in figure_columns.items():
+        title, ylabel, maximum = metric_titles[column]
+        output_name = f"{figure_prefix}_{filename}"
+        figure_names.append(output_name)
+        metric_box_svg(figure_groups[column], figure_dir / output_name, title, ylabel, maximum=maximum)
+    report["figures"] = [f"{figure_path_prefix}{name}" for name in figure_names]
     (output_dir / "pr3_summary.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8")
-    box_svg(tilt_plot_groups, output_dir / "figures/pr3_tilt_rms.svg")
     print(f"PASS PR3 summary: {len(rows)} trial rows, {len(failures)} incomplete trials, min seeds/group={minimum_seed_count}; gate remains OPEN")
     return report
 
@@ -211,9 +284,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
+    parser.add_argument("--report-source", help="stable source label stored in the JSON report")
+    parser.add_argument("--figure-prefix", default="pr3", help="prefix for generated SVG filenames")
+    parser.add_argument("--figure-path-prefix", default="figures/", help="stable figure paths stored in the JSON report")
     args = parser.parse_args()
     try:
-        summarize(args.input, args.output_dir)
+        summarize(args.input, args.output_dir, report_source=args.report_source,
+            figure_prefix=args.figure_prefix, figure_path_prefix=args.figure_path_prefix)
     except (OSError, ValueError, KeyError) as error:
         print(f"FAIL PR3 summary validation: {error}", file=sys.stderr)
         return 1

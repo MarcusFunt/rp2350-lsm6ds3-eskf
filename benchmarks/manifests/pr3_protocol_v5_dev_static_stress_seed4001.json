@@ -1,0 +1,51 @@
+{
+  "classification": "selected development stress startup diagnostic; not acceptance statistics",
+  "protocol_version": 5,
+  "protocol_sha256": "1318acff98ac2641383ef6a568986e912020a6d4c6debeb145a9abf0f8fa4800",
+  "source_commit": "3efd3f89e244e152364773fb26cfb0c5749dce3d",
+  "working_tree_dirty_at_run": true,
+  "generator_source_sha256": "7e159c915412039da66048d1ee7f80a39c9c03f91f88f40033de112ac0513843",
+  "evaluator_source_sha256": "e44fa1eae87e377d7fa4edf47a11a4d28f7d8e9dfd3312ffbb7dc427aee22c3e",
+  "header_codegen_source_sha256": "8b3124cfcd91fd512756906909449a0d5b515fd793c51efcb9e564a6bb70366b",
+  "runner_source_sha256": "9dad54b6059d3730a83544e5057f6f1da0ff369d35da141ac1d38bb3a5897903",
+  "summarizer_source_sha256": "042e4f3f186680d63cddf2c1f20ca79cb20fda18534c40f5bccc1b9bec028ff9",
+  "compiler": "c++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "split": "development",
+  "seed_range_inclusive": [
+    4001,
+    4001
+  ],
+  "scenarios": [
+    "static"
+  ],
+  "rate_modes": [
+    "uniform_208hz"
+  ],
+  "stress_modes": [
+    "stress"
+  ],
+  "profiles": [
+    "baseline"
+  ],
+  "input_streams": [
+    {
+      "path": "benchmarks/inputs/pr3_protocol_v5_dev_static_stress_seed4001.bin",
+      "sha256": "fa56afd58b4ef2237ab61e6aec9f7c519ab685611447511ac77f3d39141d8dd9",
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    }
+  ],
+  "pr2_gate_status": "OPEN",
+  "sample_diagnostics": {
+    "path": "benchmarks/reports/pr3_protocol_v5_dev_static_stress_seed4001_sample_diagnostics.csv",
+    "sha256": "3fdd5c37c7e955c875448797c8fe4f55150cef3848f738c72bd0a3d53feabcd9",
+    "first_failure_covariance_path": "benchmarks/reports/pr3_protocol_v5_dev_static_stress_seed4001_first_failure_covariance.csv",
+    "first_failure_covariance_sha256": "1ce5dad72a4c1b777193251e0dbeb8053865551d024e8ae428f3bcdca13a1057",
+    "scope": "All 3 ESKF policies remain Aligning for all 3,328 samples; no state propagates and no covariance failure is recorded."
+  },
+  "reproduction_command": "python3 tools/run_pr3_benchmarks.py --protocol benchmarks/scenarios/pr3_scenarios_protocol_v5.json --split development --first-seed 4001 --last-seed 4001 --scenarios static --rate-modes uniform_208hz --stress-modes stress --profiles baseline --output-dir benchmarks/generated/pr3_protocol_v5_dev_static_stress_seed4001 --source-commit 3efd3f89e244e152364773fb26cfb0c5749dce3d --tree-dirty yes --sample-diagnostics",
+  "report_runner_source_sha256": "9dad54b6059d3730a83544e5057f6f1da0ff369d35da141ac1d38bb3a5897903"
+}

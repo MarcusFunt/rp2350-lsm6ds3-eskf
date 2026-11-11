@@ -55,6 +55,9 @@ def main():
     parser.add_argument("--cxx", default=os.environ.get("CXX", "c++"))
     parser.add_argument("--source-commit", default=os.environ.get("PR3_SOURCE_COMMIT"))
     parser.add_argument("--tree-dirty", choices=("yes", "no"), default=os.environ.get("PR3_TREE_DIRTY"))
+    parser.add_argument("--summary-source-label", help="stable source label stored in the summary JSON")
+    parser.add_argument("--figure-prefix", help="prefix for generated SVG filenames")
+    parser.add_argument("--figure-path-prefix", default="figures/", help="stable figure paths stored in the summary JSON")
     parser.add_argument("--sample-diagnostics", action="store_true",
         help="write per-sample state/covariance diagnostics for exactly one selected trial and profile")
     args = parser.parse_args()
@@ -119,6 +122,8 @@ def main():
     else:
         dirty = bool(run(["git", "status", "--porcelain"], capture=True).strip())
     summary_path = output / "pr3_trial_summaries.csv"
+    summary_source_label = args.summary_source_label or summary_path.name
+    figure_prefix = args.figure_prefix or output.name
     sample_trace_path = output / "pr3_sample_diagnostics.csv" if args.sample_diagnostics else None
     manifest = {
         "protocol_version": protocol["protocol_version"],
@@ -199,10 +204,22 @@ def main():
     if not wrote_header:
         raise RuntimeError("no trial summaries were generated")
     run([sys.executable, str(ROOT / "tools/summarize_pr3_benchmarks.py"),
-        "--input", str(summary_path), "--output-dir", str(output)], capture=True)
+        "--input", str(summary_path), "--output-dir", str(output),
+        "--report-source", summary_source_label, "--figure-prefix", figure_prefix,
+        "--figure-path-prefix", args.figure_path_prefix], capture=True)
     manifest["summary_csv_sha256"] = hashlib.sha256(summary_path.read_bytes()).hexdigest()
     manifest["summary_report_sha256"] = hashlib.sha256((output / "pr3_summary.json").read_bytes()).hexdigest()
-    manifest["figure_sha256"] = hashlib.sha256((output / "figures/pr3_tilt_rms.svg").read_bytes()).hexdigest()
+    figure_stem = f"{figure_prefix}_tilt_rms.svg"
+    manifest["figure_sha256"] = hashlib.sha256((output / "figures" / figure_stem).read_bytes()).hexdigest()
+    manifest["additional_figure_sha256"] = {
+        path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in sorted((output / "figures").glob("*.svg")) if path.name != figure_stem
+    }
+    manifest["summarizer_source_sha256"] = hashlib.sha256((ROOT / "tools/summarize_pr3_benchmarks.py").read_bytes()).hexdigest()
+    manifest["runner_source_sha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    manifest["summary_source_label"] = summary_source_label
+    manifest["figure_prefix"] = figure_prefix
+    manifest["figure_path_prefix"] = args.figure_path_prefix
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     print(f"PASS PR3 generated {len(manifest['input_streams'])} shared streams and paired summaries at {summary_path}")
     print(f"PR3 evidence manifest: {manifest_path}")
