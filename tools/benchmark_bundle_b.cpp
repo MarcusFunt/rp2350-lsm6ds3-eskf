@@ -335,7 +335,7 @@ void hash_sample(uint64_t& hash,const Imu& sample) {
     hash_bytes(hash,&sample.gyro_rps.z,sizeof(float));
 }
 
-float tilt_error_deg(Quat est,Quat truth){
+float tilt_error(Quat est,Quat truth){
     Vec3 g_est=est.unrotate({0,0,1});
     Vec3 g_truth=truth.unrotate({0,0,1});
     const float n_est=g_est.norm(),n_truth=g_truth.norm();
@@ -345,6 +345,10 @@ float tilt_error_deg(Quat est,Quat truth){
     g_truth=g_truth*(1.0f/n_truth);
     const float cosine=std::max(-1.0f,std::min(1.0f,dot(g_est,g_truth)));
     return std::acos(cosine)*kRadToDeg;
+}
+
+float tilt_error_deg(Quat est,Quat truth){
+    return tilt_error(est,truth);
 }
 
 // Only 2D world-horizontal attitude error NEES. World yaw is an unobservable
@@ -461,7 +465,7 @@ Comparison simulate(const std::string& scene,unsigned trial_id,unsigned seed,
         if(ekf.health()==Health::Degraded)++a.degraded_samples;
         if(ekf.health()==Health::Fault)++a.faulted_samples;
         if(ekf.control_state_valid()) {
-            const float tilt=tilt_error_deg(ekf.state().orientation,truth);
+            const float tilt=tilt_error(ekf.state().orientation,truth);
             const float yaw=wrap_pi(ekf.state().orientation.yaw()-truth.yaw())*kRadToDeg;
             if(std::isfinite(tilt)&&std::isfinite(yaw)) {
                 a.add(tilt,yaw);
@@ -479,7 +483,7 @@ Comparison simulate(const std::string& scene,unsigned trial_id,unsigned seed,
         if(legacy.health()==Health::Degraded)++c.degraded_samples;
         if(legacy.health()==Health::Fault)++c.faulted_samples;
         if(legacy.control_state_valid()){
-            const float tilt=tilt_error_deg(legacy.state().orientation,truth);
+            const float tilt=tilt_error(legacy.state().orientation,truth);
             const float yaw=wrap_pi(legacy.state().orientation.yaw()-truth.yaw())*kRadToDeg;
             if(std::isfinite(tilt)&&std::isfinite(yaw))c.add(tilt,yaw);
             else c.invalid(true);
@@ -487,7 +491,7 @@ Comparison simulate(const std::string& scene,unsigned trial_id,unsigned seed,
             c.accepted_gravity=legacy.gravity_applied_updates();
         } else c.invalid(legacy.health()!=Health::Aligning);
         if(mahony.ready) {
-            const float tilt=tilt_error_deg(mahony.q,truth);
+            const float tilt=tilt_error(mahony.q,truth);
             const float yaw=wrap_pi(mahony.q.yaw()-truth.yaw())*kRadToDeg;
             if(std::isfinite(tilt)&&std::isfinite(yaw))b.add(tilt,yaw);
             else b.invalid(true);
@@ -681,5 +685,6 @@ int main(int argc,char**argv) {
     }
     std::printf("Wrote %s: %u trials per scenario, 8 scenarios, 3 estimator variants, sensor profile %s; startup bias %s\n",
         output.c_str(),trials,profile_option.c_str(),startup_bias?"enabled":"disabled");
+    return 0;
 }
 #endif
