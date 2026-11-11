@@ -31,6 +31,6 @@ Do not set a controller freshness deadline or timing margin until the intended c
 | RP2350 direct/FIFO/binary cross-build (PR4A head) | PASS | Pinned Pico SDK 2.2.0 run [42922199617](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42922199617), stacked merge commit `7984be8f55dd23453f0786933003bc414785936e` |
 | RP2350 PR4B build | PASS | Pinned Pico SDK 2.2.0 run [42925544474](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42925544474), merge commit `a91abe5ec00028688afea554bad7d19be39f4d70` |
 | PR4C runtime timing/queue hooks and sentinel stack estimate | Implemented; not measured | `main.cpp` debug status fields. Core-1 watermark is a software estimate; core-0 stack and physical timing are unavailable without board captures |
-| PR4C section/map/stack-use reporting | Pending pinned CI | CMake enables link maps and `-fstack-usage`; CI artifacts will report all three firmware variants |
+| PR4C section/map/stack-use reporting | PASS pinned CI | Run [42948475410](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42948475410), artifact [13824515631](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42948475410/artifacts/13824515631); reports/maps/`.su` for all three firmware variants. These are build estimates, not device measurements. |
 | Physical FIFO/DRDY/SPI capture | NOT RUN | hardware unavailable |
 | On-device timing, stack high-water, and long-run loss | NOT MEASURED | hardware unavailable |

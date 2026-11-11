@@ -2,7 +2,7 @@
 
 ## Gate
 
-**PR4C software implementation gate: PASS at source head `43233e2e8e6bba47e27d950a13361fad18c530cf`. Hardware qualification: BLOCKED. PR2 and PR3 algorithm/statistical gates remain OPEN.** Pinned CI passed host validation and all three target builds. This branch is stacked on the updated PR4B branch at `b1d32cd7f1fadcb98ce139ded2cd2028dac22fa5`, which includes the latest PR3 factor-pilot evidence. All target measurements reported here distinguish compiler/build evidence from on-device measurements.
+**PR4C software implementation gate: PASS at source head `54f3ebbfa45e8453562064c6dc348fbe2a3e86f0`. Hardware qualification: BLOCKED. PR2 and PR3 algorithm/statistical gates remain OPEN.** Pinned CI passed host validation and all three target builds. This branch is stacked on PR4B head `a690c343ef374b8727f094370c74250220b667b8`, which includes the latest PR3 evidence and portability fix. All target measurements reported here distinguish compiler/build evidence from on-device measurements.
 
 ## Changes
 
@@ -18,8 +18,8 @@
 
 - Bundle C host checks cover v1/v2 record compatibility, version-2 loss metadata, one injected sequence gap, calibration mismatch, CRC rejection, truncated-record rejection, and resource-report parser regression tests.
 - Local Bundle A/B/C host and sanitizer suites pass on the corrected source; the resource-report parser regression tests pass as part of Bundle C.
-- Pinned Pico SDK 2.2.0 run [42931427939](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42931427939) passed host validation and direct-register, FIFO, and binary-FIFO ARM builds at the source head above. Artifact [13815629716](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42931427939/artifacts/13815629716) contains linker maps, `.su`, ELF/BIN/UF2, and JSON resource reports.
-- The CI artifact reports direct/FIFO/binary flash images of `78,324/80,956/69,384 B`, static `.data + .bss` of `35,268/35,232/34,348 B`, and largest per-function frames of `7,560 B`. Corrected JSON and raw `.su` records identify the largest frame as `void inertial::Eskf15::predict(inertial::Vec3, inertial::Vec3, float)` on all three variants. Core 1 is assigned a 16,384-byte stack, leaving `8,824 B` after that single frame before nested calls, interrupts, or other stack use; actual high-water and whole-call-chain requirements remain unmeasured.
+- Pinned Pico SDK 2.2.0 run [42948475410](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42948475410) passed host validation and direct-register, FIFO, and binary-FIFO ARM builds at the source head above. Artifact [13824515631](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42948475410/artifacts/13824515631) contains linker maps, `.su`, ELF/BIN/UF2, and JSON resource reports.
+- The latest CI artifact reports direct/FIFO/binary flash images of `87,724/90,356/80,160 B`, static `.data + .bss` of `36,172/36,136/36,140 B`, and largest per-function frames of `9,496 B`. Corrected JSON and raw `.su` records identify the largest frame as `void inertial::Eskf15::predict(inertial::Vec3, inertial::Vec3, float)` on all three variants. Core 1 is assigned a 16,384-byte stack, leaving `6,888 B` after that single frame before nested calls, interrupts, or other stack use; actual high-water and whole-call-chain requirements remain unmeasured.
 - Physical LSM6DS3/Pico 2 timing, stack high-water, acquisition loss, and controller freshness remain `NOT_MEASURED_ON_DEVICE` / `BLOCKED_HARDWARE`.
 
 ## Acceptance status
