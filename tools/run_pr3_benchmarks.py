@@ -41,22 +41,36 @@ def compiler_version(compiler):
 
 
 def main():
-    protocol = load_protocol(PROTOCOL)
-    seeds = protocol["seeds"]
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--protocol", type=Path, default=PROTOCOL,
+        help="versioned PR3 protocol JSON (defaults to the frozen v3 protocol)")
     parser.add_argument("--split", choices=("development", "held_out", "final_confirmation"), default="development")
     parser.add_argument("--first-seed", type=int)
     parser.add_argument("--last-seed", type=int)
-    parser.add_argument("--scenarios", default=",".join(s["id"] for s in protocol["scenarios"]))
-    parser.add_argument("--rate-modes", default=",".join(m["id"] for m in protocol["sampling"]["rate_modes"]))
+    parser.add_argument("--scenarios")
+    parser.add_argument("--rate-modes")
     parser.add_argument("--stress-modes", default="nominal,stress")
     parser.add_argument("--profiles", default="baseline")
-    parser.add_argument("--output-dir", default=str(ROOT / "benchmarks/generated/pr3_protocol_v3"))
+    parser.add_argument("--output-dir")
     parser.add_argument("--cxx", default=os.environ.get("CXX", "c++"))
     parser.add_argument("--source-commit", default=os.environ.get("PR3_SOURCE_COMMIT"))
     parser.add_argument("--tree-dirty", choices=("yes", "no"), default=os.environ.get("PR3_TREE_DIRTY"))
+    parser.add_argument("--summary-source-label", help="stable source label stored in the summary JSON")
+    parser.add_argument("--figure-prefix", help="prefix for generated SVG filenames")
+    parser.add_argument("--figure-path-prefix", default="figures/", help="stable figure paths stored in the summary JSON")
+    parser.add_argument("--sample-diagnostics", action="store_true",
+        help="write per-sample state/covariance diagnostics for exactly one selected trial and profile")
     args = parser.parse_args()
 
+    protocol_path = args.protocol.resolve()
+    protocol = load_protocol(protocol_path)
+    seeds = protocol["seeds"]
+    if args.scenarios is None:
+        args.scenarios = ",".join(s["id"] for s in protocol["scenarios"])
+    if args.rate_modes is None:
+        args.rate_modes = ",".join(m["id"] for m in protocol["sampling"]["rate_modes"])
+    if args.output_dir is None:
+        args.output_dir = str(ROOT / f"benchmarks/generated/pr3_protocol_v{protocol['protocol_version']}")
     seed_range = seeds[args.split]
     if args.first_seed is None:
         args.first_seed = seed_range["first_seed"]
@@ -78,6 +92,11 @@ def main():
         parser.error("--stress-modes must contain nominal and/or stress")
     if not profiles or any(value not in PROFILES for value in profiles):
         parser.error(f"--profiles must be selected from {', '.join(PROFILES)}")
+    if args.sample_diagnostics and not (
+        len(scenario_ids)==len(rate_ids)==len(stress_modes)==len(profiles)==1
+        and args.first_seed==args.last_seed
+    ):
+        parser.error("--sample-diagnostics requires exactly one scenario, rate, stress mode, seed, and profile")
 
     output = Path(args.output_dir).resolve()
     input_dir = output / "inputs"
@@ -88,7 +107,7 @@ def main():
     if not compiler:
         parser.error("C++ compiler command is empty")
     header = build_dir / "pr3_scenario_protocol.hpp"
-    run([sys.executable, str(ROOT / "tools/pr3_generate_scenario_header.py"), str(PROTOCOL), str(header)])
+    run([sys.executable, str(ROOT / "tools/pr3_generate_scenario_header.py"), str(protocol_path), str(header)])
     generator = build_dir / "pr3_generate_inputs"
     evaluator = build_dir / "pr3_evaluate_stream"
     common = [*compiler, "-std=c++17", "-O2", "-Wall", "-Wextra", "-Wpedantic", "-Werror", f"-I{build_dir}"]
@@ -103,9 +122,12 @@ def main():
     else:
         dirty = bool(run(["git", "status", "--porcelain"], capture=True).strip())
     summary_path = output / "pr3_trial_summaries.csv"
+    summary_source_label = args.summary_source_label or summary_path.name
+    figure_prefix = args.figure_prefix or output.name
+    sample_trace_path = output / "pr3_sample_diagnostics.csv" if args.sample_diagnostics else None
     manifest = {
         "protocol_version": protocol["protocol_version"],
-        "protocol_sha256": hashlib.sha256(PROTOCOL.read_bytes()).hexdigest(),
+        "protocol_sha256": hashlib.sha256(protocol_path.read_bytes()).hexdigest(),
         "source_commit": source_sha,
         "working_tree_dirty_at_run": dirty,
         "generator_source_sha256": hashlib.sha256((ROOT / "tools/pr3_generate_inputs.cpp").read_bytes()).hexdigest(),
@@ -150,13 +172,16 @@ def main():
                                 "startup_knowledge": startup,
                                 "startup_gyro_bias_calibration": "ON" if calibration else "OFF",
                                 "runtime_aid": aid,
-                                "evaluated_estimators": ["eskf_conservative", "eskf_legacy", "eskf_confirmed_only"],
+                                "evaluated_estimators": ["eskf_conservative", "eskf_legacy", "eskf_confirmed_only", "mahony", "gyro_only"],
                             }
                             config_sha = hashlib.sha256(json.dumps(config, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
                             trial_path = build_dir / "trial.csv"
-                            run([str(evaluator), str(input_path), str(trial_path), args.split,
+                            evaluate_command=[str(evaluator), str(input_path), str(trial_path), args.split,
                                 sensor_input, startup, "1" if calibration else "0", aid,
-                                source_sha, config_sha, input_sha], capture=True)
+                                source_sha, config_sha, input_sha]
+                            if sample_trace_path is not None:
+                                evaluate_command.extend(["--sample-trace", str(sample_trace_path)])
+                            run(evaluate_command, capture=True)
                             with trial_path.open(newline="", encoding="utf-8") as trial_file:
                                 reader = csv.DictReader(trial_file)
                                 if not wrote_header:
@@ -166,14 +191,35 @@ def main():
                                 for row in reader:
                                     writer.writerow(row)
         manifest_path = output / "pr3_run_manifest.json"
+        if sample_trace_path is not None:
+            covariance_trace_path = Path(str(sample_trace_path)+".first_failure_covariance.csv")
+            manifest["sample_diagnostics"] = {
+                "path": str(sample_trace_path.relative_to(output)),
+                "sha256": hashlib.sha256(sample_trace_path.read_bytes()).hexdigest(),
+                "first_failure_covariance_path": str(covariance_trace_path.relative_to(output)),
+                "first_failure_covariance_sha256": hashlib.sha256(covariance_trace_path.read_bytes()).hexdigest(),
+                "scope": "one selected development/held-out/confirmation trial; full covariance only at first failure per estimator",
+            }
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     if not wrote_header:
         raise RuntimeError("no trial summaries were generated")
     run([sys.executable, str(ROOT / "tools/summarize_pr3_benchmarks.py"),
-        "--input", str(summary_path), "--output-dir", str(output)], capture=True)
+        "--input", str(summary_path), "--output-dir", str(output),
+        "--report-source", summary_source_label, "--figure-prefix", figure_prefix,
+        "--figure-path-prefix", args.figure_path_prefix], capture=True)
     manifest["summary_csv_sha256"] = hashlib.sha256(summary_path.read_bytes()).hexdigest()
     manifest["summary_report_sha256"] = hashlib.sha256((output / "pr3_summary.json").read_bytes()).hexdigest()
-    manifest["figure_sha256"] = hashlib.sha256((output / "figures/pr3_tilt_rms.svg").read_bytes()).hexdigest()
+    figure_stem = f"{figure_prefix}_tilt_rms.svg"
+    manifest["figure_sha256"] = hashlib.sha256((output / "figures" / figure_stem).read_bytes()).hexdigest()
+    manifest["additional_figure_sha256"] = {
+        path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in sorted((output / "figures").glob("*.svg")) if path.name != figure_stem
+    }
+    manifest["summarizer_source_sha256"] = hashlib.sha256((ROOT / "tools/summarize_pr3_benchmarks.py").read_bytes()).hexdigest()
+    manifest["runner_source_sha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    manifest["summary_source_label"] = summary_source_label
+    manifest["figure_prefix"] = figure_prefix
+    manifest["figure_path_prefix"] = args.figure_path_prefix
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     print(f"PASS PR3 generated {len(manifest['input_streams'])} shared streams and paired summaries at {summary_path}")
     print(f"PR3 evidence manifest: {manifest_path}")
