@@ -592,17 +592,22 @@ private:
             for(int k=0;k<kDim;k++) a2+=A[i][k]*A[k][j];
             Phi[i][j]=(i==j ? 1.0f:0.0f)+A[i][j]*dt+0.5f*a2*dt*dt;
         }
-        float AP[kDim][kDim]={};
+        // P may be severely ill-conditioned while unobserved global yaw
+        // uncertainty couples into position. Keep the congruence transform
+        // in double precision so FP32 cancellation cannot turn a valid
+        // covariance into an indefinite one; P_ remains FP32 at the API/state
+        // boundary and the process-noise integral below remains unchanged.
+        double AP[kDim][kDim]={};
         float newP[kDim][kDim]={};
         for(int i=0;i<kDim;i++) for(int j=0;j<kDim;j++) {
-            float sum=0;
-            for(int k=0;k<kDim;k++) sum+=Phi[i][k]*P_[k][j];
+            double sum=0.0;
+            for(int k=0;k<kDim;k++) sum+=static_cast<double>(Phi[i][k])*P_[k][j];
             AP[i][j]=sum;
         }
         for(int i=0;i<kDim;i++) for(int j=0;j<kDim;j++) {
-            float sum=0;
+            double sum=0.0;
             for(int k=0;k<kDim;k++) sum+=AP[i][k]*Phi[j][k];
-            newP[i][j]=sum;
+            newP[i][j]=static_cast<float>(sum);
         }
         // Q_d = integral_0^dt Phi(tau) G Qc G' Phi(tau)' d tau.
         // Three-point Gauss-Legendre integration with Phi(tau) approximated
