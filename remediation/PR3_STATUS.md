@@ -12,9 +12,9 @@ Each split covers eight scenarios at uniform 208 Hz, nominal stress transform, I
 
 | Split | Seeds | Incomplete rows | Estimator completion | Trial CSV SHA-256 | Summary JSON SHA-256 | Evidence |
 |---|---|---:|---:|---|---|---|
-| Development | 4001–4100 | 0 / 4,000 | 800 / 800 per estimator | `30709092ffcbecfd2a96bd524f9faed77bb6e1d68d2d965643d27ad2b294300b` | `b4440b0ec5e036a6ecd8259907b2e47d1db14170a1a18963fd3d24d514fc5cdd` | [report](../benchmarks/reports/pr3_protocol_v5_dev100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v5_dev100_208_nominal.json) |
-| Held-out | 9001–9100 | 0 / 4,000 | 800 / 800 per estimator | `bfbe1e3d89635992b080370e677e8e7e00b65025d08a843d3e5ee4a7a83a7083` | `fd818b5045a86ec5e39d0f89624e8a8311abeed5bb31da4d8a0bc363e69258e0` | [report](../benchmarks/reports/pr3_protocol_v5_heldout100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v5_heldout100_208_nominal.json) |
-| Final confirmation | 10001–10100 | 0 / 4,000 | 800 / 800 per estimator | `92b1d7a8c3797a6a9d96ee185f0f09ad319c9c4a1672e4d98dc7899314c367be` | `6ffc42f200f00f0a02dcbe17d1594fee3b92fec9d9e55bb440e4b86b80f2fe46` | [report](../benchmarks/reports/pr3_protocol_v5_final100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v5_final100_208_nominal.json) |
+| Development | 4001–4100 | 0 / 4,000 | 800 / 800 per estimator | `30709092ffcbecfd2a96bd524f9faed77bb6e1d68d2d965643d27ad2b294300b` | `696fcef287d596de2cca3dca6a1afc5e54752891ea52f9bdd871773f976bef58` | [report](../benchmarks/reports/pr3_protocol_v5_dev100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v5_dev100_208_nominal.json) |
+| Held-out | 9001–9100 | 0 / 4,000 | 800 / 800 per estimator | `bfbe1e3d89635992b080370e677e8e7e00b65025d08a843d3e5ee4a7a83a7083` | `5728f19d2e05cf74020af856a49d30549e8de5c8f1d228a3696db5798a00e33e` | [report](../benchmarks/reports/pr3_protocol_v5_heldout100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v5_heldout100_208_nominal.json) |
+| Final confirmation | 10001–10100 | 0 / 4,000 | 800 / 800 per estimator | `92b1d7a8c3797a6a9d96ee185f0f09ad319c9c4a1672e4d98dc7899314c367be` | `2d37ea5ca238faab63184c5f0114c7a64c9b510a4443df7b9d08322133cc6493` | [report](../benchmarks/reports/pr3_protocol_v5_final100_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v5_final100_208_nominal.json) |
 
 The simple mean of per-trial RMS values across all eight scenario groups is consistent across the three splits:
 

@@ -11,7 +11,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from validate_pr3_scenario_protocol import load_protocol
+from validate_pr3_scenario_protocol import load_protocol, protocol_source_bytes
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -127,7 +127,7 @@ def main():
     sample_trace_path = output / "pr3_sample_diagnostics.csv" if args.sample_diagnostics else None
     manifest = {
         "protocol_version": protocol["protocol_version"],
-        "protocol_sha256": hashlib.sha256(protocol_path.read_bytes()).hexdigest(),
+        "protocol_sha256": hashlib.sha256(protocol_source_bytes(protocol_path)).hexdigest(),
         "source_commit": source_sha,
         "working_tree_dirty_at_run": dirty,
         "generator_source_sha256": hashlib.sha256((ROOT / "tools/pr3_generate_inputs.cpp").read_bytes()).hexdigest(),
@@ -200,7 +200,7 @@ def main():
                 "first_failure_covariance_sha256": hashlib.sha256(covariance_trace_path.read_bytes()).hexdigest(),
                 "scope": "one selected development/held-out/confirmation trial; full covariance only at first failure per estimator",
             }
-        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
     if not wrote_header:
         raise RuntimeError("no trial summaries were generated")
     run([sys.executable, str(ROOT / "tools/summarize_pr3_benchmarks.py"),
@@ -220,7 +220,7 @@ def main():
     manifest["summary_source_label"] = summary_source_label
     manifest["figure_prefix"] = figure_prefix
     manifest["figure_path_prefix"] = args.figure_path_prefix
-    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(f"PASS PR3 generated {len(manifest['input_streams'])} shared streams and paired summaries at {summary_path}")
     print(f"PR3 evidence manifest: {manifest_path}")
     return 0

@@ -95,7 +95,7 @@ def box_svg(groups, destination):
     elements.append('<text transform="translate(22 320) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="13">Tilt RMS (degrees), conditional on valid state</text>')
     elements.append('</svg>')
     destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text("\n".join(elements) + "\n", encoding="utf-8")
+    destination.write_text("\n".join(elements) + "\n", encoding="utf-8", newline="\n")
 
 
 def metric_box_svg(groups, destination, title, ylabel, *, maximum=None):
@@ -147,7 +147,7 @@ def metric_box_svg(groups, destination, title, ylabel, *, maximum=None):
     elements.append(f'<text transform="translate(22 320) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="13">{html.escape(ylabel)}</text>')
     elements.append('</svg>')
     destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text("\n".join(elements) + "\n", encoding="utf-8")
+    destination.write_text("\n".join(elements) + "\n", encoding="utf-8", newline="\n")
 
 
 def summarize(input_path, output_dir, *, report_source=None, figure_prefix="pr3", figure_path_prefix="figures/"):
@@ -275,7 +275,9 @@ def summarize(input_path, output_dir, *, report_source=None, figure_prefix="pr3"
         figure_names.append(output_name)
         metric_box_svg(figure_groups[column], figure_dir / output_name, title, ylabel, maximum=maximum)
     report["figures"] = [f"{figure_path_prefix}{name}" for name in figure_names]
-    (output_dir / "pr3_summary.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    (output_dir / "pr3_summary.json").write_text(
+        json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8", newline="\n"
+    )
     print(f"PASS PR3 summary: {len(rows)} trial rows, {len(failures)} incomplete trials, min seeds/group={minimum_seed_count}; gate remains OPEN")
     return report
 
