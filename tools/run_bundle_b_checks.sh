@@ -7,6 +7,8 @@ CXX="${CXX:-g++}"
 FLAGS=(-std=c++17 -UNDEBUG -O2 -Wall -Wextra -Wpedantic -Werror)
 "$CXX" "${FLAGS[@]}" tests/test_bundle_b.cpp -o "$OUT/test_bundle_b"
 "$OUT/test_bundle_b"
+"$CXX" "${FLAGS[@]}" tests/test_pr2_recovery.cpp -o "$OUT/test_pr2_recovery"
+"$OUT/test_pr2_recovery"
 python3 tests/test_summarizer_protocol.py
 "$CXX" "${FLAGS[@]}" tools/benchmark_bundle_b.cpp -o "$OUT/benchmark_bundle_b"
 "$OUT/benchmark_bundle_b" --trials 5 --seed 20261110 --output "$OUT/no_bias.csv"

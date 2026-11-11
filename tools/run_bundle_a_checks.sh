@@ -11,6 +11,8 @@ for test in test_eskf15 test_math test_noise; do
 done
 "$CXX" "${FLAGS[@]}" tests/test_benchmark_tilt_metric.cpp -o "$OUT/test_benchmark_tilt_metric"
 "$OUT/test_benchmark_tilt_metric"
+"$CXX" "${FLAGS[@]}" tests/test_eskf_reset_oracle.cpp -o "$OUT/test_eskf_reset_oracle"
+"$OUT/test_eskf_reset_oracle"
 "$CXX" "${FLAGS[@]}" tools/replay_imu_csv.cpp -o "$OUT/replay"
 python3 tools/create_fixture.py > /dev/null
 "$OUT/replay" fixtures/stationary_then_yaw.csv > "$OUT/output.csv"

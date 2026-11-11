@@ -130,6 +130,8 @@ struct Settings {
 
 };
 
+// Operational status only: alignment, continuity and numeric/input faults.
+// Nominal does not certify attitude accuracy, observability or control safety.
 enum class Health : uint8_t { Aligning=0, Nominal=1, Degraded=2, Fault=3 };
 
 struct AidingStamp {
@@ -173,6 +175,7 @@ public:
         external_stationary_confirmed_=false;
         gravity_suppressed_updates_=0;
         gravity_applied_updates_=0;
+        external_stationary_conflicts_=0;
         init_last_accel_={};
         health_=Health::Aligning;
         last_nis_=NAN;
@@ -329,19 +332,30 @@ public:
             gn<config_.static_gyro_limit &&
             step<config_.static_accel_step_limit;
         static_count_ = candidate ? static_count_+1 : 0;
-        stationary_ = static_count_ >= config_.static_min_samples;
+        // Treat a zero dwell setting as one consistent sample. A direct
+        // comparison with zero would make every sample, including an obvious
+        // motion contradiction, appear stationary.
+        const unsigned stationary_dwell=config_.static_min_samples ?
+            config_.static_min_samples : 1u;
+        stationary_ = static_count_ >= stationary_dwell;
         // The independent stationarity hint may come from e.g. a verified
         // stationary calibration rig. The normal IMU heuristic cannot prove
         // stationary motion during a sustained translational acceleration.
+        // External stationarity is trusted only when the current IMU sample
+        // does not visibly contradict it. This catches large acceleration,
+        // rapid rotation and discontinuities; it cannot detect a constant
+        // in-tolerance acceleration, which remains physically ambiguous.
+        const bool external_stationary_consistent=external_stationary_confirmed_ && candidate;
+        if(external_stationary_confirmed_ && !candidate) ++external_stationary_conflicts_;
         const bool allow_gravity = (config_.gravity_policy==GravityPolicy::ConfirmedOnly) ?
-            external_stationary_confirmed_ : (stationary_ || external_stationary_confirmed_);
+            external_stationary_consistent : (stationary_ || external_stationary_consistent);
         if (allow_gravity && ++aid_count_ >= config_.aid_every_samples) {
             aid_count_=0;
             // A true external confirmation permits gravity realignment even
             // when the estimate has large roll/pitch error. Without one,
             // reject large innovations rather than following apparent gravity.
             correct_gravity_direction(imu.accel_mps2,an,step);
-            if (config_.heuristic_zero_rate && (stationary_ || external_stationary_confirmed_))
+            if (config_.heuristic_zero_rate && (stationary_ || external_stationary_consistent))
                 correct_zero_angular_rate(imu.gyro_rps,config_.zero_rate_sigma);
         }
         if (!allow_gravity) aid_count_=0;
@@ -420,6 +434,7 @@ public:
     bool startup_bias_calibrated() const { return startup_bias_calibrated_; }
     uint32_t gravity_applied_updates() const { return gravity_applied_updates_; }
     uint32_t gravity_suppressed_updates() const { return gravity_suppressed_updates_; }
+    uint32_t external_stationary_conflicts() const { return external_stationary_conflicts_; }
     bool imu_stationary_candidate() const { return stationary_; }
     uint32_t rejected_updates() const { return rejected_updates_; }
     uint32_t accepted_updates() const { return accepted_updates_; }
@@ -434,6 +449,8 @@ public:
     uint64_t last_received_timestamp_us() const { return last_time_us_; }
     Health health() const { return health_; }
     bool reset_required() const { return reset_required_; }
+    // True means the state is initialized, current and not fault-latched.
+    // It is an availability/freshness contract, not an accuracy guarantee.
     bool control_state_valid() const {
         return initialized_ && !reset_required_ && health_!=Health::Fault
             && state_time_us_==last_time_us_;
@@ -441,20 +458,21 @@ public:
     float last_nis() const { return last_nis_; }
     float last_nis_gate() const { return last_nis_gate_; }
     bool covariance_positive_definite() const {
-        // Cholesky is a diagnostic, not a replacement for an invariant filter.
-        float L[kDim][kDim]={};
+        // Keep the covariance and PD check in FP64. Repeated propagation under
+        // an unobservable yaw gauge can make its FP32 congruence numerically indefinite.
+        double L[kDim][kDim]={};
         for(int i=0;i<kDim;i++) for(int j=0;j<=i;j++) {
-            float sum=P_[i][j];
+            double sum=P_[i][j];
             for(int k=0;k<j;k++) sum-=L[i][k]*L[j][k];
-            if(i==j) { if(!std::isfinite(sum)||sum<=1e-12f) return false; L[i][j]=std::sqrt(sum); }
+            if(i==j) { if(!std::isfinite(sum)||sum<=0.0) return false; L[i][j]=std::sqrt(sum); }
             else L[i][j]=sum/L[j][j];
         }
         return true;
     }
-    float variance(int index) const {
+    double variance(int index) const {
         return (index>=0 && index<kDim) ? P_[index][index] : NAN;
     }
-    float covariance(int row,int col) const { return P_[row][col]; }
+    double covariance(int row,int col) const { return P_[row][col]; }
     // Audit interface: continuous right-error transition Jacobian with a
     // specific linearization quaternion and debiased IMU input. Matrix order
     // [p,v,theta,ba,bg]. No heap allocations, deterministic execution.
@@ -472,6 +490,31 @@ public:
             A[6+i][6+j]=-Sw[i][j];
         }
         for(int i=0;i<3;i++) A[6+i][12+i]=-1;
+    }
+
+    // Exact right-error covariance reset Jacobian for q <- q*Exp(dtheta).
+    // With a right-multiplicative error, the reset is
+    // Exp(-dtheta)*Exp(dtheta+epsilon), whose first derivative is J_r(dtheta).
+    // The Taylor branch avoids cancellation for small corrections.
+    static void attitude_reset_jacobian(Vec3 dtheta,float G[3][3]) {
+        const float theta2=dot(dtheta,dtheta);
+        const float theta=std::sqrt(theta2);
+        float a,b;
+        if(theta2<1.0e-4f) {
+            const float theta4=theta2*theta2;
+            a=0.5f-theta2/24.0f+theta4/720.0f;
+            b=1.0f/6.0f-theta2/120.0f+theta4/5040.0f;
+        } else {
+            a=(1.0f-std::cos(theta))/theta2;
+            b=(theta-std::sin(theta))/(theta2*theta);
+        }
+        const float S[3][3]={{0.0f,-dtheta.z,dtheta.y},
+            {dtheta.z,0.0f,-dtheta.x},{-dtheta.y,dtheta.x,0.0f}};
+        for(int i=0;i<3;i++) for(int j=0;j<3;j++) {
+            float s2=0.0f;
+            for(int k=0;k<3;k++) s2+=S[i][k]*S[k][j];
+            G[i][j]=(i==j?1.0f:0.0f)-a*S[i][j]+b*s2;
+        }
     }
 
 
@@ -550,15 +593,20 @@ private:
             for(int k=0;k<kDim;k++) a2+=A[i][k]*A[k][j];
             Phi[i][j]=(i==j ? 1.0f:0.0f)+A[i][j]*dt+0.5f*a2*dt*dt;
         }
-        float AP[kDim][kDim]={};
-        float newP[kDim][kDim]={};
+        // P may be severely ill-conditioned while unobserved global yaw
+        // uncertainty couples into position. Keep the congruence transform
+        // in double precision so FP32 cancellation cannot turn a valid
+        // covariance into an indefinite one; the nominal state and IMU model
+        // remain FP32, and the process-noise integral below remains unchanged.
+        double AP[kDim][kDim]={};
+        double newP[kDim][kDim]={};
         for(int i=0;i<kDim;i++) for(int j=0;j<kDim;j++) {
-            float sum=0;
-            for(int k=0;k<kDim;k++) sum+=Phi[i][k]*P_[k][j];
+            double sum=0.0;
+            for(int k=0;k<kDim;k++) sum+=static_cast<double>(Phi[i][k])*P_[k][j];
             AP[i][j]=sum;
         }
         for(int i=0;i<kDim;i++) for(int j=0;j<kDim;j++) {
-            float sum=0;
+            double sum=0.0;
             for(int k=0;k<kDim;k++) sum+=AP[i][k]*Phi[j][k];
             newP[i][j]=sum;
         }
@@ -626,11 +674,13 @@ public:
             for(int j=0;j<kDim;j++) H[i][j]=0;
         }
         float Sh[3][3];skew(predicted,Sh);
-        const float h[3]={predicted.x,predicted.y,predicted.z};
+        const float u[3]={measured.x,measured.y,measured.z};
         for(int i=0;i<3;i++) for(int j=0;j<3;j++) {
             H[i][6+j]=Sh[i][j];
             // r = normalized(accel - ba) - h(q), and H = -dr/dx.
-            H[i][9+j]=((i==j?1.0f:0.0f)-h[i]*h[j])/magnitude;
+            // The bias derivative follows the measured direction, including
+            // at finite innovation; using h_pred is valid only at zero residual.
+            H[i][9+j]=((i==j?1.0f:0.0f)-u[i]*u[j])/magnitude;
         }
         return true;
     }
@@ -675,93 +725,89 @@ private:
     bool update(const float residual[3], const float H[3][kDim],
                 int m,float sigma,float nis_gate) {
         if (!valid_sigma(sigma)) return false;
-        float PHt[kDim][3]={};
+        double PHt[kDim][3]={};
         for(int i=0;i<kDim;i++) for(int j=0;j<m;j++) {
-            float s=0;
+            double s=0.0;
             for(int k=0;k<kDim;k++) s+=P_[i][k]*H[j][k];
             PHt[i][j]=s;
         }
-        float S[3][3]={};
+        double S[3][3]={};
         for(int i=0;i<m;i++) for(int j=0;j<m;j++) {
-            float s=(i==j)?sigma*sigma:0.0f;
+            double s=(i==j)?static_cast<double>(sigma)*sigma:0.0;
             for(int k=0;k<kDim;k++) s+=H[i][k]*PHt[k][j];
             S[i][j]=s;
         }
         // SPD solve with Cholesky; reject ill-conditioned/nonphysical S.
-        float L[3][3]={};
+        double L[3][3]={};
         for(int i=0;i<m;i++) for(int j=0;j<=i;j++) {
-            float v=S[i][j];
+            double v=S[i][j];
             for(int k=0;k<j;k++) v-=L[i][k]*L[j][k];
             if(i==j) {
-                if(!std::isfinite(v)||v<=1e-12f) {health_=Health::Fault;return false;}
+                if(!std::isfinite(v)||v<=1e-12) {health_=Health::Fault;return false;}
                 L[i][j]=std::sqrt(v);
             } else L[i][j]=v/L[j][j];
         }
-        float S_inv[3][3]={};
+        double S_inv[3][3]={};
         for(int col=0;col<m;col++) {
-            float y[3]={};
+            double y[3]={};
             for(int i=0;i<m;i++) {
-                float v=(i==col?1.0f:0.0f);
+                double v=(i==col?1.0:0.0);
                 for(int k=0;k<i;k++) v-=L[i][k]*y[k];
                 y[i]=v/L[i][i];
             }
             for(int i=m-1;i>=0;i--) {
-                float v=y[i];
+                double v=y[i];
                 for(int k=i+1;k<m;k++) v-=L[k][i]*S_inv[k][col];
                 S_inv[i][col]=v/L[i][i];
             }
         }
-        float nis=0;
+        double nis=0;
         for(int i=0;i<m;i++) for(int j=0;j<m;j++) nis+=residual[i]*S_inv[i][j]*residual[j];
-        last_nis_=nis;
+        last_nis_=static_cast<float>(nis);
         last_nis_gate_=nis_gate;
         if (!std::isfinite(nis) || nis>nis_gate) { ++rejected_updates_; return false; }
-        float K[kDim][3]={};
+        double K[kDim][3]={};
         for(int i=0;i<kDim;i++) for(int j=0;j<m;j++)
             for(int k=0;k<m;k++) K[i][j]+=PHt[i][k]*S_inv[k][j];
-        float dx[kDim]={};
+        double dx[kDim]={};
         for(int i=0;i<kDim;i++) for(int j=0;j<m;j++) dx[i]+=K[i][j]*residual[j];
         for(int i=0;i<kDim;i++) if(!std::isfinite(dx[i])) return false;
 
-        // Joseph stabilized covariance update to preserve PSD in FP32.
-        float J[kDim][kDim]={};
+        // Joseph stabilized update using FP64 covariance intermediates.
+        double J[kDim][kDim]={};
         for(int i=0;i<kDim;i++) for(int j=0;j<kDim;j++) {
-            float kh=0;
+            double kh=0.0;
             for(int r=0;r<m;r++) kh+=K[i][r]*H[r][j];
-            J[i][j]=(i==j ? 1.0f:0.0f)-kh;
+            J[i][j]=(i==j ? 1.0:0.0)-kh;
         }
-        float JP[kDim][kDim]={};
+        double JP[kDim][kDim]={};
         for(int i=0;i<kDim;i++) for(int j=0;j<kDim;j++)
             for(int k=0;k<kDim;k++) JP[i][j]+=J[i][k]*P_[k][j];
-        float next[kDim][kDim]={};
+        double next[kDim][kDim]={};
         for(int i=0;i<kDim;i++) for(int j=0;j<kDim;j++) {
-            float val=0;
+            double val=0.0;
             for(int k=0;k<kDim;k++) val+=JP[i][k]*J[j][k];
-            for(int r=0;r<m;r++) val+=K[i][r]*K[j][r]*sigma*sigma;
+            for(int r=0;r<m;r++) val+=K[i][r]*K[j][r]*static_cast<double>(sigma)*sigma;
             next[i][j]=val;
         }
         for(int i=0;i<kDim;i++) for(int j=0;j<kDim;j++) P_[i][j]=next[i][j];
 
-        state_.position=state_.position+Vec3{dx[0],dx[1],dx[2]};
-        state_.velocity=state_.velocity+Vec3{dx[3],dx[4],dx[5]};
-        Vec3 dtheta{dx[6],dx[7],dx[8]};
+        state_.position=state_.position+Vec3{static_cast<float>(dx[0]),static_cast<float>(dx[1]),static_cast<float>(dx[2])};
+        state_.velocity=state_.velocity+Vec3{static_cast<float>(dx[3]),static_cast<float>(dx[4]),static_cast<float>(dx[5])};
+        Vec3 dtheta{static_cast<float>(dx[6]),static_cast<float>(dx[7]),static_cast<float>(dx[8])};
         state_.orientation=state_.orientation*Quat::exp(dtheta);
         state_.orientation.normalize();
-        state_.accel_bias=state_.accel_bias+Vec3{dx[9],dx[10],dx[11]};
-        state_.gyro_bias=state_.gyro_bias+Vec3{dx[12],dx[13],dx[14]};
+        state_.accel_bias=state_.accel_bias+Vec3{static_cast<float>(dx[9]),static_cast<float>(dx[10]),static_cast<float>(dx[11])};
+        state_.gyro_bias=state_.gyro_bias+Vec3{static_cast<float>(dx[12]),static_cast<float>(dx[13]),static_cast<float>(dx[14])};
 
-        // Right-multiplicative attitude-error reset Jacobian:
-        // G_theta = I - 0.5*[dtheta]x, first-order small-angle approximation.
-        float Sd[3][3];skew(dtheta,Sd);
         float G[3][3];
-        for(int i=0;i<3;i++) for(int j=0;j<3;j++)
-            G[i][j]=(i==j ? 1.0f : 0.0f)-.5f*Sd[i][j];
+        attitude_reset_jacobian(dtheta,G);
         for(int j=0;j<kDim;j++) {
-            const float old[3]={P_[6][j],P_[7][j],P_[8][j]};
+            const double old[3]={P_[6][j],P_[7][j],P_[8][j]};
             for(int i=0;i<3;i++) P_[6+i][j]=G[i][0]*old[0]+G[i][1]*old[1]+G[i][2]*old[2];
         }
         for(int i=0;i<kDim;i++) {
-            const float old[3]={P_[i][6],P_[i][7],P_[i][8]};
+            const double old[3]={P_[i][6],P_[i][7],P_[i][8]};
             for(int j=0;j<3;j++) P_[i][6+j]=G[j][0]*old[0]+G[j][1]*old[1]+G[j][2]*old[2];
         }
         symmetrize();
@@ -770,9 +816,9 @@ private:
     }
     void symmetrize() {
         for(int i=0;i<kDim;i++) {
-            if (P_[i][i]<1e-12f) P_[i][i]=1e-12f;
+            if (P_[i][i]<1e-12) P_[i][i]=1e-12;
             for(int j=i+1;j<kDim;j++) {
-                const float avg=.5f*(P_[i][j]+P_[j][i]);
+                const double avg=.5*(P_[i][j]+P_[j][i]);
                 P_[i][j]=avg;P_[j][i]=avg;
             }
         }
@@ -780,7 +826,7 @@ private:
 
     Settings config_;
     State state_{};
-    float P_[kDim][kDim]{};
+    double P_[kDim][kDim]{};
     bool initialized_=false,stationary_=false,have_previous_accel_=false,reset_required_=false;
     uint64_t last_time_us_=0;   // newest received sensor time (also after rejected gap)
     uint64_t state_time_us_=0;  // latest time at which actual prediction ran
@@ -797,5 +843,6 @@ private:
     Vec3 init_gyro_sum_{},init_gyro_sq_sum_{};
     bool startup_bias_calibrated_=false,external_stationary_confirmed_=false;
     uint32_t gravity_suppressed_updates_=0,gravity_applied_updates_=0;
+    uint32_t external_stationary_conflicts_=0;
 };
 } // namespace inertial

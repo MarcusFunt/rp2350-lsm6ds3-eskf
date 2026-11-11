@@ -1,0 +1,15 @@
+PASS startup gyro-bias estimation requires explicit opt-in
+PASS sustained 0.17 g false tilt suppressed without external aiding
+PASS independently confirmed stationary-only gravity aiding
+PASS excessive gyro variance rejects startup calibration
+Bundle B unit tests passed.
+PASS obvious IMU motion contradicts and suppresses a stationary hint
+PASS wrong initial tilt stays ambiguous IMU-only and recovers with verified static aid
+PASS in-tolerance constant acceleration remains an explicit observability limit
+PASS slow yaw with changing gyro bias: IMU-only max 0.0300 rad, heading-aided max 0.0013 rad (120 aids)
+PASS repeated reset and static reinitialization clears lifecycle state
+PASS summarizer rejects superseded protocol-v1 CSV
+Wrote /tmp/pr2-b-confirm-host/no_bias.csv: 5 trials per scenario, 6 scenarios, 3 estimator variants; startup bias disabled
+Wrote /tmp/pr2-b-confirm-host/with_bias.csv: 5 trials per scenario, 6 scenarios, 3 estimator variants; startup bias enabled
+Wrote /tmp/pr2-b-confirm-host/repeated.csv: 5 trials per scenario, 6 scenarios, 3 estimator variants; startup bias enabled
+PASS matched Monte Carlo regression, truth metrics and deterministic replay

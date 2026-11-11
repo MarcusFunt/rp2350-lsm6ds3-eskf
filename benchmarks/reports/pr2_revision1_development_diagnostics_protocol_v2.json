@@ -1,0 +1,989 @@
+{
+  "data_scope": "development only; combined noise, seed 101, externally verified static startup, bias calibration off",
+  "input_trace_sha256": {
+    "baseline": "90ad1b35d4a0656be9f8ab8a13a8abecf1fa9015e0acef0165c67723cf788c6b",
+    "candidate": "a32972769f516502d5a8c59cdad95ebd9fc36382dded3f77a66c57452a2eb87a"
+  },
+  "notes": [
+    "Per-sample traces contain scalar NIS only for accepted gravity/heading updates; rejected-update vector innovations are not serialized.",
+    "The recorded covariance cross block is theta_x versus gyro-bias_x only; empirical per-axis bias-error correlations are reported separately.",
+    "The development traces are diagnostic examples, not population estimates; paired 16-seed summaries remain the comparison evidence."
+  ],
+  "paired_comparison_sha256": "2e1b3de210c5b2bf77fc79d231f581c680d50f0ce193ff3c3b8ac513c808b230",
+  "protocol": "pr2_development_diagnostics_protocol_v2",
+  "selected_trace_sha256": "611cb13c5cdc87b79775ae5a9920e56038422693d25cdc1b994e2a5fd0d2d879",
+  "streams": {
+    "lateral_accel_0p2g/IMU_ONLY/Conservative/NONE": {
+      "baseline": {
+        "availability": {
+          "health_end": "Nominal",
+          "stale": 0,
+          "unavailable": 0,
+          "valid": 2001
+        },
+        "estimator": "Conservative",
+        "input_mode": "IMU_ONLY",
+        "noise_mode": "combined",
+        "rows": 2001,
+        "runtime_aid": "NONE",
+        "scenario": "lateral_accel_0p2g",
+        "seed": 101,
+        "startup_calibration": "OFF",
+        "startup_knowledge": "EXTERNALLY_VERIFIED_STATIC",
+        "summary_metrics": {
+          "accel_bias_error_end_m_s2": 0.00034489,
+          "aid_accepted": 0.0,
+          "aid_rejected": 0.0,
+          "gravity_applied": 51.0,
+          "gravity_nis_count": 51.0,
+          "gravity_nis_mean": 0.00202035,
+          "gravity_suppressed": 55.0,
+          "gyro_bias_error_end_rad_s": 7.862e-05,
+          "tilt_rms_deg": 0.11080289,
+          "yaw_rms_deg": 0.1623504
+        },
+        "time_window_s": [
+          2.0,
+          12.0
+        ],
+        "trace_metrics": {
+          "corr_tilt_error_vs_gyro_bias_error_xyz": {
+            "x": -0.09463199880422364,
+            "y": 0.8693208168611757,
+            "z": -0.1677718391424213
+          },
+          "final_gyro_bias_error_xyz_rad_s": {
+            "x": -1.6330000000000008e-05,
+            "y": 7.68e-05,
+            "z": 4.1900000000000005e-06
+          },
+          "final_x_attitude_gyro_bias_covariance_correlation": -0.30253384352482043,
+          "gravity_accepted_nis": {
+            "count": 36,
+            "max": 0.00670391,
+            "mean": 0.0019440758333333333,
+            "p95": 0.00526039
+          },
+          "gravity_events_all": {
+            "accepted": 36,
+            "none": 1910,
+            "suppressed": 55
+          },
+          "gravity_events_motion": {
+            "none": 1145,
+            "suppressed": 55
+          },
+          "gravity_events_recovery": {
+            "accepted": 36,
+            "none": 765
+          },
+          "heading_accepted_nis": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p95": null
+          },
+          "tilt_error_deg": {
+            "at_12s": 0.02797645,
+            "at_2s": 0.03956468,
+            "at_8s": 0.20174117,
+            "max": 0.21850322,
+            "rms": 0.11080288732671303
+          },
+          "yaw_error_deg": {
+            "max_abs": 0.38548264,
+            "rms": 0.16235039743763907
+          }
+        }
+      },
+      "candidate": {
+        "availability": {
+          "health_end": "Nominal",
+          "stale": 0,
+          "unavailable": 0,
+          "valid": 2001
+        },
+        "estimator": "Conservative",
+        "input_mode": "IMU_ONLY",
+        "noise_mode": "combined",
+        "rows": 2001,
+        "runtime_aid": "NONE",
+        "scenario": "lateral_accel_0p2g",
+        "seed": 101,
+        "startup_calibration": "OFF",
+        "startup_knowledge": "EXTERNALLY_VERIFIED_STATIC",
+        "summary_metrics": {
+          "accel_bias_error_end_m_s2": 0.0012199,
+          "aid_accepted": 0.0,
+          "aid_rejected": 0.0,
+          "gravity_applied": 51.0,
+          "gravity_nis_count": 51.0,
+          "gravity_nis_mean": 0.00202014,
+          "gravity_suppressed": 55.0,
+          "gyro_bias_error_end_rad_s": 7.863e-05,
+          "tilt_rms_deg": 0.11079671,
+          "yaw_rms_deg": 0.16246776
+        },
+        "time_window_s": [
+          2.0,
+          12.0
+        ],
+        "trace_metrics": {
+          "corr_tilt_error_vs_gyro_bias_error_xyz": {
+            "x": -0.09468121205753759,
+            "y": 0.8693264931134919,
+            "z": -0.16782564499593927
+          },
+          "final_gyro_bias_error_xyz_rad_s": {
+            "x": -1.6330000000000008e-05,
+            "y": 7.680999999999999e-05,
+            "z": 4.1900000000000005e-06
+          },
+          "final_x_attitude_gyro_bias_covariance_correlation": -0.30240366093425747,
+          "gravity_accepted_nis": {
+            "count": 36,
+            "max": 0.00670292,
+            "mean": 0.001943806388888889,
+            "p95": 0.00525936
+          },
+          "gravity_events_all": {
+            "accepted": 36,
+            "none": 1910,
+            "suppressed": 55
+          },
+          "gravity_events_motion": {
+            "none": 1145,
+            "suppressed": 55
+          },
+          "gravity_events_recovery": {
+            "accepted": 36,
+            "none": 765
+          },
+          "heading_accepted_nis": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p95": null
+          },
+          "tilt_error_deg": {
+            "at_12s": 0.02797645,
+            "at_2s": 0.03956468,
+            "at_8s": 0.20174117,
+            "max": 0.21850322,
+            "rms": 0.11079670947723678
+          },
+          "yaw_error_deg": {
+            "max_abs": 0.38561168,
+            "rms": 0.16246776708175478
+          }
+        }
+      }
+    },
+    "lateral_accel_0p2g/IMU_ONLY/LegacyHeuristic/NONE": {
+      "baseline": {
+        "availability": {
+          "health_end": "Nominal",
+          "stale": 0,
+          "unavailable": 0,
+          "valid": 2001
+        },
+        "estimator": "LegacyHeuristic",
+        "input_mode": "IMU_ONLY",
+        "noise_mode": "combined",
+        "rows": 2001,
+        "runtime_aid": "NONE",
+        "scenario": "lateral_accel_0p2g",
+        "seed": 101,
+        "startup_calibration": "OFF",
+        "startup_knowledge": "EXTERNALLY_VERIFIED_STATIC",
+        "summary_metrics": {
+          "accel_bias_error_end_m_s2": 0.60359502,
+          "aid_accepted": 0.0,
+          "aid_rejected": 0.0,
+          "gravity_applied": 70.0,
+          "gravity_nis_count": 70.0,
+          "gravity_nis_mean": 1.14968538,
+          "gravity_suppressed": 0.0,
+          "gyro_bias_error_end_rad_s": 0.0322553,
+          "tilt_rms_deg": 15.31705761,
+          "yaw_rms_deg": 7.71072054
+        },
+        "time_window_s": [
+          2.0,
+          12.0
+        ],
+        "trace_metrics": {
+          "corr_tilt_error_vs_gyro_bias_error_xyz": {
+            "x": -0.6094264724300061,
+            "y": -0.24658684268503883,
+            "z": -0.6007951600410271
+          },
+          "final_gyro_bias_error_xyz_rad_s": {
+            "x": -0.00248199,
+            "y": 0.02530885,
+            "z": -0.01984203
+          },
+          "final_x_attitude_gyro_bias_covariance_correlation": -0.8316140138927354,
+          "gravity_accepted_nis": {
+            "count": 55,
+            "max": 11.49527931,
+            "mean": 1.462634990909091,
+            "p95": 3.29486823
+          },
+          "gravity_events_all": {
+            "accepted": 55,
+            "none": 1910,
+            "rejected": 36
+          },
+          "gravity_events_motion": {
+            "accepted": 55,
+            "none": 1145
+          },
+          "gravity_events_recovery": {
+            "none": 765,
+            "rejected": 36
+          },
+          "heading_accepted_nis": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p95": null
+          },
+          "tilt_error_deg": {
+            "at_12s": 20.29773712,
+            "at_2s": 0.03956468,
+            "at_8s": 14.55970383,
+            "max": 20.29773712,
+            "rms": 15.31705772076305
+          },
+          "yaw_error_deg": {
+            "max_abs": 16.44886208,
+            "rms": 7.710720487708153
+          }
+        }
+      },
+      "candidate": {
+        "availability": {
+          "health_end": "Nominal",
+          "stale": 0,
+          "unavailable": 0,
+          "valid": 2001
+        },
+        "estimator": "LegacyHeuristic",
+        "input_mode": "IMU_ONLY",
+        "noise_mode": "combined",
+        "rows": 2001,
+        "runtime_aid": "NONE",
+        "scenario": "lateral_accel_0p2g",
+        "seed": 101,
+        "startup_calibration": "OFF",
+        "startup_knowledge": "EXTERNALLY_VERIFIED_STATIC",
+        "summary_metrics": {
+          "accel_bias_error_end_m_s2": 0.74681538,
+          "aid_accepted": 0.0,
+          "aid_rejected": 0.0,
+          "gravity_applied": 70.0,
+          "gravity_nis_count": 70.0,
+          "gravity_nis_mean": 1.13218331,
+          "gravity_suppressed": 0.0,
+          "gyro_bias_error_end_rad_s": 0.03322848,
+          "tilt_rms_deg": 15.04766273,
+          "yaw_rms_deg": 7.57135105
+        },
+        "time_window_s": [
+          2.0,
+          12.0
+        ],
+        "trace_metrics": {
+          "corr_tilt_error_vs_gyro_bias_error_xyz": {
+            "x": -0.5838973512888466,
+            "y": -0.24091294585158593,
+            "z": -0.5956314112679848
+          },
+          "final_gyro_bias_error_xyz_rad_s": {
+            "x": -0.0024804999999999996,
+            "y": 0.02554091,
+            "z": -0.02111022
+          },
+          "final_x_attitude_gyro_bias_covariance_correlation": -0.834815853579046,
+          "gravity_accepted_nis": {
+            "count": 55,
+            "max": 11.37537098,
+            "mean": 1.4403597396363637,
+            "p95": 3.27329397
+          },
+          "gravity_events_all": {
+            "accepted": 55,
+            "none": 1910,
+            "rejected": 36
+          },
+          "gravity_events_motion": {
+            "accepted": 55,
+            "none": 1145
+          },
+          "gravity_events_recovery": {
+            "none": 765,
+            "rejected": 36
+          },
+          "heading_accepted_nis": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p95": null
+          },
+          "tilt_error_deg": {
+            "at_12s": 20.0450325,
+            "at_2s": 0.03956468,
+            "at_8s": 14.26450825,
+            "max": 20.0450325,
+            "rms": 15.047663178708103
+          },
+          "yaw_error_deg": {
+            "max_abs": 13.83782196,
+            "rms": 7.5713508896007475
+          }
+        }
+      }
+    },
+    "pure_roll/IMU_ONLY/Conservative/NONE": {
+      "baseline": {
+        "availability": {
+          "health_end": "Nominal",
+          "stale": 0,
+          "unavailable": 0,
+          "valid": 2001
+        },
+        "estimator": "Conservative",
+        "input_mode": "IMU_ONLY",
+        "noise_mode": "combined",
+        "rows": 2001,
+        "runtime_aid": "NONE",
+        "scenario": "pure_roll",
+        "seed": 101,
+        "startup_calibration": "OFF",
+        "startup_knowledge": "EXTERNALLY_VERIFIED_STATIC",
+        "summary_metrics": {
+          "accel_bias_error_end_m_s2": 0.00306402,
+          "aid_accepted": 0.0,
+          "aid_rejected": 0.0,
+          "gravity_applied": 51.0,
+          "gravity_nis_count": 51.0,
+          "gravity_nis_mean": 0.00168309,
+          "gravity_suppressed": 0.0,
+          "gyro_bias_error_end_rad_s": 9.488e-05,
+          "tilt_rms_deg": 0.12148864,
+          "yaw_rms_deg": 0.23627025
+        },
+        "time_window_s": [
+          2.0,
+          12.0
+        ],
+        "trace_metrics": {
+          "corr_tilt_error_vs_gyro_bias_error_xyz": {
+            "x": -0.01967262959224967,
+            "y": 0.529807813675172,
+            "z": -0.6090770275590667
+          },
+          "final_gyro_bias_error_xyz_rad_s": {
+            "x": 4.117e-05,
+            "y": 7.888e-05,
+            "z": -3.296e-05
+          },
+          "final_x_attitude_gyro_bias_covariance_correlation": -0.6427887418375101,
+          "gravity_accepted_nis": {
+            "count": 36,
+            "max": 0.0043917,
+            "mean": 0.0014662897222222223,
+            "p95": 0.0042325
+          },
+          "gravity_events_all": {
+            "accepted": 36,
+            "none": 1965
+          },
+          "gravity_events_motion": {
+            "none": 1200
+          },
+          "gravity_events_recovery": {
+            "accepted": 36,
+            "none": 765
+          },
+          "heading_accepted_nis": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p95": null
+          },
+          "tilt_error_deg": {
+            "at_12s": 0.0,
+            "at_2s": 0.08622923,
+            "at_8s": 0.17471296,
+            "max": 0.19782349,
+            "rms": 0.12148863948518177
+          },
+          "yaw_error_deg": {
+            "max_abs": 0.84872931,
+            "rms": 0.23627024707822492
+          }
+        }
+      },
+      "candidate": {
+        "availability": {
+          "health_end": "Nominal",
+          "stale": 0,
+          "unavailable": 0,
+          "valid": 2001
+        },
+        "estimator": "Conservative",
+        "input_mode": "IMU_ONLY",
+        "noise_mode": "combined",
+        "rows": 2001,
+        "runtime_aid": "NONE",
+        "scenario": "pure_roll",
+        "seed": 101,
+        "startup_calibration": "OFF",
+        "startup_knowledge": "EXTERNALLY_VERIFIED_STATIC",
+        "summary_metrics": {
+          "accel_bias_error_end_m_s2": 0.00366345,
+          "aid_accepted": 0.0,
+          "aid_rejected": 0.0,
+          "gravity_applied": 51.0,
+          "gravity_nis_count": 51.0,
+          "gravity_nis_mean": 0.00168103,
+          "gravity_suppressed": 0.0,
+          "gyro_bias_error_end_rad_s": 0.00010208,
+          "tilt_rms_deg": 0.12138557,
+          "yaw_rms_deg": 0.2361542
+        },
+        "time_window_s": [
+          2.0,
+          12.0
+        ],
+        "trace_metrics": {
+          "corr_tilt_error_vs_gyro_bias_error_xyz": {
+            "x": -0.06037799259150811,
+            "y": 0.5249258352572035,
+            "z": -0.6183147498401869
+          },
+          "final_gyro_bias_error_xyz_rad_s": {
+            "x": 4.798e-05,
+            "y": 8.842999999999999e-05,
+            "z": -1.726e-05
+          },
+          "final_x_attitude_gyro_bias_covariance_correlation": -0.6427537472251112,
+          "gravity_accepted_nis": {
+            "count": 36,
+            "max": 0.00437023,
+            "mean": 0.0014634066666666667,
+            "p95": 0.0042305
+          },
+          "gravity_events_all": {
+            "accepted": 36,
+            "none": 1965
+          },
+          "gravity_events_motion": {
+            "none": 1200
+          },
+          "gravity_events_recovery": {
+            "accepted": 36,
+            "none": 765
+          },
+          "heading_accepted_nis": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p95": null
+          },
+          "tilt_error_deg": {
+            "at_12s": 0.0,
+            "at_2s": 0.08622923,
+            "at_8s": 0.17471296,
+            "max": 0.19782349,
+            "rms": 0.12138556848174266
+          },
+          "yaw_error_deg": {
+            "max_abs": 0.84193724,
+            "rms": 0.23615419237028978
+          }
+        }
+      }
+    },
+    "pure_roll/TRUSTED_AIDED/Conservative/independent_heading_1hz": {
+      "baseline": {
+        "availability": {
+          "health_end": "Nominal",
+          "stale": 0,
+          "unavailable": 0,
+          "valid": 2001
+        },
+        "estimator": "Conservative",
+        "input_mode": "TRUSTED_AIDED",
+        "noise_mode": "combined",
+        "rows": 2001,
+        "runtime_aid": "independent_heading_1hz",
+        "scenario": "pure_roll",
+        "seed": 101,
+        "startup_calibration": "OFF",
+        "startup_knowledge": "EXTERNALLY_VERIFIED_STATIC",
+        "summary_metrics": {
+          "accel_bias_error_end_m_s2": 0.0078696,
+          "aid_accepted": 11.0,
+          "aid_rejected": 0.0,
+          "gravity_applied": 51.0,
+          "gravity_nis_count": 51.0,
+          "gravity_nis_mean": 0.00630842,
+          "gravity_suppressed": 0.0,
+          "gyro_bias_error_end_rad_s": 0.00285968,
+          "tilt_rms_deg": 1.63573229,
+          "yaw_rms_deg": 2.10775709
+        },
+        "time_window_s": [
+          2.0,
+          12.0
+        ],
+        "trace_metrics": {
+          "corr_tilt_error_vs_gyro_bias_error_xyz": {
+            "x": -0.9760662372671323,
+            "y": 0.6638146649368287,
+            "z": -0.27654792401831735
+          },
+          "final_gyro_bias_error_xyz_rad_s": {
+            "x": -2.9410000000000005e-05,
+            "y": 0.00189192,
+            "z": 0.00214418
+          },
+          "final_x_attitude_gyro_bias_covariance_correlation": -0.6395844425954795,
+          "gravity_accepted_nis": {
+            "count": 35,
+            "max": 0.18230808,
+            "mean": 0.008218026,
+            "p95": 0.01870039
+          },
+          "gravity_events_all": {
+            "accepted": 36,
+            "none": 1965
+          },
+          "gravity_events_motion": {
+            "none": 1200
+          },
+          "gravity_events_recovery": {
+            "accepted": 36,
+            "none": 765
+          },
+          "heading_accepted_nis": {
+            "count": 11,
+            "max": 6.67060804,
+            "mean": 1.4803007918181819,
+            "p95": 6.67060804
+          },
+          "tilt_error_deg": {
+            "at_12s": 0.09065408,
+            "at_2s": 0.08622923,
+            "at_8s": 4.18226194,
+            "max": 4.78028536,
+            "rms": 1.6357322813237174
+          },
+          "yaw_error_deg": {
+            "max_abs": 5.30088139,
+            "rms": 2.107757115587045
+          }
+        }
+      },
+      "candidate": {
+        "availability": {
+          "health_end": "Nominal",
+          "stale": 0,
+          "unavailable": 0,
+          "valid": 2001
+        },
+        "estimator": "Conservative",
+        "input_mode": "TRUSTED_AIDED",
+        "noise_mode": "combined",
+        "rows": 2001,
+        "runtime_aid": "independent_heading_1hz",
+        "scenario": "pure_roll",
+        "seed": 101,
+        "startup_calibration": "OFF",
+        "startup_knowledge": "EXTERNALLY_VERIFIED_STATIC",
+        "summary_metrics": {
+          "accel_bias_error_end_m_s2": 0.0088744,
+          "aid_accepted": 11.0,
+          "aid_rejected": 0.0,
+          "gravity_applied": 51.0,
+          "gravity_nis_count": 51.0,
+          "gravity_nis_mean": 0.00630951,
+          "gravity_suppressed": 0.0,
+          "gyro_bias_error_end_rad_s": 0.00286599,
+          "tilt_rms_deg": 1.63270736,
+          "yaw_rms_deg": 2.10772634
+        },
+        "time_window_s": [
+          2.0,
+          12.0
+        ],
+        "trace_metrics": {
+          "corr_tilt_error_vs_gyro_bias_error_xyz": {
+            "x": -0.9759982638475846,
+            "y": 0.6635554195808395,
+            "z": -0.27646230827515855
+          },
+          "final_gyro_bias_error_xyz_rad_s": {
+            "x": -1.7330000000000005e-05,
+            "y": 0.00189522,
+            "z": 0.00214982
+          },
+          "final_x_attitude_gyro_bias_covariance_correlation": -0.6413150946918201,
+          "gravity_accepted_nis": {
+            "count": 35,
+            "max": 0.18249188,
+            "mean": 0.008219519142857143,
+            "p95": 0.01867365
+          },
+          "gravity_events_all": {
+            "accepted": 36,
+            "none": 1965
+          },
+          "gravity_events_motion": {
+            "none": 1200
+          },
+          "gravity_events_recovery": {
+            "accepted": 36,
+            "none": 765
+          },
+          "heading_accepted_nis": {
+            "count": 11,
+            "max": 6.67062426,
+            "mean": 1.4804591727272727,
+            "p95": 6.67062426
+          },
+          "tilt_error_deg": {
+            "at_12s": 0.08622923,
+            "at_2s": 0.08622923,
+            "at_8s": 4.17438745,
+            "max": 4.77220535,
+            "rms": 1.6327073568615555
+          },
+          "yaw_error_deg": {
+            "max_abs": 5.30085564,
+            "rms": 2.1077263357215865
+          }
+        }
+      }
+    },
+    "slow_yaw/IMU_ONLY/Conservative/NONE": {
+      "baseline": {
+        "availability": {
+          "health_end": "Nominal",
+          "stale": 0,
+          "unavailable": 0,
+          "valid": 2001
+        },
+        "estimator": "Conservative",
+        "input_mode": "IMU_ONLY",
+        "noise_mode": "combined",
+        "rows": 2001,
+        "runtime_aid": "NONE",
+        "scenario": "slow_yaw",
+        "seed": 101,
+        "startup_calibration": "OFF",
+        "startup_knowledge": "EXTERNALLY_VERIFIED_STATIC",
+        "summary_metrics": {
+          "accel_bias_error_end_m_s2": 0.00030077,
+          "aid_accepted": 0.0,
+          "aid_rejected": 0.0,
+          "gravity_applied": 110.0,
+          "gravity_nis_count": 110.0,
+          "gravity_nis_mean": 0.00220465,
+          "gravity_suppressed": 0.0,
+          "gyro_bias_error_end_rad_s": 8.588e-05,
+          "tilt_rms_deg": 0.04475988,
+          "yaw_rms_deg": 0.95044202
+        },
+        "time_window_s": [
+          2.0,
+          12.0
+        ],
+        "trace_metrics": {
+          "corr_tilt_error_vs_gyro_bias_error_xyz": {
+            "x": -0.22842156687727228,
+            "y": 0.44520469725083195,
+            "z": -0.6970354401565743
+          },
+          "final_gyro_bias_error_xyz_rad_s": {
+            "x": -1.0280000000000003e-05,
+            "y": 6.319e-05,
+            "z": 5.724e-05
+          },
+          "final_x_attitude_gyro_bias_covariance_correlation": -0.2719140906041109,
+          "gravity_accepted_nis": {
+            "count": 95,
+            "max": 0.00882625,
+            "mean": 0.002204846842105263,
+            "p95": 0.0054858
+          },
+          "gravity_events_all": {
+            "accepted": 95,
+            "none": 1906
+          },
+          "gravity_events_motion": {
+            "accepted": 95,
+            "none": 1906
+          },
+          "gravity_events_recovery": {},
+          "heading_accepted_nis": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p95": null
+          },
+          "tilt_error_deg": {
+            "at_12s": 0.01978234,
+            "at_2s": 0.03956468,
+            "at_8s": 0.0,
+            "max": 0.10279207,
+            "rms": 0.04475988044895888
+          },
+          "yaw_error_deg": {
+            "max_abs": 1.62775695,
+            "rms": 0.9504420190998019
+          }
+        }
+      },
+      "candidate": {
+        "availability": {
+          "health_end": "Nominal",
+          "stale": 0,
+          "unavailable": 0,
+          "valid": 2001
+        },
+        "estimator": "Conservative",
+        "input_mode": "IMU_ONLY",
+        "noise_mode": "combined",
+        "rows": 2001,
+        "runtime_aid": "NONE",
+        "scenario": "slow_yaw",
+        "seed": 101,
+        "startup_calibration": "OFF",
+        "startup_knowledge": "EXTERNALLY_VERIFIED_STATIC",
+        "summary_metrics": {
+          "accel_bias_error_end_m_s2": 0.00246093,
+          "aid_accepted": 0.0,
+          "aid_rejected": 0.0,
+          "gravity_applied": 110.0,
+          "gravity_nis_count": 110.0,
+          "gravity_nis_mean": 0.00220414,
+          "gravity_suppressed": 0.0,
+          "gyro_bias_error_end_rad_s": 8.59e-05,
+          "tilt_rms_deg": 0.0447577,
+          "yaw_rms_deg": 0.95047301
+        },
+        "time_window_s": [
+          2.0,
+          12.0
+        ],
+        "trace_metrics": {
+          "corr_tilt_error_vs_gyro_bias_error_xyz": {
+            "x": -0.22853706575886581,
+            "y": 0.4451997417323824,
+            "z": -0.6970177505404114
+          },
+          "final_gyro_bias_error_xyz_rad_s": {
+            "x": -1.0280000000000003e-05,
+            "y": 6.319e-05,
+            "z": 5.727e-05
+          },
+          "final_x_attitude_gyro_bias_covariance_correlation": -0.2718218296192738,
+          "gravity_accepted_nis": {
+            "count": 95,
+            "max": 0.00882441,
+            "mean": 0.0022042644210526316,
+            "p95": 0.0054853
+          },
+          "gravity_events_all": {
+            "accepted": 95,
+            "none": 1906
+          },
+          "gravity_events_motion": {
+            "accepted": 95,
+            "none": 1906
+          },
+          "gravity_events_recovery": {},
+          "heading_accepted_nis": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p95": null
+          },
+          "tilt_error_deg": {
+            "at_12s": 0.01978234,
+            "at_2s": 0.03956468,
+            "at_8s": 0.0,
+            "max": 0.10279207,
+            "rms": 0.0447576957042608
+          },
+          "yaw_error_deg": {
+            "max_abs": 1.6283102,
+            "rms": 0.9504730077636738
+          }
+        }
+      }
+    },
+    "slow_yaw/TRUSTED_AIDED/Conservative/independent_heading_1hz": {
+      "baseline": {
+        "availability": {
+          "health_end": "Nominal",
+          "stale": 0,
+          "unavailable": 0,
+          "valid": 2001
+        },
+        "estimator": "Conservative",
+        "input_mode": "TRUSTED_AIDED",
+        "noise_mode": "combined",
+        "rows": 2001,
+        "runtime_aid": "independent_heading_1hz",
+        "scenario": "slow_yaw",
+        "seed": 101,
+        "startup_calibration": "OFF",
+        "startup_knowledge": "EXTERNALLY_VERIFIED_STATIC",
+        "summary_metrics": {
+          "accel_bias_error_end_m_s2": 0.00088134,
+          "aid_accepted": 11.0,
+          "aid_rejected": 0.0,
+          "gravity_applied": 110.0,
+          "gravity_nis_count": 110.0,
+          "gravity_nis_mean": 0.00220524,
+          "gravity_suppressed": 0.0,
+          "gyro_bias_error_end_rad_s": 0.00272818,
+          "tilt_rms_deg": 0.04393521,
+          "yaw_rms_deg": 2.18965793
+        },
+        "time_window_s": [
+          2.0,
+          12.0
+        ],
+        "trace_metrics": {
+          "corr_tilt_error_vs_gyro_bias_error_xyz": {
+            "x": -0.2434361123771175,
+            "y": 0.45536907211674316,
+            "z": 0.10028532333530478
+          },
+          "final_gyro_bias_error_xyz_rad_s": {
+            "x": -1.087000000000001e-05,
+            "y": 6.555e-05,
+            "z": 0.0027273700000000002
+          },
+          "final_x_attitude_gyro_bias_covariance_correlation": -0.2708224960993714,
+          "gravity_accepted_nis": {
+            "count": 95,
+            "max": 0.0088179,
+            "mean": 0.0022055246315789475,
+            "p95": 0.00548112
+          },
+          "gravity_events_all": {
+            "accepted": 95,
+            "none": 1906
+          },
+          "gravity_events_motion": {
+            "accepted": 95,
+            "none": 1906
+          },
+          "gravity_events_recovery": {},
+          "heading_accepted_nis": {
+            "count": 11,
+            "max": 6.56289053,
+            "mean": 1.5016429718181818,
+            "p95": 6.56289053
+          },
+          "tilt_error_deg": {
+            "at_12s": 0.01978234,
+            "at_2s": 0.03956468,
+            "at_8s": 0.0,
+            "max": 0.10279207,
+            "rms": 0.043935210262827255
+          },
+          "yaw_error_deg": {
+            "max_abs": 5.52182007,
+            "rms": 2.1896579994448304
+          }
+        }
+      },
+      "candidate": {
+        "availability": {
+          "health_end": "Nominal",
+          "stale": 0,
+          "unavailable": 0,
+          "valid": 2001
+        },
+        "estimator": "Conservative",
+        "input_mode": "TRUSTED_AIDED",
+        "noise_mode": "combined",
+        "rows": 2001,
+        "runtime_aid": "independent_heading_1hz",
+        "scenario": "slow_yaw",
+        "seed": 101,
+        "startup_calibration": "OFF",
+        "startup_knowledge": "EXTERNALLY_VERIFIED_STATIC",
+        "summary_metrics": {
+          "accel_bias_error_end_m_s2": 0.00260097,
+          "aid_accepted": 11.0,
+          "aid_rejected": 0.0,
+          "gravity_applied": 110.0,
+          "gravity_nis_count": 110.0,
+          "gravity_nis_mean": 0.00220477,
+          "gravity_suppressed": 0.0,
+          "gyro_bias_error_end_rad_s": 0.00272816,
+          "tilt_rms_deg": 0.04387953,
+          "yaw_rms_deg": 2.18965793
+        },
+        "time_window_s": [
+          2.0,
+          12.0
+        ],
+        "trace_metrics": {
+          "corr_tilt_error_vs_gyro_bias_error_xyz": {
+            "x": -0.24419528850047453,
+            "y": 0.4582690730722093,
+            "z": 0.1035589167772323
+          },
+          "final_gyro_bias_error_xyz_rad_s": {
+            "x": -1.0820000000000008e-05,
+            "y": 6.552e-05,
+            "z": 0.00272735
+          },
+          "final_x_attitude_gyro_bias_covariance_correlation": -0.2768415396831703,
+          "gravity_accepted_nis": {
+            "count": 95,
+            "max": 0.00881853,
+            "mean": 0.0022050014736842106,
+            "p95": 0.00548062
+          },
+          "gravity_events_all": {
+            "accepted": 95,
+            "none": 1906
+          },
+          "gravity_events_motion": {
+            "accepted": 95,
+            "none": 1906
+          },
+          "gravity_events_recovery": {},
+          "heading_accepted_nis": {
+            "count": 11,
+            "max": 6.56289101,
+            "mean": 1.5016436536363638,
+            "p95": 6.56289101
+          },
+          "tilt_error_deg": {
+            "at_12s": 0.01978234,
+            "at_2s": 0.03956468,
+            "at_8s": 0.0,
+            "max": 0.10279207,
+            "rms": 0.04387953263454618
+          },
+          "yaw_error_deg": {
+            "max_abs": 5.52182102,
+            "rms": 2.1896580393502805
+          }
+        }
+      }
+    }
+  }
+}
