@@ -1,8 +1,8 @@
 # PR3 development factor pilots
 
-## V5 factor pilot — current estimator candidate
+## V5 factor pilot — pre-fix estimator candidate (superseded)
 
-**Classification: exploratory development-only diagnostic, not acceptance evidence.** This pilot uses the frozen v5 candidate `3efd3f89e244e152364773fb26cfb0c5749dce3d`, development seeds `4001–4004`, and protocol SHA-256 `1318acff98ac2641383ef6a568986e912020a6d4c6debeb145a9abf0f8fa4800`. It ran all eight scenarios, three sampling modes, nominal/stress, and seven startup/sensor/calibration/runtime-aid profiles.
+**Classification: exploratory development-only diagnostic, not acceptance evidence.** This original pilot uses the pre-fix v5 candidate `3efd3f89e244e152364773fb26cfb0c5749dce3d`, development seeds `4001–4004`, and protocol SHA-256 `1318acff98ac2641383ef6a568986e912020a6d4c6debeb145a9abf0f8fa4800`. It ran all eight scenarios, three sampling modes, nominal/stress, and seven startup/sensor/calibration/runtime-aid profiles. Its startup-failure finding is superseded by the post-fix results below; the original artifacts remain unchanged.
 
 | Measure | Result |
 |---|---:|
@@ -20,7 +20,23 @@ V5 artifacts: [trial rows](../benchmarks/reports/pr3_protocol_v5_factor_pilot_de
 
 CSV SHA-256: `942ed5c2aba3c7d79a00b6b7d68f1d377c8d553408598e9f8d3387a9666d9b16`. Summary JSON SHA-256: `746fee00f953a45cbe0ab4ccd08f7075602b813097d7a10804384165e874c582`. The manifest records all per-stream input hashes, source hashes, figure hashes and the exact command. The 192 raw files total about 80.8 MB and are generated on demand rather than checked into Git.
 
-The selected static, uniform-208-Hz, stress, seed-4001 baseline trace shows all three ESKF policies remain `Aligning` through all 3,328 samples (16 seconds); none propagates a state and no covariance failure occurs. Replaying the exact initialization predicate against the shared stream shows 659 adjacent-acceleration differences exceed the fixed `0.20 m/s²` step limit; the longest stable run is 35 samples, below the required 80. Acceleration-norm and gyro-norm gates pass on every sample. This isolates the trigger to the consecutive-sample step gate under the protocol's 3x white-noise transform. The [shared input](../benchmarks/inputs/pr3_protocol_v5_dev_static_stress_seed4001.bin), [sample trace](../benchmarks/reports/pr3_protocol_v5_dev_static_stress_seed4001_sample_diagnostics.csv), and [manifest](../benchmarks/manifests/pr3_protocol_v5_dev_static_stress_seed4001.json) preserve the reproducer. No threshold was changed; a robust correction and untouched confirmation data are still required.
+The selected static, uniform-208-Hz, stress, seed-4001 baseline trace shows all three pre-fix ESKF policies remain `Aligning` through all 3,328 samples (16 seconds); none propagates a state and no covariance failure occurs. Replaying the exact initialization predicate against the shared stream shows 659 adjacent-acceleration differences exceed the fixed `0.20 m/s²` step limit; the longest stable run is 35 samples, below the required 80. Acceleration-norm and gyro-norm gates pass on every sample. This isolates the trigger to the consecutive-sample step gate under the protocol's 3x white-noise transform. The [shared input](../benchmarks/inputs/pr3_protocol_v5_dev_static_stress_seed4001.bin), [sample trace](../benchmarks/reports/pr3_protocol_v5_dev_static_stress_seed4001_sample_diagnostics.csv), and [manifest](../benchmarks/manifests/pr3_protocol_v5_dev_static_stress_seed4001.json) preserve the reproducer. The correction was developed and confirmed in the post-fix runs below.
+
+## Post-fix candidate replay
+
+**Classification: baseline acceptance evidence for completion/covariance only; not full-factor accuracy or consistency acceptance.** The startup correction is `e1bc064aa4a20d396905090abcf920d12991937c`; the reporting correction is `7547bf64413c99bda17950c7512e43e703cd969d`. Protocol v5 and its scoring/input definitions were not changed.
+
+The four-seed development factor replay covered all 8 scenarios × 3 rate modes × 2 stress modes × 7 profiles: 192 streams and 6,720 rows. Every ESKF policy completed all 672 stress rows and all nominal rows; nominal trial fields matched the pre-fix replay. This remains exploratory because four seeds do not establish distributions.
+
+Separate disjoint 100-seed baseline runs cover 208 Hz, IMU-only, unknown startup, calibration off, no runtime aid. The development nominal rerun matched the earlier frozen v5 development trial results on every field except commit SHA. The held-out stress and untouched final stress replays each produced 800 streams and 4,000 rows, with no incomplete rows; each ESKF passed all 2,330,400 expected covariance checks and each estimator completed 800 / 800 trials. Conservative ESKF mean per-trial RMS across all scenarios remained about 4.64–4.66° tilt and 10.30° yaw in stress, so this confirms startup availability and covariance only, not acceptable estimator accuracy. Full 100-seed coverage of remaining factor combinations remains open.
+
+| Split | Trial CSV SHA-256 | Summary SHA-256 | Artifacts |
+|---|---|---|---|
+| Development nominal, seeds 4001–4100 | `9f3c1d20309bec7422a2bccd85af170702c47dcf60612194ec66675ac670b4b7` | `ba9e07383c9e50522f553db5cb61831d6ea2a97e35e2c9b46b949192b60e9089` | [trials](../benchmarks/reports/pr3_protocol_v5_dev100_candidate_7547bf6_208_nominal_trials.csv), [summary](../benchmarks/reports/pr3_protocol_v5_dev100_candidate_7547bf6_208_nominal_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v5_dev100_candidate_7547bf6_208_nominal.json) |
+| Held-out stress, seeds 9001–9100 | `0c0ee2b9ba643e6fd7e43fa548caa0f8e08f58639b05154027015979890208f7` | `7bedf1026ed31896d121faecbe32e3058a0802a6272e183e5a7587dfebe49278` | [trials](../benchmarks/reports/pr3_protocol_v5_heldout100_208_stress_trials.csv), [summary](../benchmarks/reports/pr3_protocol_v5_heldout100_208_stress_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v5_heldout100_208_stress.json) |
+| Final stress, seeds 10001–10100 | `502dcf5e0888ec9d36f624c0bde7113e843f7955f9fbe266cbb2f8a7dc7b6cf5` | `7c798979ffd2c671ef75d94fcf707f97e11cf5ae0a26f0ae3dffe9751500a601` | [trials](../benchmarks/reports/pr3_protocol_v5_final100_208_stress_trials.csv), [summary](../benchmarks/reports/pr3_protocol_v5_final100_208_stress_summary.json), [manifest](../benchmarks/manifests/pr3_protocol_v5_final100_208_stress.json) |
+
+Raw 800-stream inputs per run are regenerated on demand and checked against every stream hash in the manifests, rather than committed as hundreds of megabytes of duplicate generated data. Figure hashes are also recorded in each manifest.
 
 ## Superseded v3 factor pilot evidence
 
