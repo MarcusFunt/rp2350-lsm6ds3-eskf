@@ -2,9 +2,9 @@
 
 **Branch:** `fix/eskf-math-recovery`, stacked on PR 1 `b749a8aa0e40718ab7b163cad29d9c550b088265`.
 
-**Current candidate:** revision 1, source/evaluator freeze `55eed3252e3e2af72bd61be66aa14501d9f17399`; candidate `eskf15.hpp` SHA-256 `0bbd516252edbc4a58799bc52bf80b17dada9bc8daade13f50b0657ba02bf05a`.
+**Earlier confirmation candidate:** revision 1, source/evaluator freeze `55eed3252e3e2af72bd61be66aa14501d9f17399`; candidate `eskf15.hpp` SHA-256 `0bbd516252edbc4a58799bc52bf80b17dada9bc8daade13f50b0657ba02bf05a`. The PR 2 branch now includes the follow-up covariance-precision commits `b437f05` and `4d023d0`.
 
-**Current result:** the revision-1 paired confirmation passed pairing, fixed-denominator, completeness, availability, and final-health checks. The overall PR 2 pass gate remains **OPEN** because LegacyHeuristic yaw/bias regressions and synthetic-heading-aid degradation persist. The false-runtime-hint and zero-dwell guards have targeted regressions but are not exercised by the frozen seed matrix. Dependent performance claims remain blocked.
+**Current result:** the revision-1 paired confirmation passed pairing, fixed-denominator, completeness, availability, and final-health checks. The follow-up FP64 covariance revision keeps covariance storage, propagation congruence, innovation solve, Joseph update and Cholesky checks in double precision while retaining FP32 state/IMU interfaces. PR3 v5 then passed 20,973,600 ESKF covariance checks across its nominal development, held-out and final-confirmation sets. The overall PR 2 pass gate remains **OPEN** because LegacyHeuristic yaw/bias regressions, synthetic-heading-aid degradation, and the PR3 stress-startup defect remain open. False-runtime-hint and zero-dwell guards have targeted regressions but are not exercised by the frozen seed matrix. Target resource impact is pending the pinned PR4 build; dependent performance claims remain blocked.
 
 ## Changes
 

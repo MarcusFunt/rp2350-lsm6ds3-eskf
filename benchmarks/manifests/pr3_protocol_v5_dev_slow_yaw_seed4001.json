@@ -1,0 +1,68 @@
+{
+  "protocol_version": 5,
+  "protocol_sha256": "1318acff98ac2641383ef6a568986e912020a6d4c6debeb145a9abf0f8fa4800",
+  "source_commit": "3efd3f89e244e152364773fb26cfb0c5749dce3d",
+  "working_tree_dirty_at_run": false,
+  "generator_source_sha256": "7e159c915412039da66048d1ee7f80a39c9c03f91f88f40033de112ac0513843",
+  "evaluator_source_sha256": "e44fa1eae87e377d7fa4edf47a11a4d28f7d8e9dfd3312ffbb7dc427aee22c3e",
+  "header_codegen_source_sha256": "8b3124cfcd91fd512756906909449a0d5b515fd793c51efcb9e564a6bb70366b",
+  "compiler": "c++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "split": "development",
+  "seed_range_inclusive": [
+    4001,
+    4001
+  ],
+  "scenarios": [
+    "slow_yaw"
+  ],
+  "rate_modes": [
+    "uniform_208hz"
+  ],
+  "stress_modes": [
+    "nominal"
+  ],
+  "profiles": [
+    "baseline"
+  ],
+  "input_streams": [
+    {
+      "path": "inputs/slow_yaw__uniform_208hz__nominal__4001.bin",
+      "sha256": "08d50afce60f80a7df048d04e870451f04df5ccbc1fb1d312bef289d6903ab6d",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    }
+  ],
+  "classification": "SYNTHETIC_HOST_SIMULATION_ONLY; NOT_HARDWARE_QUALIFICATION",
+  "pr2_gate_status": "OPEN",
+  "sample_diagnostics": {
+    "path": "benchmarks/reports/pr3_protocol_v5_dev_slow_yaw_seed4001_sample_diagnostics.csv",
+    "sha256": "57ab4c7afdec4fb1602b2b71079d731ae8b1cc132e48c455f03b69f9f9e5c43b",
+    "first_failure_covariance_path": "benchmarks/reports/pr3_protocol_v5_dev_slow_yaw_seed4001_first_failure_covariance.csv",
+    "first_failure_covariance_sha256": "1ce5dad72a4c1b777193251e0dbeb8053865551d024e8ae428f3bcdca13a1057",
+    "scope": "selected development seed 4001 slow_yaw input; full 15x15 covariance is recorded only at a first failure and no covariance failure occurred in this candidate."
+  },
+  "summary_csv_sha256": "8157f8fe56c656a8b412de0a1b13f3056aa56b176be829d6f177d66c3303f203",
+  "summary_report_sha256": "5c4220c9a066211c63dc5f5a60b4fad7797a35a535170bdc87c6f72668a57d56",
+  "figure_sha256": "5263186ed223eaba9ca129ab5d877e8d25090f10dda5e785c1e5f1fb0656f2b8",
+  "additional_figure_sha256": {
+    "pr3_availability.svg": "42f78b67f4eb990cde1659e625a88ae883011c3c39d2f10f80037e8aad28843b",
+    "pr3_nis_mean.svg": "8d84fc82ff7db0a2ff074e46e28f782f7252f6ad3c684d4c33b53066ad1ec264",
+    "pr3_tilt_nees_mean.svg": "710a599d7bb81ce04f827e36ac4f559e91d05bf4f0b6d52f7c9d4b811f1beb25",
+    "pr3_yaw_rms.svg": "98a11597f70cd167115ae37762128a881df26b6d3514ea5966b1c1ad88dd85e9"
+  },
+  "summarizer_source_sha256": "41d6948c7cfa622f8f12a526b2e7c0e26e223a567600088451a924fbfc90c490",
+  "sample_input_repo_path": "benchmarks/inputs/pr3_protocol_v5_dev_slow_yaw_seed4001.bin",
+  "sample_input_sha256": "08d50afce60f80a7df048d04e870451f04df5ccbc1fb1d312bef289d6903ab6d",
+  "diagnostic_figure_source_sha256": "e2221decfa6330d2a4b8bc51d1370ccc59d93c186906d06da51b2ed0961fe536",
+  "diagnostic_figure_sha256": {
+    "benchmarks/figures/pr3_protocol_v5_dev_slow_yaw_seed4001_accel_bias_error.svg": "fda3b818351a5d8de0b3928a81759447fbab3f597c51458a73128b6c9a9f0bb3",
+    "benchmarks/figures/pr3_protocol_v5_dev_slow_yaw_seed4001_attitude_covariance.svg": "81fed942f1dea5f314170065ffb8b46408b0d3d71b92bb50c232e7bad88d0ed9",
+    "benchmarks/figures/pr3_protocol_v5_dev_slow_yaw_seed4001_gravity_updates.svg": "4b1e776f9efa963aff61da4695a9f4eac30322f9a60f0bced8a7e0e1e9a185d1",
+    "benchmarks/figures/pr3_protocol_v5_dev_slow_yaw_seed4001_gyro_bias_error.svg": "cfec69562f89a8c9ec5f8969b3cbf717ea3dd658763a95b65a7e1fbb33ef391a",
+    "benchmarks/figures/pr3_protocol_v5_dev_slow_yaw_seed4001_tilt_error.svg": "a602591aa0f97d23671ff5e62b2e02f99c39b7feab7676271b81f39d410300f6"
+  },
+  "diagnostic_metric_note": "Tilt is the angle between estimated and true body-frame gravity vectors and is invariant to world yaw. Bias error uses truth from the paired shared input. Attitude covariance plot shows the largest diagonal element on a log scale."
+}
