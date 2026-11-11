@@ -38,6 +38,20 @@ static void test_initialization_and_tilt() {
     check_cov(f);
     std::puts("PASS stable startup gate, static roll alignment, free yaw");
 }
+static void test_initialization_rejects_slowly_changing_specific_force() {
+    Eskf15 f;unsigned k=0;
+    // Keep the measured specific-force magnitude at g while its direction
+    // changes smoothly. The per-sample change stays below the legacy 0.20
+    // m/s^2 limit, but the startup window is not stationary.
+    for(unsigned i=1;i<=80;i++) {
+        const float x=3.0f*static_cast<float>(i)/80.0f;
+        const float z=std::sqrt(kGravity*kGravity-x*x);
+        f.process(at(++k,{x,0,z}));
+    }
+    assert(!f.ready());
+    assert(f.health()==Health::Aligning);
+    std::puts("PASS startup gate rejects slowly changing specific force");
+}
 static void test_yaw_and_heading() {
     Eskf15 f;unsigned k=0;init(f,k);
     constexpr float r=kPi/4.0f;
@@ -195,7 +209,8 @@ static void test_outage_contract() {
 }
 
 int main() {
-    test_initialization_and_tilt();test_yaw_and_heading();test_static_noise_bias();
+    test_initialization_and_tilt();test_initialization_rejects_slowly_changing_specific_force();
+    test_yaw_and_heading();test_static_noise_bias();
     test_slow_yaw();test_gravity_normalization();test_aiding_contract();
     test_gap_faults();test_missing_single_frame();test_replay_determinism();
     test_tilted_yaw_gauge();test_outage_contract();
