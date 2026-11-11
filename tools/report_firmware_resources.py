@@ -7,6 +7,22 @@ import subprocess
 from pathlib import Path
 
 
+def parse_stack_usage_record(line):
+    """Parse one GCC .su line without splitting C++ scopes or drive letters."""
+    fields = line.split("\t")
+    if len(fields) < 3 or not fields[1].isdigit():
+        return None
+    match = re.match(r"^(.*):[0-9]+:[0-9]+:(.*)$", fields[0])
+    if match is None:
+        return None
+    return {
+        "function": match.group(2),
+        "bytes": int(fields[1]),
+        "classification": fields[2],
+        "source_record": fields[0],
+    }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--build-dir", required=True, type=Path)
@@ -44,17 +60,9 @@ def main():
     records = []
     for su_file in sorted(build.rglob("*.su")):
         for line in su_file.read_text(errors="replace").splitlines():
-            fields = line.split("\t")
-            if len(fields) < 3 or not fields[1].isdigit():
-                continue
-            identity = fields[0]
-            function = identity.rsplit(":", 1)[-1]
-            records.append({
-                "function": function,
-                "bytes": int(fields[1]),
-                "classification": fields[2],
-                "source_record": identity,
-            })
+            record = parse_stack_usage_record(line)
+            if record is not None:
+                records.append(record)
     if not records:
         raise SystemExit(f"no GCC stack-usage records found under {build}")
     maximum = max(records, key=lambda record: record["bytes"])

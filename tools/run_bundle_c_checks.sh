@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
+python3 tests/test_firmware_resource_report.py
 CXX="${CXX:-g++}"
 OUT="${TMPDIR:-/tmp}/rp2350_bundle_c_checks"
 mkdir -p "$OUT"
