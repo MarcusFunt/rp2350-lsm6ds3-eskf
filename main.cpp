@@ -131,6 +131,8 @@ static queue_t g_estimate_queue;
 alignas(8) static uint32_t g_core1_stack[4096];
 static volatile uint32_t g_sample_dropped = 0;
 static volatile uint32_t g_sample_period_service_overruns = 0;
+static volatile uint32_t g_sample_queue_highwater = 0;
+static volatile uint32_t g_estimate_queue_highwater = 0;
 static volatile uint32_t g_read_count = 0;
 static volatile uint32_t g_unexpected_periods = 0;
 static volatile uint32_t g_calibration_failed = 0;
@@ -162,6 +164,13 @@ uint32_t elapsed_us_saturated(uint64_t start_us,uint64_t end_us) {
     if(end_us<start_us) return 0;
     const uint64_t elapsed=end_us-start_us;
     return elapsed>UINT32_MAX?UINT32_MAX:static_cast<uint32_t>(elapsed);
+}
+
+void update_queue_highwater(volatile uint32_t &highwater,queue_t *queue) {
+    // Occupancy is sampled immediately after a successful insert; a concurrent
+    // consumer can reduce the level before this snapshot is taken.
+    const uint32_t level=queue_get_level(queue);
+    if(level>highwater) highwater=level;
 }
 
 uint32_t core1_stack_highwater_bytes() {
@@ -543,7 +552,8 @@ void core1_fusion() {
             estimate.timebase_id=TIMEBASE_ID;
             estimate.calibration_version=CALIBRATION_VERSION;
             // Best effort only; never block fusion on USB.
-            queue_try_add(&g_estimate_queue,&estimate);
+            if(queue_try_add(&g_estimate_queue,&estimate))
+                update_queue_highwater(g_estimate_queue_highwater,&g_estimate_queue);
         }
     }
 }
@@ -619,6 +629,7 @@ int main() {
             previous_ts_us=sample.timestamp_us;
             last_sequence=sample.sequence;
             if(!queue_try_add(&g_sample_queue,&sample)) ++g_sample_dropped;
+            else update_queue_highwater(g_sample_queue_highwater,&g_sample_queue);
         };
         EdgeEvent edge{};
         if (pop_edge(edge)) {
@@ -802,8 +813,8 @@ int main() {
                        static_cast<unsigned long>(g_edge_dispatch_latency.percentile_upper_bound(9900)),
                        static_cast<unsigned long>(g_edge_dispatch_latency.max_us()),
                        static_cast<unsigned long>(g_edge_queue_highwater),
-                       static_cast<unsigned long>(queue_get_max_level(&g_sample_queue)),
-                       static_cast<unsigned long>(queue_get_max_level(&g_estimate_queue)),
+                       static_cast<unsigned long>(g_sample_queue_highwater),
+                       static_cast<unsigned long>(g_estimate_queue_highwater),
                        static_cast<unsigned long>(g_sample_period_service_overruns),
                        static_cast<unsigned long>(NOMINAL_SAMPLE_PERIOD_US),
                        latest.last_nis,

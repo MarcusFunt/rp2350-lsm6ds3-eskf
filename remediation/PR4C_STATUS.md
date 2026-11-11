@@ -2,14 +2,14 @@
 
 ## Gate
 
-**PR4C implementation gate: pending pinned CI and resource artifacts. Hardware qualification: BLOCKED. PR2 and PR3 algorithm/statistical gates remain OPEN.** This branch is stacked on PR4B `22db30b0aeb2afdf51463859e7e89ab542285900`. All target measurements reported here will distinguish compiler/build evidence from on-device measurements.
+**PR4C implementation gate: pending pinned CI and resource artifacts. Hardware qualification: BLOCKED. PR2 and PR3 algorithm/statistical gates remain OPEN.** This branch is stacked on the updated PR4B branch at `b1d32cd7f1fadcb98ce139ded2cd2028dac22fa5`, which includes the latest PR3 factor-pilot evidence. All target measurements reported here will distinguish compiler/build evidence from on-device measurements.
 
 ## Changes
 
 - Binary log records are version 2, remain fixed at 64 bytes, and add an explicit `dropped_records_before` field while retaining CRC-32. Header and record decoders accept version 1; replay checks each record against its header version.
 - Replay reports sequence gaps and explicit dropped-record totals and rejects timestamp/sequence reversal, calibration mismatch, CRC damage, and truncation. The generated fixture contains one intentional sequence gap and one corresponding explicit drop count.
 - Binary USB logging remains an opt-in debug transport on Pico stdio. It counts samples skipped while disconnected, sends a fresh header after reconnect, and places accumulated skips on the next successful record. Pico stdio's write callback does not expose partial completion; timeouts while connection state remains active cannot be counted precisely. The output can block and is not a lossless logger.
-- Added fixed-size 32-bin log2 latency histograms with bucket-upper-bound p50/p95/p99 and exact observed maximum. Text diagnostics sample ESKF process time, SPI transfer time, per-edge acquisition service, IRQ-to-main dispatch latency, sample timestamp-to-publication age, queue high-water, sample-period service overruns, and core-1 stack high-water.
+- Added fixed-size 32-bin log2 latency histograms with bucket-upper-bound p50/p95/p99 and exact observed maximum. Text diagnostics sample ESKF process time, SPI transfer time, per-edge acquisition service, IRQ-to-main dispatch latency, sample timestamp-to-publication age, queue occupancy after successful insertions, sample-period service overruns, and core-1 stack high-water. A consumer can drain between queue insertion and occupancy sampling, so queue peaks are sampled diagnostics rather than an atomic exact maximum.
 - The 4,808 µs threshold is a provisional 208 Hz sample service interval, not a controller deadline. Core-0 stack watermark, complete call-chain stack requirements, physical jitter, and real queue behavior remain unmeasured.
 - All target variants now emit linker maps and GCC `-fstack-usage` records in CI. `tools/report_firmware_resources.py` reports distinct `.text`, `.rodata`, `.data`, `.bss` sections, binary flash image/capacity/headroom, main RAM capacity remaining after `.data + .bss`, and the largest individual function frame estimate. Heap use and whole-path stack headroom are not inferred from these figures.
 
