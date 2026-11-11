@@ -117,7 +117,8 @@ struct Settings {
     bool heuristic_zero_rate=false;    // unsafe during very slow rotation; opt in
     unsigned init_min_samples=80;     // require stable ~0.38s before alignment at 208Hz
     float init_gyro_limit=0.12f;      // only a provisional quasi-static test
-    float init_accel_step_limit=0.20f;
+    float init_accel_step_limit=0.20f; // averaged change between startup windows, m/s^2
+    unsigned init_accel_step_window_samples=8; // average white noise before step gating
     uint32_t expected_period_us=4808; // 208Hz; used for missing-sample detection
     float period_gap_ratio=1.70f;
     float max_accel_axis_mps2=0.98f*4.0f*kGravity; // actual +/-4g setting
@@ -171,17 +172,12 @@ public:
         gap_count_=0;
         saturation_count_=0;
         invalid_imu_count_=0;
-        init_count_=0;
-        init_verified_count_=0;
-        init_accel_sum_={};
-        init_gyro_sum_={};
-        init_gyro_sq_sum_={};
+        clear_initialization_window();
         startup_bias_calibrated_=false;
         external_stationary_confirmed_=false;
         gravity_suppressed_updates_=0;
         gravity_applied_updates_=0;
         external_stationary_conflicts_=0;
-        init_last_accel_={};
         health_=Health::Aligning;
         last_nis_=NAN;
         last_nis_gate_=NAN;
@@ -226,7 +222,7 @@ public:
                 inflate_gap(dt);
                 last_time_us_=imu.timestamp_us;
             }
-            init_count_=0;
+            clear_initialization_window();
             return false;
         }
         if (!initialized_) {
@@ -237,15 +233,12 @@ public:
                 (imu.timestamp_us-last_time_us_ <=
                     static_cast<uint64_t>(config_.expected_period_us*config_.period_gap_ratio));
             const float norm=imu.accel_mps2.norm();
-            const bool stable = time_valid &&
+            const bool sample_stable = time_valid &&
                 std::fabs(norm-kGravity)<config_.static_accel_tolerance*kGravity &&
-                imu.gyro_rps.norm()<config_.init_gyro_limit &&
-                (!init_count_ || (imu.accel_mps2-init_last_accel_).norm()<config_.init_accel_step_limit);
+                imu.gyro_rps.norm()<config_.init_gyro_limit;
             last_time_us_=imu.timestamp_us;
-            init_last_accel_=imu.accel_mps2;
-            if (!stable) {
-                init_count_=0; init_verified_count_=0; init_accel_sum_={};
-                init_gyro_sum_={}; init_gyro_sq_sum_={};
+            if (!sample_stable) {
+                clear_initialization_window();
                 return false;
             }
             if (external_stationary_confirmed_)++init_verified_count_;
@@ -255,7 +248,27 @@ public:
                 imu.gyro_rps.x*imu.gyro_rps.x,
                 imu.gyro_rps.y*imu.gyro_rps.y,
                 imu.gyro_rps.z*imu.gyro_rps.z};
-            if (++init_count_ < config_.init_min_samples) return false;
+            ++init_count_;
+            init_accel_step_window_sum_=init_accel_step_window_sum_+imu.accel_mps2;
+            ++init_accel_step_window_count_;
+            const unsigned window_samples=config_.init_accel_step_window_samples
+                ? config_.init_accel_step_window_samples : 1u;
+            const unsigned minimum_samples=config_.init_min_samples ? config_.init_min_samples : 1u;
+            if (init_accel_step_window_count_>=window_samples || init_count_>=minimum_samples) {
+                const Vec3 window_mean=init_accel_step_window_sum_*(1.0f/init_accel_step_window_count_);
+                init_accel_step_window_sum_={};
+                init_accel_step_window_count_=0;
+                const bool step_stable=!init_have_accel_step_window_mean_ ||
+                    (window_mean-init_last_accel_step_window_mean_).norm()<config_.init_accel_step_limit;
+                init_last_accel_step_window_mean_=window_mean;
+                init_have_accel_step_window_mean_=true;
+                if (!step_stable) {
+                    init_count_=0; init_verified_count_=0; init_accel_sum_={};
+                    init_gyro_sum_={}; init_gyro_sq_sum_={};
+                    return false;
+                }
+            }
+            if (init_count_ < minimum_samples) return false;
             const Vec3 avg=init_accel_sum_*(1.0f/init_count_);
             state_.orientation=Quat::from_to(avg,{0,0,kGravity});
             // The global-yaw gauge axis is world Z expressed in body-error
@@ -533,6 +546,17 @@ public:
 
 
 private:
+    void clear_initialization_window() {
+        init_count_=0;
+        init_verified_count_=0;
+        init_accel_sum_={};
+        init_gyro_sum_={};
+        init_gyro_sq_sum_={};
+        init_accel_step_window_sum_={};
+        init_last_accel_step_window_mean_={};
+        init_accel_step_window_count_=0;
+        init_have_accel_step_window_mean_=false;
+    }
     void degrade() { if(health_!=Health::Fault) health_=Health::Degraded; }
     bool saturated(const Imu &im) const {
         const float a=config_.max_accel_axis_mps2,g=config_.max_gyro_axis_rps;
@@ -853,9 +877,10 @@ private:
     uint32_t last_accepted_aid_source_=0;
     uint64_t last_accepted_aid_time_us_=0;
     uint8_t accepted_aid_mask_=0;
-    unsigned init_count_=0,init_verified_count_=0;
-    Vec3 init_accel_sum_{},init_last_accel_{};
+    unsigned init_count_=0,init_verified_count_=0,init_accel_step_window_count_=0;
+    Vec3 init_accel_sum_{},init_accel_step_window_sum_{},init_last_accel_step_window_mean_{};
     Vec3 init_gyro_sum_{},init_gyro_sq_sum_{};
+    bool init_have_accel_step_window_mean_=false;
     bool startup_bias_calibrated_=false,external_stationary_confirmed_=false;
     uint32_t gravity_suppressed_updates_=0,gravity_applied_updates_=0;
     uint32_t external_stationary_conflicts_=0;

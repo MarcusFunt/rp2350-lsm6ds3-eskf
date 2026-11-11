@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate paired PR3 summaries and emit distributions, bootstrap CIs, and SVG."""
+"""Validate paired PR3 summaries and emit distributions, confidence intervals, and SVG."""
 
 import argparse
 import csv
@@ -32,6 +32,88 @@ def quantile(values, q):
     return ordered[int(q * (len(ordered) - 1))]
 
 
+def _beta_continued_fraction(a, b, x):
+    qab, qap, qam = a + b, a + 1.0, a - 1.0
+    tiny = 1e-300
+    c = 1.0
+    d = 1.0 - qab * x / qap
+    if abs(d) < tiny:
+        d = tiny
+    d = 1.0 / d
+    value = d
+    for iteration in range(1, 301):
+        twice = 2 * iteration
+        coefficient = iteration * (b - iteration) * x / ((qam + twice) * (a + twice))
+        d = 1.0 + coefficient * d
+        if abs(d) < tiny:
+            d = tiny
+        c = 1.0 + coefficient / c
+        if abs(c) < tiny:
+            c = tiny
+        d = 1.0 / d
+        value *= d * c
+        coefficient = -(a + iteration) * (qab + iteration) * x / ((a + twice) * (qap + twice))
+        d = 1.0 + coefficient * d
+        if abs(d) < tiny:
+            d = tiny
+        c = 1.0 + coefficient / c
+        if abs(c) < tiny:
+            c = tiny
+        d = 1.0 / d
+        delta = d * c
+        value *= delta
+        if abs(delta - 1.0) <= 3e-14:
+            break
+    return value
+
+
+def _regularized_beta(x, a, b):
+    if x <= 0.0:
+        return 0.0
+    if x >= 1.0:
+        return 1.0
+    factor = math.exp(
+        math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b)
+        + a * math.log(x) + b * math.log1p(-x)
+    )
+    if x < (a + 1.0) / (a + b + 2.0):
+        return factor * _beta_continued_fraction(a, b, x) / a
+    return 1.0 - factor * _beta_continued_fraction(b, a, 1.0 - x) / b
+
+
+def _student_t_cdf(value, degrees_of_freedom):
+    if value == 0.0:
+        return 0.5
+    x = degrees_of_freedom / (degrees_of_freedom + value * value)
+    tail = 0.5 * _regularized_beta(x, degrees_of_freedom / 2.0, 0.5)
+    return 1.0 - tail if value > 0.0 else tail
+
+
+def student_t_critical_975(degrees_of_freedom):
+    low, high = 0.0, 1.0
+    while _student_t_cdf(high, degrees_of_freedom) < 0.975:
+        high *= 2.0
+    for _ in range(80):
+        midpoint = (low + high) / 2.0
+        if _student_t_cdf(midpoint, degrees_of_freedom) < 0.975:
+            low = midpoint
+        else:
+            high = midpoint
+    return (low + high) / 2.0
+
+
+def student_t_mean_summary(values):
+    count = len(values)
+    mean = statistics.fmean(values) if count else None
+    sample_sd = statistics.stdev(values) if count > 1 else None
+    if count < 2:
+        return mean, sample_sd, None, "unavailable for fewer than 2 finite trials"
+    critical = student_t_critical_975(count - 1)
+    half_width = critical * sample_sd / math.sqrt(count)
+    interval = {"lower": mean - half_width, "upper": mean + half_width}
+    return mean, sample_sd, interval, f"Student t, two-sided 95%, df={count - 1}"
+
+
 def paired_bootstrap(differences):
     rng = random.Random(BOOTSTRAP_SEED)
     n = len(differences)
@@ -49,7 +131,7 @@ def paired_bootstrap(differences):
     }
 
 
-def box_svg(groups, destination):
+def box_svg(groups, destination, subtitle):
     width, height = 1160, 620
     left, top, plot_w, plot_h = 90, 70, 1010, 440
     maximum = max((max(values) for values in groups.values() if values), default=1.0)
@@ -63,8 +145,10 @@ def box_svg(groups, destination):
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
         '<rect width="100%" height="100%" fill="white"/>',
         '<text x="90" y="34" font-family="sans-serif" font-size="22" font-weight="bold">PR3 tilt RMS by scenario</text>',
-        '<text x="90" y="54" font-family="sans-serif" font-size="12">Synthetic host characterization; 208 Hz nominal, nominal stress; PR2 gate remains OPEN</text>',
+        f'<text x="90" y="54" font-family="sans-serif" font-size="12">Synthetic host characterization; {html.escape(subtitle)}; PR2 gate remains OPEN</text>',
     ]
+    sample_counts = {len(values) for values in groups.values() if values}
+    sample_note = f"n={next(iter(sample_counts))} per estimator" if len(sample_counts) == 1 else "n varies by group; see JSON"
     for tick in range(6):
         value = maximum * tick / 5
         yy = y(value)
@@ -88,17 +172,25 @@ def box_svg(groups, destination):
             elements.append(f'<line x1="{x-6}" y1="{y(hi):.1f}" x2="{x+6}" y2="{y(hi):.1f}" stroke="{color}"/>')
             elements.append(f'<rect x="{x-7}" y="{y(q3):.1f}" width="14" height="{max(1,y(q1)-y(q3)):.1f}" fill="{color}" fill-opacity=".24" stroke="{color}"/>')
             elements.append(f'<line x1="{x-7}" y1="{y(med):.1f}" x2="{x+7}" y2="{y(med):.1f}" stroke="{color}" stroke-width="2"/>')
+            mean, _, interval, _ = student_t_mean_summary(values)
+            lower = max(0.0, interval["lower"]) if interval else mean
+            upper = min(maximum, interval["upper"]) if interval else mean
+            elements.append(f'<line x1="{x}" y1="{y(lower):.1f}" x2="{x}" y2="{y(upper):.1f}" stroke="#111827" stroke-width="1.5"/>')
+            elements.append(f'<line x1="{x-4}" y1="{y(lower):.1f}" x2="{x+4}" y2="{y(lower):.1f}" stroke="#111827"/>')
+            elements.append(f'<line x1="{x-4}" y1="{y(upper):.1f}" x2="{x+4}" y2="{y(upper):.1f}" stroke="#111827"/>')
+            elements.append(f'<circle cx="{x}" cy="{y(mean):.1f}" r="3.2" fill="#111827" stroke="white" stroke-width=".8"/>')
     for i, model in enumerate(models):
         x = left + i * 190
         elements.append(f'<rect x="{x}" y="560" width="12" height="12" fill="{colors[model]}"/>')
         elements.append(f'<text x="{x+18}" y="571" font-family="sans-serif" font-size="12">{model}</text>')
     elements.append('<text transform="translate(22 320) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="13">Tilt RMS (degrees), conditional on valid state</text>')
+    elements.append(f'<text x="90" y="602" font-family="sans-serif" font-size="10">Boxes: IQR/median; colored whiskers: min/max; black: mean and 95% Student-t CI ({sample_note}); CIs clip to axis bounds when needed.</text>')
     elements.append('</svg>')
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text("\n".join(elements) + "\n", encoding="utf-8", newline="\n")
 
 
-def metric_box_svg(groups, destination, title, ylabel, *, maximum=None):
+def metric_box_svg(groups, destination, title, ylabel, subtitle, *, maximum=None):
     width, height = 1160, 620
     left, top, plot_w, plot_h = 90, 70, 1010, 440
     colors = {"eskf_conservative": "#2563eb", "eskf_legacy": "#dc2626", "eskf_confirmed_only": "#059669", "mahony": "#7c3aed", "gyro_only": "#d97706"}
@@ -118,8 +210,10 @@ def metric_box_svg(groups, destination, title, ylabel, *, maximum=None):
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
         '<rect width="100%" height="100%" fill="white"/>',
         f'<text x="90" y="34" font-family="sans-serif" font-size="22" font-weight="bold">{html.escape(title)}</text>',
-        '<text x="90" y="54" font-family="sans-serif" font-size="12">Synthetic host characterization; 208 Hz nominal; PR2 gate remains OPEN</text>',
+        f'<text x="90" y="54" font-family="sans-serif" font-size="12">Synthetic host characterization; {html.escape(subtitle)}; PR2 gate remains OPEN</text>',
     ]
+    sample_counts = {len(values) for values in groups.values() if values}
+    sample_note = f"n={next(iter(sample_counts))} per estimator" if len(sample_counts) == 1 else "n varies by group; see JSON"
     for tick in range(6):
         value = minimum + span * tick / 5
         yy = y(value)
@@ -140,11 +234,19 @@ def metric_box_svg(groups, destination, title, ylabel, *, maximum=None):
             elements.append(f'<line x1="{x}" y1="{y(lo):.1f}" x2="{x}" y2="{y(hi):.1f}" stroke="{color}" stroke-width="2"/>')
             elements.append(f'<rect x="{x-6}" y="{y(q3):.1f}" width="12" height="{max(1,y(q1)-y(q3)):.1f}" fill="{color}" fill-opacity=".24" stroke="{color}"/>')
             elements.append(f'<line x1="{x-6}" y1="{y(med):.1f}" x2="{x+6}" y2="{y(med):.1f}" stroke="{color}" stroke-width="2"/>')
+            mean, _, interval, _ = student_t_mean_summary(values)
+            lower = max(minimum, interval["lower"]) if interval else mean
+            upper = min(maximum, interval["upper"]) if interval else mean
+            elements.append(f'<line x1="{x}" y1="{y(lower):.1f}" x2="{x}" y2="{y(upper):.1f}" stroke="#111827" stroke-width="1.5"/>')
+            elements.append(f'<line x1="{x-4}" y1="{y(lower):.1f}" x2="{x+4}" y2="{y(lower):.1f}" stroke="#111827"/>')
+            elements.append(f'<line x1="{x-4}" y1="{y(upper):.1f}" x2="{x+4}" y2="{y(upper):.1f}" stroke="#111827"/>')
+            elements.append(f'<circle cx="{x}" cy="{y(mean):.1f}" r="3.2" fill="#111827" stroke="white" stroke-width=".8"/>')
     for i, model in enumerate(models):
         x = left + i * 190
         elements.append(f'<rect x="{x}" y="560" width="12" height="12" fill="{colors[model]}"/>')
         elements.append(f'<text x="{x+18}" y="571" font-family="sans-serif" font-size="12">{model}</text>')
     elements.append(f'<text transform="translate(22 320) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="13">{html.escape(ylabel)}</text>')
+    elements.append(f'<text x="90" y="602" font-family="sans-serif" font-size="10">Boxes: IQR/median; colored whiskers: min/max; black: mean and 95% Student-t CI ({sample_note}); CIs clip to axis bounds when needed.</text>')
     elements.append('</svg>')
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text("\n".join(elements) + "\n", encoding="utf-8", newline="\n")
@@ -162,10 +264,11 @@ def summarize(input_path, output_dir, *, report_source=None, figure_prefix="pr3"
 
     configs = defaultdict(list)
     output_groups = defaultdict(list)
-    tilt_plot_groups = defaultdict(list)
     figure_columns = {"yaw_rms_deg": "yaw_rms.svg", "availability": "availability.svg",
         "tilt_nees_mean": "tilt_nees_mean.svg", "nis_mean": "nis_mean.svg"}
-    figure_groups = {column: defaultdict(list) for column in figure_columns}
+    figure_groups = defaultdict(lambda: {"tilt_rms_deg": defaultdict(list), **{
+        column: defaultdict(list) for column in figure_columns
+    }})
     failures = []
     seeds_by_group = defaultdict(set)
     for row in rows:
@@ -174,13 +277,14 @@ def summarize(input_path, output_dir, *, report_source=None, figure_prefix="pr3"
         seeds_by_group[key].add(int(row["seed"]))
         value = number(row["tilt_rms_deg"])
         output_groups[(key, row["estimator"])].append(value)
-        if row["rate_mode"] == "uniform_208hz" and row["stress_mode"] == "nominal" and row["sensor_input"] == "IMU_ONLY" and row["startup_knowledge"] == "UNKNOWN" and row["startup_gyro_bias_calibration"] == "OFF" and row["runtime_aid"] == "NONE":
-            if value is not None:
-                tilt_plot_groups[(row["scenario"], row["estimator"])].append(value)
+        figure_key = (row["rate_mode"], row["stress_mode"], row["sensor_input"],
+            row["startup_knowledge"], row["startup_gyro_bias_calibration"], row["runtime_aid"])
+        if value is not None:
+            figure_groups[figure_key]["tilt_rms_deg"][(row["scenario"], row["estimator"])].append(value)
         for column in figure_columns:
             metric = number(row.get(column))
             if metric is not None:
-                figure_groups[column][(row["scenario"], row["estimator"])].append(metric)
+                figure_groups[figure_key][column][(row["scenario"], row["estimator"])].append(metric)
         if row["complete_run"].lower() != "true" or value is None:
             failures.append({"scenario": row["scenario"], "rate_mode": row["rate_mode"], "stress_mode": row["stress_mode"], "seed": int(row["seed"]), "estimator": row["estimator"], "expected": int(row["expected"]), "produced": int(row["produced"]), "valid": int(row["valid"]), "control_valid": int(row["control_valid"]), "covariance_valid": int(row["covariance_valid"]), "missing": int(row["missing"]), "unavailable": int(row["unavailable"])})
 
@@ -199,8 +303,12 @@ def summarize(input_path, output_dir, *, report_source=None, figure_prefix="pr3"
         metric_distributions = {}
         for label, column in metric_columns.items():
             samples = [x for row in trial_rows if (x := number(row.get(column))) is not None]
+            sample_count = len(samples)
+            mean, sample_sd, mean_ci95, mean_ci95_method = student_t_mean_summary(samples)
             metric_distributions[label] = {
-                "finite_trial_count": len(samples), "mean": statistics.fmean(samples) if samples else None,
+                "finite_trial_count": sample_count, "mean": mean,
+                "sample_standard_deviation": sample_sd,
+                "mean_ci95": mean_ci95, "mean_ci95_method": mean_ci95_method,
                 "median": quantile(samples, .5), "p95": quantile(samples, .95), "max": max(samples) if samples else None,
             }
         distributions.append({
@@ -257,23 +365,31 @@ def summarize(input_path, output_dir, *, report_source=None, figure_prefix="pr3"
         "incomplete_or_failed_trials": failures,
         "pr2_gate_status": "OPEN",
         "pr3_gate_status": "OPEN_FOR_FULL_FACTOR_ACCEPTANCE_AND_INDEPENDENT_REVIEW" if failures or minimum_seed_count < 100 or max(protocol_versions) >= 5 else "OPEN_INDEPENDENT_REVIEW_REQUIRED",
-        "limitations": ["Synthetic host inputs only; no physical sensor or RP2350 performance claims.", "The v5 primary acceptance coverage is the nominal IMU-only/unknown-start baseline; other rate, stress, startup, calibration and runtime-aid factors lack 100-seed held-out/final coverage.", "Mahony and gyro-only are attitude-only reference estimators; navigation states, covariance, and NEES/NIS are not applicable and are explicitly marked.", "The reference Mahony uses fixed proportional and integral gains of 1.0 and 0.05; its heading correction gain is fixed at 0.25. These comparison baselines are not tuned products.", "Tilt NEES and gravity NIS are consistency diagnostics because simulator truth, propagated IMU and gravity pseudo-measurements are not fully independent."],
+        "limitations": ["Synthetic host inputs only; no physical sensor or RP2350 performance claims.", "Seed coverage is specific to each listed factor group; this report does not establish coverage for factors absent from its input CSV.", "Mahony and gyro-only are attitude-only reference estimators; navigation states, covariance, and NEES/NIS are not applicable and are explicitly marked.", "The reference Mahony uses fixed proportional and integral gains of 1.0 and 0.05; its heading correction gain is fixed at 0.25. These comparison baselines are not tuned products.", "Tilt NEES and gravity NIS are consistency diagnostics because simulator truth, propagated IMU and gravity pseudo-measurements are not fully independent."],
     }
     output_dir.mkdir(parents=True, exist_ok=True)
     figure_dir = output_dir / "figures"
-    figure_names = [f"{figure_prefix}_tilt_rms.svg"]
-    box_svg(tilt_plot_groups, figure_dir / figure_names[0])
     metric_titles = {
         "yaw_rms_deg": ("PR3 yaw RMS by scenario", "Yaw RMS (degrees), conditional on valid state", None),
         "availability": ("PR3 attitude availability by scenario", "Available finite attitude outputs / expected samples", 1.0),
         "tilt_nees_mean": ("PR3 mean tilt NEES by scenario", "Per-trial mean 2D tilt NEES; consistency diagnostic", None),
         "nis_mean": ("PR3 mean NIS by scenario", "Per-trial mean NIS; consistency diagnostic", None),
     }
-    for column, filename in figure_columns.items():
-        title, ylabel, maximum = metric_titles[column]
-        output_name = f"{figure_prefix}_{filename}"
-        figure_names.append(output_name)
-        metric_box_svg(figure_groups[column], figure_dir / output_name, title, ylabel, maximum=maximum)
+    figure_names = []
+    for figure_key in sorted(figure_groups):
+        rate, stress, sensor_input, startup, calibration, aid = figure_key
+        suffix = "__".join((rate, stress, sensor_input.lower(), startup.lower(),
+            f"cal_{calibration.lower()}", f"aid_{aid.lower()}"))
+        subtitle = f"{rate.replace('_', ' ')} | {stress} | {sensor_input} | startup {startup} | calibration {calibration} | aid {aid}"
+        tilt_name = f"{figure_prefix}__{suffix}_tilt_rms.svg"
+        figure_names.append(tilt_name)
+        box_svg(figure_groups[figure_key]["tilt_rms_deg"], figure_dir / tilt_name, subtitle)
+        for column, filename in figure_columns.items():
+            title, ylabel, maximum = metric_titles[column]
+            output_name = f"{figure_prefix}__{suffix}_{filename}"
+            figure_names.append(output_name)
+            metric_box_svg(figure_groups[figure_key][column], figure_dir / output_name,
+                title, ylabel, subtitle, maximum=maximum)
     report["figures"] = [f"{figure_path_prefix}{name}" for name in figure_names]
     (output_dir / "pr3_summary.json").write_text(
         json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8", newline="\n"
