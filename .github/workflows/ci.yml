@@ -34,6 +34,7 @@ jobs:
           python3 tools/run_pr3_benchmarks.py --split development --first-seed 4001 --last-seed 4001 --scenarios static --rate-modes uniform_208hz --stress-modes nominal --profiles baseline --output-dir "$RUNNER_TEMP/pr3-smoke"
           PR3_INPUT_GENERATOR="$RUNNER_TEMP/pr3-smoke/build/pr3_generate_inputs" python3 tests/test_pr3_generator.py
           PR3_INPUT_GENERATOR="$RUNNER_TEMP/pr3-smoke/build/pr3_generate_inputs" PR3_EVALUATOR="$RUNNER_TEMP/pr3-smoke/build/pr3_evaluate_stream" python3 tests/test_pr3_evaluator.py
+          python3 tests/test_pr3_summary.py
           python3 tools/run_pr3_benchmarks.py --protocol benchmarks/scenarios/pr3_scenarios_protocol_v5.json --split development --first-seed 4001 --last-seed 4001 --scenarios static --rate-modes uniform_208hz --stress-modes nominal --profiles baseline --output-dir "$RUNNER_TEMP/pr3-v5-smoke" --tree-dirty no
       - name: Sanitized regression tests
         env:

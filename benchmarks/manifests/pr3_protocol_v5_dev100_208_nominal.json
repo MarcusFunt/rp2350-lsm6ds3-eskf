@@ -7236,15 +7236,15 @@
   "classification": "SYNTHETIC_HOST_SIMULATION_ONLY; NOT_HARDWARE_QUALIFICATION",
   "pr2_gate_status": "OPEN",
   "summary_csv_sha256": "30709092ffcbecfd2a96bd524f9faed77bb6e1d68d2d965643d27ad2b294300b",
-  "summary_report_sha256": "b4440b0ec5e036a6ecd8259907b2e47d1db14170a1a18963fd3d24d514fc5cdd",
-  "figure_sha256": "47492b9d0326e23c31c43bf09687b3e29ed42bfb4bdc2a7fad81d177042caf69",
-  "summarizer_source_sha256": "042e4f3f186680d63cddf2c1f20ca79cb20fda18534c40f5bccc1b9bec028ff9",
+  "summary_report_sha256": "696fcef287d596de2cca3dca6a1afc5e54752891ea52f9bdd871773f976bef58",
+  "figure_sha256": "1991c315252c4f527ea2fdf63552193664f172945c7e16062328c67a875ef4ab",
+  "summarizer_source_sha256": "00c1ab26f0db6b7df12471ef41060981b07eee695c7e698f810fddaba86b3afe",
   "repository_figure_sha256": {
-    "benchmarks/figures/pr3_protocol_v5_dev100_208_nominal_tilt_rms.svg": "47492b9d0326e23c31c43bf09687b3e29ed42bfb4bdc2a7fad81d177042caf69",
-    "benchmarks/figures/pr3_protocol_v5_dev100_208_nominal_yaw_rms.svg": "2a487379197c0f1bb641314fa6f1062a9486722213e065fc24a0a28280d8126c",
-    "benchmarks/figures/pr3_protocol_v5_dev100_208_nominal_availability.svg": "ef59d689d18fea528a20aec4b38f0e98cbf5ab2668f8d0670607bc7e1d4cd6e4",
-    "benchmarks/figures/pr3_protocol_v5_dev100_208_nominal_tilt_nees_mean.svg": "1a96a3099d41b8a94e7f4ede73a70c2a280e44d7c513ae204e9e66735a3244ab",
-    "benchmarks/figures/pr3_protocol_v5_dev100_208_nominal_nis_mean.svg": "18ae59a2ea70a7196ff8bcfdc3c0ce1e4aa1538385c42e2fdc4632a34c4ba758"
+    "benchmarks/figures/pr3_protocol_v5_dev100_208_nominal_availability.svg": "06f8c1532b005398194c1749b2930d6bde00be52d5cc4a96b6c1954242240267",
+    "benchmarks/figures/pr3_protocol_v5_dev100_208_nominal_nis_mean.svg": "d908f27a9127c4abbb0e0ed5bbaa164610aa76b0f060c5573c90b3630f6cbbe3",
+    "benchmarks/figures/pr3_protocol_v5_dev100_208_nominal_tilt_nees_mean.svg": "c3a105ebc2e89fb64897fee7c123491a152ae4b1a07052c877c5f60fa7b12a8c",
+    "benchmarks/figures/pr3_protocol_v5_dev100_208_nominal_tilt_rms.svg": "1991c315252c4f527ea2fdf63552193664f172945c7e16062328c67a875ef4ab",
+    "benchmarks/figures/pr3_protocol_v5_dev100_208_nominal_yaw_rms.svg": "5265c5153a83af99d2c857a4b0a34dee3c96ce32363cb98bcb94d30a3b0ee932"
   },
   "generated_output_directory": "benchmarks/generated/pr3_protocol_v5_dev100_208_nominal",
   "reproduction_command": "python3 tools/run_pr3_benchmarks.py --protocol benchmarks/scenarios/pr3_scenarios_protocol_v5.json --split development --first-seed 4001 --last-seed 4100 --scenarios static,slow_yaw,lateral_accel,maneuver,vibration,timing_jitter,stop_start,compound_motion --rate-modes uniform_208hz --stress-modes nominal --profiles baseline --output-dir benchmarks/generated/pr3_protocol_v5_dev100_208_nominal --source-commit 3efd3f89e244e152364773fb26cfb0c5749dce3d --tree-dirty no --summary-source-label benchmarks/reports/pr3_protocol_v5_dev100_208_nominal_trials.csv --figure-prefix pr3_protocol_v5_dev100_208_nominal --figure-path-prefix benchmarks/figures/",
@@ -7254,10 +7254,12 @@
   "figure_path_prefix": "benchmarks/figures/",
   "runner_source_sha256": "7b3ee73d3018e5c322b70ae66775b3abb152b041bd33d7981af4ae2236c6df01",
   "additional_figure_sha256": {
-    "pr3_protocol_v5_dev100_208_nominal_yaw_rms.svg": "2a487379197c0f1bb641314fa6f1062a9486722213e065fc24a0a28280d8126c",
-    "pr3_protocol_v5_dev100_208_nominal_availability.svg": "ef59d689d18fea528a20aec4b38f0e98cbf5ab2668f8d0670607bc7e1d4cd6e4",
-    "pr3_protocol_v5_dev100_208_nominal_tilt_nees_mean.svg": "1a96a3099d41b8a94e7f4ede73a70c2a280e44d7c513ae204e9e66735a3244ab",
-    "pr3_protocol_v5_dev100_208_nominal_nis_mean.svg": "18ae59a2ea70a7196ff8bcfdc3c0ce1e4aa1538385c42e2fdc4632a34c4ba758"
+    "pr3_protocol_v5_dev100_208_nominal_availability.svg": "06f8c1532b005398194c1749b2930d6bde00be52d5cc4a96b6c1954242240267",
+    "pr3_protocol_v5_dev100_208_nominal_nis_mean.svg": "d908f27a9127c4abbb0e0ed5bbaa164610aa76b0f060c5573c90b3630f6cbbe3",
+    "pr3_protocol_v5_dev100_208_nominal_tilt_nees_mean.svg": "c3a105ebc2e89fb64897fee7c123491a152ae4b1a07052c877c5f60fa7b12a8c",
+    "pr3_protocol_v5_dev100_208_nominal_yaw_rms.svg": "5265c5153a83af99d2c857a4b0a34dee3c96ce32363cb98bcb94d30a3b0ee932"
   },
-  "report_runner_source_sha256": "9dad54b6059d3730a83544e5057f6f1da0ff369d35da141ac1d38bb3a5897903"
+  "report_runner_source_sha256": "fc97b1a33348ed436165dc44e5baca7ad9b0a2394866579040d08af95015cb8d",
+  "report_codegen_source_sha256": "47b7104e5936200e13e04825527e1ba0dc8aeaf514632fce1475688f22b9e5e6",
+  "protocol_validator_source_sha256": "0c7c37d94fd56361aa5846298c0b4b3dd885a4d9ba57665aa05e65ce525819df"
 }
