@@ -32,9 +32,10 @@ struct MockBus: lsm6ds3::Bus {
     std::vector<uint8_t> fifo{};
     std::size_t pos=0;
     bool fail=false;
+    bool fail_write=false;
     int flushes=0;
     bool write_reg(uint8_t r,uint8_t v) override {
-        if(fail) return false;
+        if(fail||fail_write) return false;
         regs[r]=v;
         if(r==lsm6ds3::kFifoCtrl5 && v==0x28){flushes++;pos=fifo.size();}
         return true;
@@ -74,9 +75,73 @@ static void test_fifo(){
     b.status(3);assert(fifo.read(f,2).result==lsm6ds3::Result::NoCompleteFrame);
     b.status(6,1);assert(fifo.read(f,2).result==lsm6ds3::Result::PatternFlushed);
     b.status(0,0,0x40);assert(fifo.read(f,2).result==lsm6ds3::Result::OverrunFlushed);
-    assert(b.flushes==2);
+    b.status(0,0,0x20);assert(fifo.read(f,2).result==lsm6ds3::Result::OverrunFlushed);
+    assert(b.flushes==3);
+    b.status(6,1);b.fail_write=true;assert(fifo.read(f,2).result==lsm6ds3::Result::BusError);
+    b.fail_write=false;
     b.fail=true;assert(fifo.read(f,2).result==lsm6ds3::Result::BusError);
     std::cout<<"PASS FIFO pattern, overrun, signed decoding and bus failure\n";
+}
+static void test_fifo_capacity_truncation(){
+    MockBus b{};lsm6ds3::Fifo fifo(b);
+    for(int i=0;i<4;i++)b.add_frame(static_cast<int16_t>(10+i),static_cast<int16_t>(100+i));
+    b.status(24);
+    lsm6ds3::Frame frames[2]{};
+    const auto result=fifo.read(frames,2);
+    assert(result.result==lsm6ds3::Result::Ok && result.frames==2);
+    assert(result.fifo_words==24 && result.truncated);
+    assert(frames[0].gyro[0]==10 && frames[1].gyro[0]==11);
+    std::cout<<"PASS bounded FIFO read reports unconsumed snapshot frames\n";
+}
+static void test_fifo_snapshot_capacity(){
+    assert(lsm6ds3::snapshot_capacity(50,0)==32);
+    assert(lsm6ds3::snapshot_capacity(50,32)==18);
+    assert(lsm6ds3::snapshot_capacity(50,49)==1);
+    assert(lsm6ds3::snapshot_capacity(50,50)==0);
+    assert(lsm6ds3::snapshot_capacity(0,0)==0);
+    std::cout<<"PASS FIFO drain capacity is limited to original status snapshot\n";
+}
+static void test_fifo_snapshot_leaves_new_arrivals_for_next_edge(){
+    MockBus b{};lsm6ds3::Fifo fifo(b);
+    for(int i=0;i<55;i++)b.add_frame(static_cast<int16_t>(i),static_cast<int16_t>(100+i));
+    b.status(50u*6u);
+    lsm6ds3::Frame frames[32]{};
+    auto batch=fifo.read(frames,32);
+    assert(batch.result==lsm6ds3::Result::Ok && batch.frames==32 && batch.truncated);
+    const uint16_t snapshot=static_cast<uint16_t>(batch.fifo_words/6u);
+    assert(snapshot==50);
+    b.status(55u*6u); // five samples arrived after the original status snapshot
+    batch=fifo.read(frames,lsm6ds3::snapshot_capacity(snapshot,32));
+    assert(batch.result==lsm6ds3::Result::Ok && batch.frames==18 && batch.truncated);
+    assert(b.pos==50u*12u && b.fifo.size()-b.pos==5u*12u);
+    uint64_t first_times[32]{},tail_times[32]{};
+    assert(lsm6ds3::reconstruct_timestamps(2000000,snapshot,0,32,208,first_times));
+    assert(lsm6ds3::reconstruct_timestamps(2000000,snapshot,32,18,208,tail_times));
+    assert(first_times[31]<tail_times[0] && tail_times[17]==2000000);
+    std::cout<<"PASS FIFO burst drain preserves edge snapshot and defers newer samples\n";
+}
+static void test_fifo_timestamp_reconstruction(){
+    uint64_t times[32]{};
+    constexpr uint64_t anchor=2000000;
+    assert(lsm6ds3::reconstruct_timestamps(anchor,50,0,32,208,times));
+    for(unsigned i=0;i<32;i++){
+        const uint64_t frames_back=49u-i;
+        assert(times[i]==anchor-(frames_back*1000000u)/208u);
+        if(i)assert(times[i]>times[i-1]);
+    }
+    assert(times[0]==1764424 && times[31]==1913462);
+    uint64_t tail[18]{};
+    assert(lsm6ds3::reconstruct_timestamps(anchor,50,32,18,208,tail));
+    assert(tail[0]==1918270);
+    assert(tail[17]==anchor);
+    assert(!lsm6ds3::reconstruct_timestamps(anchor,50,0,1,208,nullptr));
+    assert(!lsm6ds3::reconstruct_timestamps(anchor,0,0,1,208,times));
+    assert(!lsm6ds3::reconstruct_timestamps(anchor,50,0,0,208,times));
+    assert(!lsm6ds3::reconstruct_timestamps(anchor,50,0,33,208,times));
+    assert(!lsm6ds3::reconstruct_timestamps(anchor,50,50,1,208,times));
+    assert(!lsm6ds3::reconstruct_timestamps(anchor,50,0,1,0,times));
+    assert(!lsm6ds3::reconstruct_timestamps(4800,2,0,2,208,times));
+    std::cout<<"PASS exact rational 208 Hz FIFO timestamp reconstruction and range checks\n";
 }
 static void test_log(){
     imu_log::Header h{45,1,1234,208},hout{};
@@ -121,4 +186,4 @@ static void test_aiding(){
     assert(router.apply(eskf,m)==AidingResult::StaleOrFuture);
     std::cout<<"PASS aiding provenance, timestamp, frame and version gates\n";
 }
-int main(){test_calibration();test_fifo();test_log();test_aiding();std::cout<<"Bundle C host tests passed\n";}
+int main(){test_calibration();test_fifo();test_fifo_capacity_truncation();test_fifo_snapshot_capacity();test_fifo_snapshot_leaves_new_arrivals_for_next_edge();test_fifo_timestamp_reconstruction();test_log();test_aiding();std::cout<<"Bundle C host tests passed\n";}

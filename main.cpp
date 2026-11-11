@@ -121,7 +121,16 @@ static volatile uint32_t g_calibration_failed = 0;
 static volatile uint32_t g_fifo_resets = 0;
 static volatile uint32_t g_fifo_bus_errors = 0;
 static volatile uint32_t g_fifo_backfilled = 0;
+static volatile uint32_t g_fifo_discarded_frames = 0;
+static volatile uint32_t g_fifo_timestamp_errors = 0;
 static uint32_t g_fifo_sequence = 0;
+#ifdef RP2350_USE_FIFO
+static bool g_fifo_needs_resync = false;
+void account_fifo_discard(uint32_t frames) {
+    g_fifo_discarded_frames += frames;
+    g_fifo_sequence += frames;
+}
+#endif
 
 static int g_dma_rx = -1;
 static int g_dma_tx = -1;
@@ -539,29 +548,75 @@ int main() {
             }
 #ifdef RP2350_USE_FIFO
             // Each status snapshot reports queued 16-bit words. Backfilled
-            // times are based on the *nominal* 208 Hz ODR, anchored to PIO DRDY.
-            // They are not independently hardware-timestamped measurements.
+            // times use exact rational nominal 208 Hz spacing, anchored to
+            // this PIO DRDY edge. They are reconstructed, not sensor timestamps.
             const uint64_t anchor_us=(edge.t_quarter_us+2u)/4u;
-            for(int burst=0;burst<8;burst++) {
+            if(g_fifo_needs_resync) {
+                if(g_fifo.flush()) {g_fifo_needs_resync=false;++g_fifo_resets;}
+                else ++g_fifo_bus_errors;
+            } else {
                 lsm6ds3::Frame frames[32]{};
-                const auto batch=g_fifo.read(frames,32);
-                if(batch.result==lsm6ds3::Result::NoCompleteFrame) break;
-                if(batch.result!=lsm6ds3::Result::Ok) {
-                    if(batch.result==lsm6ds3::Result::BusError) ++g_fifo_bus_errors;
-                    else ++g_fifo_resets;
-                    break;
+                auto batch=g_fifo.read(frames,32);
+                if(batch.result==lsm6ds3::Result::NoCompleteFrame) {
+                    // A partial word group can complete on the next DRDY.
+                } else if(batch.result!=lsm6ds3::Result::Ok) {
+                    const uint32_t observed=batch.fifo_words/6u;
+                    if(batch.result==lsm6ds3::Result::BusError) {
+                        ++g_fifo_bus_errors;
+                        account_fifo_discard(observed);
+                        if(g_fifo.flush()) ++g_fifo_resets;
+                        else g_fifo_needs_resync=true;
+                    } else {
+                        ++g_fifo_resets;
+                        account_fifo_discard(observed);
+                    }
+                } else {
+                    const uint16_t snapshot_frames=static_cast<uint16_t>(batch.fifo_words/6u);
+                    uint16_t processed=0;
+                    const uint16_t max_bursts=static_cast<uint16_t>((snapshot_frames+31u)/32u);
+                    bool acquisition_failed=false;
+                    for(uint16_t burst=0;burst<max_bursts && processed<snapshot_frames;burst++) {
+                        if(batch.result!=lsm6ds3::Result::Ok || batch.frames==0) {
+                            const uint32_t fallback=static_cast<uint32_t>(snapshot_frames-processed);
+                            const uint32_t observed=batch.fifo_words/6u;
+                            account_fifo_discard(observed?observed:fallback);
+                            if(batch.result==lsm6ds3::Result::BusError) ++g_fifo_bus_errors;
+                            if(batch.result==lsm6ds3::Result::BusError || batch.result==lsm6ds3::Result::NoCompleteFrame) {
+                                if(g_fifo.flush()) ++g_fifo_resets;
+                                else g_fifo_needs_resync=true;
+                            } else ++g_fifo_resets; // driver already flushed abnormal pattern/count/overrun
+                            acquisition_failed=true;
+                            break;
+                        }
+                        uint64_t sample_times[32]{};
+                        if(!lsm6ds3::reconstruct_timestamps(anchor_us,snapshot_frames,processed,
+                                                            batch.frames,208,sample_times)) {
+                            ++g_fifo_timestamp_errors;
+                            account_fifo_discard(static_cast<uint32_t>(snapshot_frames-processed));
+                            if(g_fifo.flush()) ++g_fifo_resets;
+                            else g_fifo_needs_resync=true;
+                            acquisition_failed=true;
+                            break;
+                        }
+                        for(unsigned i=0;i<batch.frames;i++) {
+                            const uint64_t time_us=sample_times[i];
+                            const bool reconstructed=(processed+i+1u)!=snapshot_frames;
+                            if(reconstructed) ++g_fifo_backfilled;
+                            auto sample=decode_fifo_frame(frames[i],time_us,++g_fifo_sequence);
+                            dispatch_sample(sample,reconstructed);
+                        }
+                        processed=static_cast<uint16_t>(processed+batch.frames);
+                        if(processed>=snapshot_frames) break;
+                        const uint8_t capacity=lsm6ds3::snapshot_capacity(snapshot_frames,processed);
+                        if(!capacity) break;
+                        batch=g_fifo.read(frames,capacity);
+                    }
+                    if(processed<snapshot_frames && !acquisition_failed) {
+                        account_fifo_discard(static_cast<uint32_t>(snapshot_frames-processed));
+                        if(g_fifo.flush()) ++g_fifo_resets;
+                        else g_fifo_needs_resync=true;
+                    }
                 }
-                const unsigned pending=batch.fifo_words/6;
-                for(unsigned i=0;i<batch.frames;i++) {
-                    const uint64_t back_us=uint64_t(pending-1-i)*4808ull;
-                    if(anchor_us<=back_us) {++g_fifo_bus_errors;continue;}
-                    const uint64_t time_us=anchor_us-back_us;
-                    const bool reconstructed=back_us!=0;
-                    if(reconstructed) ++g_fifo_backfilled;
-                    auto sample=decode_fifo_frame(frames[i],time_us,++g_fifo_sequence);
-                    dispatch_sample(sample,reconstructed);
-                }
-                if(!batch.truncated) break;
             }
 #else
             spi_read_sample_dma();
@@ -600,7 +655,7 @@ int main() {
                        "sigma_dtheta_body=(%.1f,%.1f,%.1f)deg static=%d "
                        "health=%u valid=%u reset_required=%u age_ms=%.1f max_fusion_us=%lu NIS=%.2f "
                        "updates=%lu/%lu gaps=%lu sat=%lu stale_aid=%lu "
-                       "read=%lu edge_drop=%lu sample_drop=%lu period_warn=%lu fifo_reset=%lu fifo_bus=%lu backfilled=%lu cal_fail=%lu\n",
+                       "read=%lu edge_drop=%lu sample_drop=%lu period_warn=%lu fifo_reset=%lu fifo_bus=%lu backfilled=%lu fifo_discard=%lu fifo_ts_err=%lu cal_fail=%lu\n",
                        static_cast<unsigned long>(latest.sequence),
                        latest.roll_deg, latest.pitch_deg, latest.yaw_deg,
                        latest.a_norm_g,
@@ -626,6 +681,8 @@ int main() {
                        static_cast<unsigned long>(g_fifo_resets),
                        static_cast<unsigned long>(g_fifo_bus_errors),
                        static_cast<unsigned long>(g_fifo_backfilled),
+                       static_cast<unsigned long>(g_fifo_discarded_frames),
+                       static_cast<unsigned long>(g_fifo_timestamp_errors),
                        static_cast<unsigned long>(g_calibration_failed));
             } else {
                 printf("Waiting for fusion data; reads=%lu, DRDY GPIO=%d\n",

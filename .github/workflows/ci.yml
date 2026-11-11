@@ -79,9 +79,11 @@ jobs:
         run: |
           cmake -S . -B build_fifo -G Ninja -DCMAKE_BUILD_TYPE=Release -DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350 -DRP2350_USE_FIFO=ON
           cmake --build build_fifo --parallel 2
+          arm-none-eabi-size build_fifo/rp2350_lsm6ds3_fusion.elf
           test -s build_fifo/rp2350_lsm6ds3_fusion.uf2
           cmake -S . -B build_binary -G Ninja -DCMAKE_BUILD_TYPE=Release -DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350 -DRP2350_STREAM_BINARY_LOG=ON -DRP2350_USE_FIFO=ON
           cmake --build build_binary --parallel 2
+          arm-none-eabi-size build_binary/rp2350_lsm6ds3_fusion.elf
           test -s build_binary/rp2350_lsm6ds3_fusion.uf2
       - uses: actions/upload-artifact@v4
         with:
