@@ -1,0 +1,67 @@
+{
+  "analysis_tool_sha256": "6ff4bbcaeaeae8b75bebd8477d7ffa16d1eef8e27733d4bbee230f43afda6306",
+  "archive_manifest_path": "benchmarks/manifests/pr3_protocol_v5_dev100_all_factors_postfix.json",
+  "archive_manifest_sha256": "394278986dd83fad6f43799194d0ec4f3f407381eb5b761aa1ac5a22ffd2d22c",
+  "archive_path": "benchmarks/reports/pr3_protocol_v5_dev100_all_factors_postfix_trials.csv.gz",
+  "archive_sha256": "ad73e542d57d43fc4a707a82b9011dfc5ece30a44313574b49dbea14eeaee755",
+  "compiler": "c++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "evaluator_source_sha256": "27b0ee17a1e5ab55c4157f7da22ff58667fd84f3907b3ccabf1fed81e3bf7e0f",
+  "filter_header_sha256": "05a6b4de9a85abf8f85a8a0c4d24dfe058dda75f4ed4791584a8cc3e7dd84b61",
+  "forensic_covariance_snapshot_count": 2,
+  "forensic_sample_index": 135,
+  "generator_source_sha256": "7e159c915412039da66048d1ee7f80a39c9c03f91f88f40033de112ac0513843",
+  "implementation_commit": "d34bd99ecb06906c7d1420f443963ca7def91d26",
+  "l0_rows": 600,
+  "outputs": {
+    "A4_GRAVITY_SUPPRESSION.md": {
+      "bytes": 4358,
+      "sha256": "5a6b09db20133831d97ac7c778c7bb18d4fb87e24c6c74cb32b0b27bc0005593"
+    },
+    "v5_dev_static208_l0_paired_deltas.csv": {
+      "bytes": 88732,
+      "sha256": "10c524b5d0566394fe4a4f9cd60beced7db5f3c5674f587d595e31ddb6f1b254"
+    },
+    "v5_dev_static208_l0_per_trial.csv": {
+      "bytes": 322449,
+      "sha256": "584deae9b743de0ede9678155ab485c5e90a6874fc1037574df10fca94a53660"
+    },
+    "v5_dev_static208_paired_seed_tilt.svg": {
+      "bytes": 22367,
+      "sha256": "65b05e5054e163049a8909d00ad829c567a72128acdab2b73e7eecffa310ef3e"
+    },
+    "v5_dev_static208_seed4083_gravity_trace.svg": {
+      "bytes": 411084,
+      "sha256": "bc26452aed1aada73d6de6c7ae3906abcb6ba9c0d5a60a1132c3ed239292aa6c"
+    },
+    "v5_dev_static208_seed4083_nominal_l1.csv": {
+      "bytes": 2138297,
+      "sha256": "f9c25579e8727dae551ef507d09c2cd62814e6d140f393171319ecf5a1b6fb2d"
+    },
+    "v5_dev_static208_seed4083_nominal_l2_covariance.csv": {
+      "bytes": 12615,
+      "sha256": "ed66bc8188df75360973b4e73c315b29695b99bb39b4093724452ad78eb7db7a"
+    },
+    "v5_dev_static208_seed4083_stress_l1.csv": {
+      "bytes": 1918731,
+      "sha256": "61818ea7654af5e16a75471857295686b41982ce3b067eebd2cdedc2613a8dbb"
+    },
+    "v5_dev_static208_summary.json": {
+      "bytes": 4272,
+      "sha256": "8828b5b2b595779e0cbeddfd2b193bd4825522811f8f5ba75145460e99596d7e"
+    }
+  },
+  "paired_rows": 300,
+  "profile": "IMU_ONLY/UNKNOWN/calibration-OFF/aid-NONE",
+  "protocol_path": "benchmarks/scenarios/pr3_scenarios_protocol_v5.json",
+  "protocol_sha256": "1318acff98ac2641383ef6a568986e912020a6d4c6debeb145a9abf0f8fa4800",
+  "rate_mode": "uniform_208hz",
+  "scenario": "static",
+  "schema_version": 1,
+  "seed_range": [
+    4001,
+    4100
+  ],
+  "split": "development",
+  "tool_id": "pr3-gravity-suppression-a4",
+  "trace_seed": 4083
+}

@@ -1,0 +1,128 @@
+{
+  "all_eskf_trial_metrics_match_archive": true,
+  "all_replayed_input_hashes_match_archive": true,
+  "classification": "synthetic host replay; development subset only",
+  "focused_condition": {
+    "profile": "IMU_ONLY / UNKNOWN / calibration OFF / runtime aid NONE",
+    "rate_mode": "uniform_208hz",
+    "scenario": "static",
+    "seed_range": [
+      4001,
+      4100
+    ],
+    "split": "development",
+    "stress_modes": [
+      "nominal",
+      "stress"
+    ]
+  },
+  "implementation_commit": "d34bd99ecb06906c7d1420f443963ca7def91d26",
+  "interpretation": {
+    "candidate_dwell_samples": 35,
+    "candidate_thresholds": "strict inequalities from Settings: accel norm within 6% of g, gyro norm < 0.12 rad/s, adjacent accel step < 0.20 m/s^2",
+    "covariance_projection": "2x2 attitude covariance projected onto world-horizontal tilt directions; global-yaw gauge axis is excluded",
+    "first_attempt_requires_consecutive_candidates": 55,
+    "gravity_aid_cadence_samples": 21,
+    "hardware_validation": "NOT_RUN"
+  },
+  "l0_paired_rows": 300,
+  "l0_trial_rows": 600,
+  "l2_forensic_event": {
+    "captured_estimator": "eskf_conservative",
+    "event": "first accepted conservative gravity correction in nominal trace",
+    "full_covariance_rows": 2,
+    "sample_index": 135
+  },
+  "protocol_sha256": "1318acff98ac2641383ef6a568986e912020a6d4c6debeb145a9abf0f8fa4800",
+  "protocol_version": 5,
+  "rollups": [
+    {
+      "condition": "nominal",
+      "estimator": "eskf_conservative",
+      "mean_tilt_rms_deg": 0.1414971809,
+      "median_tilt_rms_deg": 0.14326866,
+      "n": 100,
+      "p95_tilt_rms_deg": 0.16477153,
+      "worst_tilt_rms_deg": 0.17348218
+    },
+    {
+      "condition": "stress",
+      "estimator": "eskf_conservative",
+      "mean_tilt_rms_deg": 5.4006404493,
+      "median_tilt_rms_deg": 5.42246866,
+      "n": 100,
+      "p95_tilt_rms_deg": 5.65396452,
+      "worst_tilt_rms_deg": 5.78541613
+    },
+    {
+      "condition": "stress_minus_nominal_paired",
+      "estimator": "eskf_conservative",
+      "mean_tilt_rms_deg": 5.2591432684,
+      "median_tilt_rms_deg": 5.2846834650000005,
+      "n": 100,
+      "p95_tilt_rms_deg": 5.50828703,
+      "worst_tilt_rms_deg": 5.61520641
+    },
+    {
+      "condition": "nominal",
+      "estimator": "eskf_legacy",
+      "mean_tilt_rms_deg": 0.1397486066,
+      "median_tilt_rms_deg": 0.13994256,
+      "n": 100,
+      "p95_tilt_rms_deg": 0.16767703,
+      "worst_tilt_rms_deg": 0.17914879
+    },
+    {
+      "condition": "stress",
+      "estimator": "eskf_legacy",
+      "mean_tilt_rms_deg": 5.378495351,
+      "median_tilt_rms_deg": 5.42246866,
+      "n": 100,
+      "p95_tilt_rms_deg": 5.65396452,
+      "worst_tilt_rms_deg": 5.78541613
+    },
+    {
+      "condition": "stress_minus_nominal_paired",
+      "estimator": "eskf_legacy",
+      "mean_tilt_rms_deg": 5.2387467444,
+      "median_tilt_rms_deg": 5.284163625,
+      "n": 100,
+      "p95_tilt_rms_deg": 5.51112936,
+      "worst_tilt_rms_deg": 5.619238859999999
+    },
+    {
+      "condition": "nominal",
+      "estimator": "eskf_confirmed_only",
+      "mean_tilt_rms_deg": 5.4518962529,
+      "median_tilt_rms_deg": 5.45083284,
+      "n": 100,
+      "p95_tilt_rms_deg": 5.53529787,
+      "worst_tilt_rms_deg": 5.58342361
+    },
+    {
+      "condition": "stress",
+      "estimator": "eskf_confirmed_only",
+      "mean_tilt_rms_deg": 5.4377371739,
+      "median_tilt_rms_deg": 5.42246866,
+      "n": 100,
+      "p95_tilt_rms_deg": 5.65396452,
+      "worst_tilt_rms_deg": 5.78541613
+    },
+    {
+      "condition": "stress_minus_nominal_paired",
+      "estimator": "eskf_confirmed_only",
+      "mean_tilt_rms_deg": -0.014159078999999962,
+      "median_tilt_rms_deg": -0.026565795000000225,
+      "n": 100,
+      "p95_tilt_rms_deg": 0.22248314999999952,
+      "worst_tilt_rms_deg": 0.31002044999999967
+    }
+  ],
+  "schema_version": 1,
+  "source_archive_manifest_sha256": "394278986dd83fad6f43799194d0ec4f3f407381eb5b761aa1ac5a22ffd2d22c",
+  "source_archive_path": "benchmarks/reports/pr3_protocol_v5_dev100_all_factors_postfix_trials.csv.gz",
+  "source_archive_sha256": "ad73e542d57d43fc4a707a82b9011dfc5ece30a44313574b49dbea14eeaee755",
+  "tool_id": "pr3-gravity-suppression-a4",
+  "trace_sample_rows_per_mode": 3328,
+  "trace_seed": 4083
+}
