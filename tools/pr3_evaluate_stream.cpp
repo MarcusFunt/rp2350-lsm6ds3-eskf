@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <cstdlib>
 #include <fstream>
 #include <iomanip>
 #include <limits>
@@ -45,6 +46,20 @@ struct Run {
     Eskf15 filter;
     TrialMetrics metrics{};
     bool first_covariance_failure_written=false;
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+    struct GateCounts {
+        std::uint32_t initialized_sample_index=0,initialized_samples=0;
+        std::uint64_t initialized_timestamp_us=0;
+        std::uint32_t accel_norm_fail=0,gyro_norm_fail=0,accel_step_fail=0;
+        std::uint32_t raw_candidate_samples=0,stationary_samples=0,gravity_allowed_samples=0;
+        std::uint32_t candidate_rejected_samples=0,dwell_incomplete_samples=0,cadence_pending_samples=0;
+        std::uint32_t external_confirmation_samples=0,gravity_attempts=0,gravity_accepted=0;
+        std::uint32_t model_rejected=0,debiased_norm_rejected=0,angle_rejected=0;
+        std::uint32_t invalid_sigma_rejected=0,innovation_covariance_rejected=0;
+        std::uint32_t nis_rejected=0,nonfinite_correction_rejected=0;
+        unsigned max_candidate_dwell=0;
+    } gate_counts;
+#endif
 };
 struct AttitudeBaseline {
     const char* name;
@@ -163,6 +178,140 @@ const char* health_name(Health h) {
     switch(h){case Health::Aligning:return "Aligning";case Health::Nominal:return "Nominal";case Health::Degraded:return "Degraded";case Health::Fault:return "Fault";}
     return "Unknown";
 }
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+const char* gravity_reason_name(GravityDiagnosticReason reason) {
+    switch(reason) {
+        case GravityDiagnosticReason::NotInitialized:return "not_initialized";
+        case GravityDiagnosticReason::InitializationComplete:return "initialization_complete";
+        case GravityDiagnosticReason::InputInvalid:return "input_invalid";
+        case GravityDiagnosticReason::TimestampInvalid:return "timestamp_invalid";
+        case GravityDiagnosticReason::GapRejected:return "gap_rejected";
+        case GravityDiagnosticReason::CandidateRejected:return "candidate_gate_failed";
+        case GravityDiagnosticReason::DwellIncomplete:return "candidate_dwell_incomplete";
+        case GravityDiagnosticReason::AidCadencePending:return "aid_cadence_pending";
+        case GravityDiagnosticReason::ExternalConfirmationRequired:return "external_confirmation_required";
+        case GravityDiagnosticReason::MeasurementModelRejected:return "measurement_model_rejected";
+        case GravityDiagnosticReason::DebiasedAccelerationRejected:return "debiased_acceleration_invalid";
+        case GravityDiagnosticReason::ConservativeAngleRejected:return "conservative_angle_gate_failed";
+        case GravityDiagnosticReason::InvalidNoiseSigma:return "invalid_noise_sigma";
+        case GravityDiagnosticReason::InnovationCovarianceRejected:return "innovation_covariance_invalid";
+        case GravityDiagnosticReason::NisRejected:return "nis_gate_rejected";
+        case GravityDiagnosticReason::NonFiniteCorrection:return "nonfinite_correction";
+        case GravityDiagnosticReason::Accepted:return "accepted";
+    }
+    return "unknown";
+}
+void collect_gravity_diagnostics(Run::GateCounts& counts,const GravityDiagnostic& d,std::uint32_t sample_index) {
+    if(d.reason==GravityDiagnosticReason::InitializationComplete) {
+        if(!counts.initialized_sample_index) {
+            counts.initialized_sample_index=sample_index;
+            counts.initialized_timestamp_us=d.timestamp_us;
+        }
+        return;
+    }
+    if(!d.initialized || d.reason==GravityDiagnosticReason::NotInitialized) return;
+    ++counts.initialized_samples;
+    counts.accel_norm_fail+=d.accel_norm_gate_pass?0u:1u;
+    counts.gyro_norm_fail+=d.gyro_norm_gate_pass?0u:1u;
+    counts.accel_step_fail+=d.accel_step_gate_pass?0u:1u;
+    counts.raw_candidate_samples+=d.raw_candidate?1u:0u;
+    counts.stationary_samples+=d.stationary?1u:0u;
+    counts.gravity_allowed_samples+=d.gravity_allowed?1u:0u;
+    if(d.consecutive_candidate_samples>counts.max_candidate_dwell)
+        counts.max_candidate_dwell=d.consecutive_candidate_samples;
+    switch(d.reason) {
+        case GravityDiagnosticReason::CandidateRejected:++counts.candidate_rejected_samples;break;
+        case GravityDiagnosticReason::DwellIncomplete:++counts.dwell_incomplete_samples;break;
+        case GravityDiagnosticReason::AidCadencePending:++counts.cadence_pending_samples;break;
+        case GravityDiagnosticReason::ExternalConfirmationRequired:++counts.external_confirmation_samples;break;
+        default:break;
+    }
+    if(d.gravity_attempted) ++counts.gravity_attempts;
+    if(d.gravity_accepted) ++counts.gravity_accepted;
+    switch(d.reason) {
+        case GravityDiagnosticReason::MeasurementModelRejected:++counts.model_rejected;break;
+        case GravityDiagnosticReason::DebiasedAccelerationRejected:++counts.debiased_norm_rejected;break;
+        case GravityDiagnosticReason::ConservativeAngleRejected:++counts.angle_rejected;break;
+        case GravityDiagnosticReason::InvalidNoiseSigma:++counts.invalid_sigma_rejected;break;
+        case GravityDiagnosticReason::InnovationCovarianceRejected:++counts.innovation_covariance_rejected;break;
+        case GravityDiagnosticReason::NisRejected:++counts.nis_rejected;break;
+        case GravityDiagnosticReason::NonFiniteCorrection:++counts.nonfinite_correction_rejected;break;
+        default:break;
+    }
+}
+void write_gravity_summary_header(std::ostream& out) {
+    out<<"protocol_version,protocol_sha256,input_sha256,scenario,rate_mode,stress_mode,split,seed,estimator,sensor_input,startup_knowledge,startup_gyro_bias_calibration,runtime_aid,expected,valid,availability,tilt_rms_deg,tilt_p95_deg,tilt_max_deg,accel_bias_error_m_s2,gyro_bias_error_rad_s,health_end,initialized_sample_index,initialized_timestamp_us,initialized_samples,accel_norm_gate_failures,gyro_norm_gate_failures,accel_step_gate_failures,raw_candidate_samples,stationary_samples,gravity_allowed_samples,max_candidate_dwell,candidate_gate_failed_samples,candidate_dwell_incomplete_samples,aid_cadence_pending_samples,external_confirmation_required_samples,gravity_attempts,gravity_accepted,gravity_rejected,measurement_model_rejected,debiased_acceleration_rejected,conservative_angle_rejected,invalid_noise_sigma_rejected,innovation_covariance_rejected,nis_gate_rejected,nonfinite_correction_rejected\n";
+}
+void write_gravity_summary_row(std::ostream& out,const Run& run,
+                               int scenario,int rate_mode,bool stress,const char* split,std::uint32_t seed,
+                               const char* sensor_input,const char* startup,bool startup_calibration,
+                               const char* aid,const char* input_sha) {
+    const auto& c=run.gate_counts;
+    const auto& m=run.metrics;
+    out<<pr3_protocol::kProtocolVersion<<','<<pr3_protocol::kProtocolSha256<<','<<input_sha<<','
+       <<pr3_protocol::kScenarioIds[scenario]<<','<<pr3_protocol::kRateIds[rate_mode]<<','
+       <<(stress?"stress":"nominal")<<','<<split<<','<<seed<<',';
+    out<<policy_name(run.policy)<<','<<sensor_input<<','<<startup<<','<<(startup_calibration?"ON":"OFF")<<','<<aid<<','
+       <<m.expected<<','<<m.valid<<',';
+    csv_float(out,m.expected?static_cast<float>(m.valid)/m.expected:NAN);out<<',';
+    csv_float(out,rms(m.tilt_sq,m.valid));out<<',';csv_float(out,percentile(m.tilt,0.95f));out<<',';
+    csv_float(out,m.tilt.empty()?NAN:*std::max_element(m.tilt.begin(),m.tilt.end()));out<<',';
+    csv_float(out,m.accel_bias_error);out<<',';csv_float(out,m.gyro_bias_error);out<<','
+       <<health_name(run.filter.health())<<','<<c.initialized_sample_index<<','<<c.initialized_timestamp_us<<','
+       <<c.initialized_samples<<','<<c.accel_norm_fail<<','<<c.gyro_norm_fail<<','<<c.accel_step_fail<<','
+       <<c.raw_candidate_samples<<','<<c.stationary_samples<<','<<c.gravity_allowed_samples<<','<<c.max_candidate_dwell<<','
+       <<c.candidate_rejected_samples<<','<<c.dwell_incomplete_samples<<','<<c.cadence_pending_samples<<','<<c.external_confirmation_samples<<','
+       <<c.gravity_attempts<<','<<c.gravity_accepted<<','<<(c.gravity_attempts-c.gravity_accepted)<<','
+       <<c.model_rejected<<','<<c.debiased_norm_rejected<<','<<c.angle_rejected<<','<<c.invalid_sigma_rejected<<','
+       <<c.innovation_covariance_rejected<<','<<c.nis_rejected<<','<<c.nonfinite_correction_rejected<<'\n';
+}
+void write_gravity_trace_header(std::ostream& out) {
+    out<<"protocol_version,protocol_sha256,input_sha256,scenario,rate_mode,stress_mode,split,seed,estimator,sensor_input,startup_knowledge,startup_gyro_bias_calibration,runtime_aid,sample_index,nominal_time_s,physical_time_s,reported_timestamp_us,initialized,health,control_state_valid,accel_norm_m_s2,gyro_norm_rad_s,accel_step_m_s2,accel_norm_gate_pass,gyro_norm_gate_pass,accel_step_gate_pass,raw_candidate,consecutive_candidate_samples,stationary,external_stationary_confirmed,gravity_allowed,gravity_attempted,gravity_accepted,gravity_reason,gravity_innovation_angle_rad,gravity_effective_noise_sigma,gravity_nis,gravity_nis_gate,tilt_error_deg,accel_bias_x,accel_bias_y,accel_bias_z,accel_bias_error_m_s2,gyro_bias_x,gyro_bias_y,gyro_bias_z,gyro_bias_error_rad_s,tilt_cov_00,tilt_cov_01,tilt_cov_11,tilt_cov_trace,tilt_cov_eigen_min,tilt_cov_eigen_max\n";
+}
+void write_gravity_trace_row(std::ostream& out,const InputRecord& sample,int scenario,int rate_mode,
+                             int rate,bool stress,const char* split,std::uint32_t seed,
+                             const char* sensor_input,const char* startup,
+                             bool startup_calibration,const char* aid,const char* input_sha,
+                             const Run& run) {
+    const auto& d=run.filter.gravity_diagnostic();
+    const auto& state=run.filter.state();
+    const Vec3 bx=state.orientation.unrotate({1,0,0});
+    const Vec3 by=state.orientation.unrotate({0,1,0});
+    double c00=0.0,c01=0.0,c11=0.0;
+    for(int i=0;i<3;i++)for(int j=0;j<3;j++) {
+        const double p=run.filter.covariance(6+i,6+j);
+        const double x[3]={bx.x,bx.y,bx.z},y[3]={by.x,by.y,by.z};
+        c00+=x[i]*p*x[j];c01+=x[i]*p*y[j];c11+=y[i]*p*y[j];
+    }
+    const double trace=c00+c11;
+    const double spread=std::sqrt(std::max(0.0,(c00-c11)*(c00-c11)+4.0*c01*c01));
+    const double eigen_min=.5*(trace-spread),eigen_max=.5*(trace+spread);
+    const float accel_bias_error=(state.accel_bias-sample.truth_ba).norm();
+    const float gyro_bias_error=(state.gyro_bias-sample.truth_bg).norm();
+    out<<pr3_protocol::kProtocolVersion<<','<<pr3_protocol::kProtocolSha256<<','<<input_sha<<','
+       <<pr3_protocol::kScenarioIds[scenario]<<','<<pr3_protocol::kRateIds[rate_mode]<<','
+       <<(stress?"stress":"nominal")<<','<<split<<','<<seed<<','
+       <<policy_name(run.policy)<<','<<sensor_input<<','<<startup<<','<<(startup_calibration?"ON":"OFF")<<','<<aid<<','
+       <<sample.index<<','<<static_cast<double>(sample.index)/rate<<','
+       <<static_cast<double>(sample.physical_us-pr3_protocol::kEpochUs)*1e-6<<','<<sample.reported_us<<','
+       <<(d.initialized?"true":"false")<<','<<health_name(run.filter.health())<<','
+       <<(run.filter.control_state_valid()?"true":"false")<<',';
+    csv_float(out,d.accel_norm);out<<',';csv_float(out,d.gyro_norm);out<<',';csv_float(out,d.accel_step);out<<','
+       <<(d.accel_norm_gate_pass?"true":"false")<<','<<(d.gyro_norm_gate_pass?"true":"false")<<','
+       <<(d.accel_step_gate_pass?"true":"false")<<','<<(d.raw_candidate?"true":"false")<<','
+       <<d.consecutive_candidate_samples<<','<<(d.stationary?"true":"false")<<','
+       <<(d.external_stationary_confirmed?"true":"false")<<','<<(d.gravity_allowed?"true":"false")<<','
+       <<(d.gravity_attempted?"true":"false")<<','<<(d.gravity_accepted?"true":"false")<<','
+       <<gravity_reason_name(d.reason)<<',';
+    csv_float(out,d.innovation_angle_rad);out<<',';csv_float(out,d.effective_noise_sigma);out<<',';
+    csv_float(out,d.gravity_nis);out<<',';csv_float(out,d.gravity_nis_gate);out<<',';
+    csv_float(out,tilt_error_deg(state.orientation,sample.truth_q));out<<',';
+    csv_float(out,state.accel_bias.x);out<<',';csv_float(out,state.accel_bias.y);out<<',';csv_float(out,state.accel_bias.z);out<<',';csv_float(out,accel_bias_error);out<<',';
+    csv_float(out,state.gyro_bias.x);out<<',';csv_float(out,state.gyro_bias.y);out<<',';csv_float(out,state.gyro_bias.z);out<<',';csv_float(out,gyro_bias_error);out<<',';
+    csv_double(out,c00);out<<',';csv_double(out,c01);out<<',';csv_double(out,c11);out<<',';
+    csv_double(out,trace);out<<',';csv_double(out,eigen_min);out<<',';csv_double(out,eigen_max);out<<'\n';
+}
+#endif
 bool cholesky_failure(const Eskf15& filter,int& failed_pivot,double& pivot_value) {
     double L[kDim][kDim]={};
     for(int i=0;i<kDim;i++) for(int j=0;j<=i;j++) {
@@ -228,9 +377,17 @@ void write_sample_trace(std::ostream& out,const InputRecord& sample,int rate,con
     out<<'\n';
 }
 
+struct GravityTraceOptions {
+    const char* summary_path=nullptr;
+    const char* trace_path=nullptr;
+    const char* forensic_covariance_path=nullptr;
+    std::uint32_t forensic_sample=0;
+};
+
 int evaluate(const char* input,const char* output,const char* split,const char* sensor_input,
              const char* startup,bool startup_calibration,const char* aid,const char* commit_sha,
-             const char* config_sha,const char* input_sha,const char* sample_trace_path) {
+             const char* config_sha,const char* input_sha,const char* sample_trace_path,
+             const GravityTraceOptions& gravity_trace_options) {
     using namespace pr3_protocol;
     if(std::strcmp(sensor_input,"IMU_ONLY")!=0 && std::strcmp(sensor_input,"IMU_WITH_SYNTHETIC_HEADING")!=0) return 2;
     if(std::strcmp(startup,"UNKNOWN")!=0 && std::strcmp(startup,"EXTERNALLY_VERIFIED_STATIC")!=0 && std::strcmp(startup,"TRUTH_ORACLE_STATIC")!=0) return 2;
@@ -261,6 +418,24 @@ int evaluate(const char* input,const char* output,const char* split,const char* 
         ||(split_name=="final_confirmation"&&seed>=kConfirmationFirstSeed&&seed<=kConfirmationLastSeed);
     if(!seed_ok) {std::fputs("input seed is outside the declared split\n",stderr);return 3;}
     if(count!=static_cast<std::uint32_t>(rate*static_cast<int>(kDurationS))) {std::fputs("sample count mismatches duration/rate\n",stderr);return 3;}
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+    if(gravity_trace_options.forensic_covariance_path) {
+        if(!gravity_trace_options.forensic_sample || gravity_trace_options.forensic_sample>count ||
+           split_name!="development" || scenario!=scenario_index("static") || rate_mode!=1 ||
+           std::strcmp(sensor_input,"IMU_ONLY")!=0 || std::strcmp(startup,"UNKNOWN")!=0 ||
+           startup_calibration || std::strcmp(aid,"NONE")!=0) {
+            std::fputs("forensic covariance is limited to one selected development static/208 Hz unknown-startup IMU-only event\n",stderr);
+            return 2;
+        }
+    } else if(gravity_trace_options.forensic_sample) {
+        std::fputs("--forensic-sample requires --forensic-covariance\n",stderr);return 2;
+    }
+#else
+    if(gravity_trace_options.summary_path || gravity_trace_options.trace_path ||
+       gravity_trace_options.forensic_covariance_path || gravity_trace_options.forensic_sample) {
+        std::fputs("diagnostic flags require a build with INERTIAL_GRAVITY_DIAGNOSTICS\n",stderr);return 2;
+    }
+#endif
     std::array<Run,3> runs{{Run(GravityPolicy::Conservative),Run(GravityPolicy::LegacyHeuristic),Run(GravityPolicy::ConfirmedOnly)}};
     std::array<AttitudeBaseline,2> baselines{{AttitudeBaseline("mahony",true),AttitudeBaseline("gyro_only",false)}};
     for(Run& run:runs) {
@@ -273,6 +448,27 @@ int evaluate(const char* input,const char* output,const char* split,const char* 
     std::ofstream out(output,std::ios::trunc);
     if(!out) {std::fprintf(stderr,"cannot create summary %s\n",output);return 2;}
     std::ofstream sample_trace,covariance_trace;
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+    std::ofstream gravity_summary,gravity_trace,forensic_covariance;
+    if(gravity_trace_options.summary_path) {
+        gravity_summary.open(gravity_trace_options.summary_path,std::ios::trunc);
+        if(!gravity_summary) {std::fprintf(stderr,"cannot create gravity summary %s\n",gravity_trace_options.summary_path);return 2;}
+        gravity_summary.setf(std::ios::fixed);gravity_summary.precision(8);
+        write_gravity_summary_header(gravity_summary);
+    }
+    if(gravity_trace_options.trace_path) {
+        gravity_trace.open(gravity_trace_options.trace_path,std::ios::trunc);
+        if(!gravity_trace) {std::fprintf(stderr,"cannot create gravity trace %s\n",gravity_trace_options.trace_path);return 2;}
+        gravity_trace.setf(std::ios::fixed);gravity_trace.precision(8);
+        write_gravity_trace_header(gravity_trace);
+    }
+    if(gravity_trace_options.forensic_covariance_path) {
+        forensic_covariance.open(gravity_trace_options.forensic_covariance_path,std::ios::trunc);
+        if(!forensic_covariance) {std::fprintf(stderr,"cannot create forensic covariance %s\n",gravity_trace_options.forensic_covariance_path);return 2;}
+        forensic_covariance.setf(std::ios::fixed);forensic_covariance.precision(8);
+        write_covariance_header(forensic_covariance);
+    }
+#endif
     if(sample_trace_path && *sample_trace_path) {
         sample_trace.open(sample_trace_path,std::ios::trunc);
         if(!sample_trace) {std::fprintf(stderr,"cannot create sample trace %s\n",sample_trace_path);return 2;}
@@ -304,6 +500,12 @@ int evaluate(const char* input,const char* output,const char* split,const char* 
             run.filter.set_external_stationary_confirmed(static_knowledge && physical_t<2.0);
             std::array<double,kDim*kDim> covariance_before_values{};
             if(trace_enabled) copy_covariance(run.filter,covariance_before_values.data());
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+            const bool forensic_event=forensic_covariance.is_open() &&
+                run.policy==GravityPolicy::Conservative && s.index==gravity_trace_options.forensic_sample;
+            std::array<double,kDim*kDim> forensic_before_values{};
+            if(forensic_event) copy_covariance(run.filter,forensic_before_values.data());
+#endif
             const bool covariance_before=!trace_enabled || run.filter.covariance_positive_definite();
             const Health health_before=run.filter.health();
             const auto gravity_before=run.filter.gravity_applied_updates();
@@ -313,6 +515,17 @@ int evaluate(const char* input,const char* output,const char* split,const char* 
             const auto reset_before=run.filter.reset_required();
             const Imu imu{s.reported_us,s.accel,s.gyro};
             const bool propagated=run.filter.process(imu);
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+            const GravityDiagnostic& gravity_diagnostic=run.filter.gravity_diagnostic();
+            collect_gravity_diagnostics(run.gate_counts,gravity_diagnostic,s.index);
+            if(gravity_trace.is_open() && run.policy==GravityPolicy::Conservative)
+                write_gravity_trace_row(gravity_trace,s,scenario,rate_mode,rate,stress,split,seed,
+                    sensor_input,startup,startup_calibration,aid,input_sha,run);
+            if(forensic_event && gravity_diagnostic.gravity_attempted) {
+                write_covariance_values(forensic_covariance,run,s,"before_sample",forensic_before_values.data(),-1,NAN);
+                write_covariance_snapshot(forensic_covariance,run,s,"after_sample",run.filter);
+            }
+#endif
             int process_failed_pivot=-1;double process_failed_pivot_value=NAN;
             const bool covariance_after_process=!trace_enabled ||
                 !cholesky_failure(run.filter,process_failed_pivot,process_failed_pivot_value);
@@ -447,19 +660,54 @@ int evaluate(const char* input,const char* output,const char* split,const char* 
         csv_float(out,rms(m.attitude_sq,m.valid));out<<',';csv_float(out,rms(m.yaw_sq,m.valid));out<<",,,,";
         csv_float(out,m.gyro_bias_error);out<<",,0,,,0,0,NOT_PROVIDED,"<<(m.expected==m.produced&&m.valid==m.expected?"true":"false")<<",false,false,OPEN\n";
     }
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+    if(gravity_summary.is_open()) {
+        for(const Run& run:runs)
+            write_gravity_summary_row(gravity_summary,run,scenario,rate_mode,stress,split,seed,
+                sensor_input,startup,startup_calibration,aid,input_sha);
+    }
+    if((gravity_summary.is_open()&&!gravity_summary) || (gravity_trace.is_open()&&!gravity_trace) ||
+       (forensic_covariance.is_open()&&!forensic_covariance)) return 4;
+#endif
     if(!out || (sample_trace.is_open() && (!sample_trace || !covariance_trace))) return 4;
     return 0;
 }
 } // namespace
 
 int main(int argc,char**argv) {
-    if(argc!=11 && argc!=13) {
-        std::fprintf(stderr,"usage: pr3_evaluate_stream INPUT OUTPUT SPLIT SENSOR_INPUT STARTUP KNOWLEDGE_CALIBRATION(0|1) RUNTIME_AID COMMIT_SHA CONFIG_SHA INPUT_SHA [--sample-trace TRACE.csv]\n");
+    if(argc<11) {
+        std::fprintf(stderr,"usage: pr3_evaluate_stream INPUT OUTPUT SPLIT SENSOR_INPUT STARTUP KNOWLEDGE_CALIBRATION(0|1) RUNTIME_AID COMMIT_SHA CONFIG_SHA INPUT_SHA [--sample-trace TRACE.csv] [--gravity-summary TRACE.csv] [--gravity-trace TRACE.csv] [--forensic-covariance TRACE.csv --forensic-sample INDEX]\n");
         return 2;
     }
-    if(argc==13 && std::strcmp(argv[11],"--sample-trace")!=0) return 2;
+    const char* sample_trace_path=nullptr;
+    GravityTraceOptions gravity_trace_options{};
+    for(int i=11;i<argc;i++) {
+        const char* option=argv[i];
+        if(i+1>=argc) {std::fprintf(stderr,"missing value for %s\n",option);return 2;}
+        if(std::strcmp(option,"--sample-trace")==0 && !sample_trace_path) {
+            sample_trace_path=argv[++i];
+        } else if(std::strcmp(option,"--gravity-summary")==0 && !gravity_trace_options.summary_path) {
+            gravity_trace_options.summary_path=argv[++i];
+        } else if(std::strcmp(option,"--gravity-trace")==0 && !gravity_trace_options.trace_path) {
+            gravity_trace_options.trace_path=argv[++i];
+        } else if(std::strcmp(option,"--forensic-covariance")==0 && !gravity_trace_options.forensic_covariance_path) {
+            gravity_trace_options.forensic_covariance_path=argv[++i];
+        } else if(std::strcmp(option,"--forensic-sample")==0 && !gravity_trace_options.forensic_sample) {
+            char* end=nullptr;
+            const unsigned long value=std::strtoul(argv[++i],&end,10);
+            if(!end || *end || value==0 || value>UINT32_MAX) {
+                std::fputs("--forensic-sample must be a positive 32-bit sample index\n",stderr);return 2;
+            }
+            gravity_trace_options.forensic_sample=static_cast<std::uint32_t>(value);
+        } else {
+            std::fprintf(stderr,"unknown, duplicate or out-of-order option %s\n",option);return 2;
+        }
+    }
+    if((gravity_trace_options.forensic_covariance_path!=nullptr)!=(gravity_trace_options.forensic_sample!=0)) {
+        std::fputs("--forensic-covariance and --forensic-sample must be supplied together\n",stderr);return 2;
+    }
     const std::string calibration=argv[6];
     if(calibration!="0"&&calibration!="1")return 2;
     return evaluate(argv[1],argv[2],argv[3],argv[4],argv[5],calibration=="1",argv[7],argv[8],argv[9],argv[10],
-        argc==13?argv[12]:nullptr);
+        sample_trace_path,gravity_trace_options);
 }

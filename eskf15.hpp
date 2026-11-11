@@ -152,12 +152,51 @@ struct State {
     Vec3 accel_bias{}, gyro_bias{};
 };
 
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+enum class GravityDiagnosticReason : uint8_t {
+    NotInitialized,
+    InitializationComplete,
+    InputInvalid,
+    TimestampInvalid,
+    GapRejected,
+    CandidateRejected,
+    DwellIncomplete,
+    AidCadencePending,
+    ExternalConfirmationRequired,
+    MeasurementModelRejected,
+    DebiasedAccelerationRejected,
+    ConservativeAngleRejected,
+    InvalidNoiseSigma,
+    InnovationCovarianceRejected,
+    NisRejected,
+    NonFiniteCorrection,
+    Accepted
+};
+
+struct GravityDiagnostic {
+    uint64_t timestamp_us=0;
+    float accel_norm=NAN,gyro_norm=NAN,accel_step=NAN;
+    float innovation_angle_rad=NAN,effective_noise_sigma=NAN;
+    float gravity_nis=NAN,gravity_nis_gate=NAN;
+    unsigned consecutive_candidate_samples=0,aid_count_at_gate=0;
+    bool initialized=false,accel_norm_gate_pass=false,gyro_norm_gate_pass=false;
+    bool accel_step_gate_pass=false,raw_candidate=false,stationary=false;
+    bool external_stationary_confirmed=false,gravity_allowed=false;
+    bool gravity_attempted=false,gravity_accepted=false;
+    GravityDiagnosticReason reason=GravityDiagnosticReason::NotInitialized;
+};
+#endif
+
 class Eskf15 {
 public:
     explicit Eskf15(Settings settings={}) : config_(settings) { reset(); }
 
     void reset() {
         state_={};
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+        last_gravity_diagnostic_={};
+        last_update_failure_reason_=GravityDiagnosticReason::NonFiniteCorrection;
+#endif
         initialized_=false;
         reset_required_=false;
         last_time_us_=0;
@@ -199,7 +238,18 @@ public:
     // True ONLY when a valid propagation occurred. False during initialization,
     // duplicate timestamps, long gaps, saturation, or invalid data.
     bool process(const Imu &imu) {
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+        last_gravity_diagnostic_={};
+        last_gravity_diagnostic_.timestamp_us=imu.timestamp_us;
+        last_gravity_diagnostic_.initialized=initialized_;
+        last_gravity_diagnostic_.external_stationary_confirmed=external_stationary_confirmed_;
+        last_gravity_diagnostic_.reason=initialized_ ? GravityDiagnosticReason::TimestampInvalid
+            : GravityDiagnosticReason::NotInitialized;
+#endif
         if (!finite(imu.accel_mps2) || !finite(imu.gyro_rps)) {
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+            last_gravity_diagnostic_.reason=GravityDiagnosticReason::InputInvalid;
+#endif
             ++invalid_imu_count_;
             health_=Health::Fault;
             reset_required_=initialized_;
@@ -213,6 +263,9 @@ public:
             return false;
         }
         if (saturated(imu)) {
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+            last_gravity_diagnostic_.reason=GravityDiagnosticReason::InputInvalid;
+#endif
             ++saturation_count_;
             health_=Health::Fault;
             reset_required_=initialized_; // a clipped sample breaks continuity
@@ -306,9 +359,19 @@ public:
             initialized_=true;
             state_time_us_=imu.timestamp_us;
             health_=Health::Nominal;
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+            last_gravity_diagnostic_.initialized=true;
+            last_gravity_diagnostic_.accel_norm=norm;
+            last_gravity_diagnostic_.gyro_norm=imu.gyro_rps.norm();
+            last_gravity_diagnostic_.external_stationary_confirmed=external_stationary_confirmed_;
+            last_gravity_diagnostic_.reason=GravityDiagnosticReason::InitializationComplete;
+#endif
             return false;
         }
         if (imu.timestamp_us <= last_time_us_) {
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+            last_gravity_diagnostic_.reason=GravityDiagnosticReason::TimestampInvalid;
+#endif
             ++invalid_imu_count_;
             health_=Health::Degraded;
             return false;
@@ -316,6 +379,9 @@ public:
         const float dt=static_cast<float>(imu.timestamp_us-last_time_us_)*1e-6f;
         last_time_us_=imu.timestamp_us;
         if (!(dt > .0001f && dt <= config_.max_continuous_predict_dt_s)) {
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+            last_gravity_diagnostic_.reason=GravityDiagnosticReason::GapRejected;
+#endif
             // Cannot reconstruct unobserved dynamics from the new sample.
             // Latch fault and keep state_time_us_ at the last real propagation.
             // There is NO automatic resume across an unobservable interval.
@@ -346,6 +412,18 @@ public:
             (imu.accel_mps2-previous_accel_).norm() : 1e9f;
         previous_accel_=imu.accel_mps2;
         have_previous_accel_=true;
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+        const bool accel_norm_gate_pass=std::fabs(an-kGravity)<config_.static_accel_tolerance*kGravity;
+        const bool gyro_norm_gate_pass=gn<config_.static_gyro_limit;
+        const bool accel_step_gate_pass=step<config_.static_accel_step_limit;
+        last_gravity_diagnostic_.initialized=true;
+        last_gravity_diagnostic_.accel_norm=an;
+        last_gravity_diagnostic_.gyro_norm=gn;
+        last_gravity_diagnostic_.accel_step=step;
+        last_gravity_diagnostic_.accel_norm_gate_pass=accel_norm_gate_pass;
+        last_gravity_diagnostic_.gyro_norm_gate_pass=gyro_norm_gate_pass;
+        last_gravity_diagnostic_.accel_step_gate_pass=accel_step_gate_pass;
+#endif
         const bool candidate =
             std::fabs(an-kGravity)<config_.static_accel_tolerance*kGravity &&
             gn<config_.static_gyro_limit &&
@@ -368,12 +446,37 @@ public:
         if(external_stationary_confirmed_ && !candidate) ++external_stationary_conflicts_;
         const bool allow_gravity = (config_.gravity_policy==GravityPolicy::ConfirmedOnly) ?
             external_stationary_consistent : (stationary_ || external_stationary_consistent);
-        if (allow_gravity && ++aid_count_ >= config_.aid_every_samples) {
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+        last_gravity_diagnostic_.raw_candidate=candidate;
+        last_gravity_diagnostic_.consecutive_candidate_samples=static_count_;
+        last_gravity_diagnostic_.stationary=stationary_;
+        last_gravity_diagnostic_.external_stationary_confirmed=external_stationary_confirmed_;
+        last_gravity_diagnostic_.gravity_allowed=allow_gravity;
+        if (!allow_gravity) {
+            last_gravity_diagnostic_.reason=!candidate ? GravityDiagnosticReason::CandidateRejected
+                : (!stationary_ ? GravityDiagnosticReason::DwellIncomplete
+                    : GravityDiagnosticReason::ExternalConfirmationRequired);
+        }
+#endif
+        bool gravity_due=false;
+        if (allow_gravity) {
+            gravity_due=++aid_count_ >= config_.aid_every_samples;
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+            last_gravity_diagnostic_.aid_count_at_gate=aid_count_;
+            if (!gravity_due) last_gravity_diagnostic_.reason=GravityDiagnosticReason::AidCadencePending;
+#endif
+        }
+        if (gravity_due) {
             aid_count_=0;
             // A true external confirmation permits gravity realignment even
             // when the estimate has large roll/pitch error. Without one,
             // reject large innovations rather than following apparent gravity.
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+            last_gravity_diagnostic_.gravity_attempted=true;
+            correct_gravity_direction(imu.accel_mps2,an,step,last_gravity_diagnostic_);
+#else
             correct_gravity_direction(imu.accel_mps2,an,step);
+#endif
             if (config_.heuristic_zero_rate && (stationary_ || external_stationary_consistent))
                 correct_zero_angular_rate(imu.gyro_rps,config_.zero_rate_sigma);
         }
@@ -461,6 +564,9 @@ public:
     uint32_t gravity_suppressed_updates() const { return gravity_suppressed_updates_; }
     uint32_t external_stationary_conflicts() const { return external_stationary_conflicts_; }
     bool imu_stationary_candidate() const { return stationary_; }
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+    const GravityDiagnostic& gravity_diagnostic() const { return last_gravity_diagnostic_; }
+#endif
     uint32_t rejected_updates() const { return rejected_updates_; }
     uint32_t accepted_updates() const { return accepted_updates_; }
     uint32_t last_accepted_aid_source() const {return last_accepted_aid_source_;}
@@ -723,22 +829,44 @@ public:
         return true;
     }
 private:
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+    void correct_gravity_direction(Vec3 accel,float raw_accel_norm,float accel_step,
+                                   GravityDiagnostic& diagnostic) {
+#else
     void correct_gravity_direction(Vec3 accel,float raw_accel_norm,float accel_step) {
+#endif
         float residual[3],H[3][kDim];
         if (!gravity_measurement_model(state_.orientation,accel,state_.accel_bias,residual,H)) {
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+            diagnostic.reason=GravityDiagnosticReason::MeasurementModelRejected;
+#endif
             ++gravity_suppressed_updates_;return;
         }
         float sigma=config_.gravity_update_sigma;
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+        diagnostic.gravity_nis_gate=16.0f;
+#endif
         const bool independently_stationary=external_stationary_confirmed_;
         if (config_.gravity_policy==GravityPolicy::Conservative && !independently_stationary) {
             const Vec3 g_body=state_.orientation.unrotate({0,0,1});
             const Vec3 debiased=accel-state_.accel_bias;
             const float n=debiased.norm();
-            if (!(n>1e-6f)) {++gravity_suppressed_updates_;return;}
+            if (!(n>1e-6f)) {
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+                diagnostic.reason=GravityDiagnosticReason::DebiasedAccelerationRejected;
+#endif
+                ++gravity_suppressed_updates_;return;
+            }
             const float c=dot(g_body,debiased)*(1.0f/n);
             const float clipped=(c>1.0f?1.0f:(c< -1.0f?-1.0f:c));
             const float angle=std::acos(clipped);
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+            diagnostic.innovation_angle_rad=angle;
+#endif
             if (!std::isfinite(angle) || angle>config_.gravity_unverified_max_angle_rad) {
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+                diagnostic.reason=GravityDiagnosticReason::ConservativeAngleRejected;
+#endif
                 ++gravity_suppressed_updates_;return;
             }
             // Larger deviations from 1 g or more sample-to-sample motion
@@ -749,7 +877,21 @@ private:
             const float score=std::fmin(1.0f,std::fmax(norm_ratio,step_ratio));
             sigma*=1.0f + config_.gravity_motion_noise_multiplier*score*score;
         }
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+        diagnostic.effective_noise_sigma=sigma;
+        if (update(residual,H,3,sigma,16.0f)) {
+            ++gravity_applied_updates_;
+            diagnostic.gravity_accepted=true;
+            diagnostic.gravity_nis=last_nis_;
+            diagnostic.reason=GravityDiagnosticReason::Accepted;
+        } else {
+            diagnostic.reason=last_update_failure_reason_;
+            if (last_update_failure_reason_==GravityDiagnosticReason::NisRejected)
+                diagnostic.gravity_nis=last_nis_;
+        }
+#else
         if (update(residual,H,3,sigma,16.0f)) ++gravity_applied_updates_;
+#endif
     }
     bool correct_zero_angular_rate(Vec3 gyro,float sigma) {
         float residual[3]={gyro.x-state_.gyro_bias.x,
@@ -762,7 +904,15 @@ private:
 
     bool update(const float residual[3], const float H[3][kDim],
                 int m,float sigma,float nis_gate) {
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+        last_update_failure_reason_=GravityDiagnosticReason::NonFiniteCorrection;
+        if (!valid_sigma(sigma)) {
+            last_update_failure_reason_=GravityDiagnosticReason::InvalidNoiseSigma;
+            return false;
+        }
+#else
         if (!valid_sigma(sigma)) return false;
+#endif
         double PHt[kDim][3]={};
         for(int i=0;i<kDim;i++) for(int j=0;j<m;j++) {
             double s=0.0;
@@ -781,7 +931,13 @@ private:
             double v=S[i][j];
             for(int k=0;k<j;k++) v-=L[i][k]*L[j][k];
             if(i==j) {
-                if(!std::isfinite(v)||v<=1e-12) {health_=Health::Fault;return false;}
+                if(!std::isfinite(v)||v<=1e-12) {
+                    health_=Health::Fault;
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+                    last_update_failure_reason_=GravityDiagnosticReason::InnovationCovarianceRejected;
+#endif
+                    return false;
+                }
                 L[i][j]=std::sqrt(v);
             } else L[i][j]=v/L[j][j];
         }
@@ -803,13 +959,24 @@ private:
         for(int i=0;i<m;i++) for(int j=0;j<m;j++) nis+=residual[i]*S_inv[i][j]*residual[j];
         last_nis_=static_cast<float>(nis);
         last_nis_gate_=nis_gate;
-        if (!std::isfinite(nis) || nis>nis_gate) { ++rejected_updates_; return false; }
+        if (!std::isfinite(nis) || nis>nis_gate) {
+            ++rejected_updates_;
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+            last_update_failure_reason_=GravityDiagnosticReason::NisRejected;
+#endif
+            return false;
+        }
         double K[kDim][3]={};
         for(int i=0;i<kDim;i++) for(int j=0;j<m;j++)
             for(int k=0;k<m;k++) K[i][j]+=PHt[i][k]*S_inv[k][j];
         double dx[kDim]={};
         for(int i=0;i<kDim;i++) for(int j=0;j<m;j++) dx[i]+=K[i][j]*residual[j];
-        for(int i=0;i<kDim;i++) if(!std::isfinite(dx[i])) return false;
+        for(int i=0;i<kDim;i++) if(!std::isfinite(dx[i])) {
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+            last_update_failure_reason_=GravityDiagnosticReason::NonFiniteCorrection;
+#endif
+            return false;
+        }
 
         // Joseph stabilized update using FP64 covariance intermediates.
         double J[kDim][kDim]={};
@@ -850,6 +1017,9 @@ private:
         }
         symmetrize();
         ++accepted_updates_;
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+        last_update_failure_reason_=GravityDiagnosticReason::Accepted;
+#endif
         return true;
     }
     void symmetrize() {
@@ -884,5 +1054,9 @@ private:
     bool startup_bias_calibrated_=false,external_stationary_confirmed_=false;
     uint32_t gravity_suppressed_updates_=0,gravity_applied_updates_=0;
     uint32_t external_stationary_conflicts_=0;
+#if defined(INERTIAL_GRAVITY_DIAGNOSTICS)
+    GravityDiagnostic last_gravity_diagnostic_{};
+    GravityDiagnosticReason last_update_failure_reason_=GravityDiagnosticReason::NonFiniteCorrection;
+#endif
 };
 } // namespace inertial
