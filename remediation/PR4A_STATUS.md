@@ -4,7 +4,7 @@
 
 **PR4A host and target build gates: PASS. Physical validation: BLOCKED — hardware required.** The FIFO implementation remains behind `RP2350_USE_FIFO=ON`; direct-register DMA remains the default path. FIFO timestamps are reconstructed estimates, not sensor-provided timestamps.
 
-This branch is stacked on PR3 head `2d59ebb0a212521ea0d044b9c223ff7b5680189b`. PR3 and PR2 acceptance gates remain open and are not changed by this firmware work.
+The updated PR4A branch head `29c2fc5` includes PR3 head `02c61fe`, including the startup-alignment correction and its post-fix baseline stress evidence. PR3 accuracy/full-factor and PR2 acceptance gates remain open and are not changed by this FIFO work.
 
 ## Changes
 
@@ -20,6 +20,7 @@ This branch is stacked on PR3 head `2d59ebb0a212521ea0d044b9c223ff7b5680189b`. P
 - Mock FIFO checks pass for complete signed samples, partial-word wait, pattern flush, FIFO full/overrun flags, bus read/write errors, capacity truncation, and a 50-frame original snapshot with five later arrivals left unread.
 - Bundle A/B/C host and sanitizer suites passed. Bundle C was rerun after the final FIFO fault-path test additions.
 - Pinned Pico SDK 2.2.0 CI run [42922199617](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42922199617) passed host/sanitizer checks and all direct-register, FIFO, and binary-FIFO builds on the earlier PR4A snapshot. Updated stack head `90fe4f1725ce188090946badfecde70ec15f0c87` also passed host and target jobs in cumulative run [42948466371](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42948466371). `arm-none-eabi-size` reported direct `77,940/0/25,560 B`, FIFO `80,048/0/25,548 B`, and binary-FIFO `71,244/0/25,548 B` for `.text/.data/.bss`. The direct-register comparison to the historical `c397fec` reference is cumulative; it is not a PR4A-only delta. Separate `.rodata`, link maps and `-fstack-usage` remain unrecorded. See [resource budgets](RESOURCE_BUDGETS.md).
+- The updated PR4A head passed all host and three target jobs in pinned cumulative PR4C run [42957404275](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42957404275). Current stack resource figures and maps are recorded in [resource budgets](RESOURCE_BUDGETS.md); they include PR3 startup-window state and the later PR4 changes.
 - Relative to preceding PR3 CI direct-register size (`77,884/0/25,552 B` on merge commit `f718113f31c25604f6d93b6c05c30e87e08792a8`), PR4A adds `56 B text`, `0 B data`, and `8 B bss`. PR3 CI did not record FIFO or binary-FIFO sizes, so those isolated deltas are unavailable.
 - No physical Pico 2/LSM6DS3 was available. FIFO loss, actual edge alignment, interrupt/acquisition latency, and controller suitability remain blocked; see [hardware validation](HARDWARE_VALIDATION.md).
 

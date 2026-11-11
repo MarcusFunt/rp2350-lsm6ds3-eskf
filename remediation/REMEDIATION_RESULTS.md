@@ -1,6 +1,6 @@
 # ESKF remediation delivery status
 
-**Program status: INCOMPLETE.** The stacked software work is documented below, but PR2 and PR3 acceptance gates remain open because of reproducible estimator/statistical failures. PR4C host/target builds and resource artifacts passed in pinned CI at head `54f3ebb`. No Pico 2 + original LSM6DS3 hardware capture was available. Firmware remains experimental and is not qualified for control.
+**Program status: INCOMPLETE.** PR3 startup availability is corrected and the updated PR3/PR4 stack passes host, sanitizer, and pinned target CI, but PR2 and PR3 acceptance gates remain open because estimator accuracy/full-factor coverage findings persist. No Pico 2 + original LSM6DS3 hardware capture was available. Firmware remains experimental and is not qualified for control.
 
 ## Milestone status
 
@@ -8,10 +8,10 @@
 |---|---|---|---|
 | PR1 evidence baseline | `test/eskf-remediation-pr1`, `b749a8a` | Baseline/reproduction and locked paired seed evidence recorded | Evidence milestone complete; historical targets and hardware remain reference-only |
 | PR2 math and recovery | `fix/eskf-math-recovery`, `4d023d0` | Full stacked host/sanitizer and target builds pass in the latest PR4C CI run | **OPEN**: LegacyHeuristic yaw/bias regressions, synthetic-heading-aid degradation, and held-out false-hint/zero-dwell coverage gaps remain. See [PR2 results](PR2_RESULTS.md) and [root-cause records](ROOT_CAUSES.md). |
-| PR3 statistics and reports | `test/eskf-statistics-benchmarks`, latest evidence commit `2d59ebb` | Protocol-v5 baseline, codegen/runtime, analytic tilt, summary and line-ending checks pass. Development, held-out and final-confirmation sets each ran 100 seeds across eight scenarios at nominal 208 Hz baseline IMU-only/unknown-start/no-aid. | **OPEN**: Primary nominal sets have zero incomplete rows, but the four-seed factor pilot has 2,016 incomplete ESKF stress rows (0/672 complete per policy). The acceleration-step initialization defect remains open; full-factor acceptance, PR2 behavior, and hardware validation are not complete. See [PR3 status](PR3_STATUS.md) and [factor pilot](PR3_FACTOR_PILOT.md). |
-| PR4A FIFO and acquisition | `fix/eskf-fifo-timing`, stack head `90fe4f1` | Latest cumulative PR4C CI run [42948475410](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42948475410) passed all three target builds | Software checks pass; physical FIFO, timestamp quality and loss behavior remain **BLOCKED_HARDWARE**. |
-| PR4B calibration/aiding/health | `fix/eskf-calibration-aiding-health`, stack head `a690c34` | Latest cumulative PR4C CI run [42948475410](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42948475410) passed host checks and all three target builds | Software checks pass; physical calibration, aiding source, control timing and accuracy remain **BLOCKED_HARDWARE**. |
-| PR4C logging/resources/report | `fix/eskf-logging-resources-report`, head `54f3ebb` | Pinned SDK 2.2.0 run [42948475410](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42948475410) passed host and three target builds; artifact [13824515631](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42948475410/artifacts/13824515631) contains maps, `.su`, ELF/BIN/UF2, and JSON. Largest per-function frame is 9,496 B in `Eskf15::predict`. | Software verification PASS; hardware performance and whole-call-chain stack headroom remain unmeasured. See [PR4C status](PR4C_STATUS.md) and [resource ledger](RESOURCE_BUDGETS.md). |
+| PR3 statistics and reports | `test/eskf-statistics-benchmarks`, evidence head `02c61fe` | Protocol-v5 development nominal rerun matches the previous 4,000 trial rows except commit SHA. Disjoint 100-seed held-out/final 208 Hz baseline stress runs each completed all 4,000 rows; each ESKF policy passed 2,330,400 covariance checks per split. PR3 CI [42957389682](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42957389682) passed host, sanitizer and target jobs. | **OPEN**: Stress completion is fixed, but conservative ESKF mean per-trial RMS remains about 4.64–4.66° tilt and 10.30° yaw. 100-seed held-out/final coverage outside the baseline factors, broader accuracy/consistency acceptance, independent review, and PR2 behavior remain open. See [PR3 status](PR3_STATUS.md) and [factor pilot](PR3_FACTOR_PILOT.md). |
+| PR4A FIFO and acquisition | `fix/eskf-fifo-timing`, updated stack head `29c2fc5` | PR4A CI [42957395985](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42957395985) and cumulative PR4C CI [42957404275](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42957404275) passed host, sanitizer, and three target builds | Software checks pass; physical FIFO, timestamp quality and loss behavior remain **BLOCKED_HARDWARE**. |
+| PR4B calibration/aiding/health | `fix/eskf-calibration-aiding-health`, updated stack head `703895e` | PR4B CI [42957399541](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42957399541) and cumulative PR4C CI [42957404275](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42957404275) passed host, sanitizer, and three target builds | Software checks pass; physical calibration, aiding source, control timing and accuracy remain **BLOCKED_HARDWARE**. |
+| PR4C logging/resources/report | `fix/eskf-logging-resources-report`, code head `efa6a62` | Pinned SDK 2.2.0 run [42957404275](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42957404275) passed host/sanitizer and three target builds; artifact [13827657562](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42957404275/artifacts/13827657562) contains maps, `.su`, ELF/BIN/UF2, and JSON. Largest per-function frame is 9,496 B in `Eskf15::predict`. | Software verification PASS; hardware performance and whole-call-chain stack headroom remain unmeasured. See [PR4C status](PR4C_STATUS.md) and [resource ledger](RESOURCE_BUDGETS.md). |
 
 ## Test evidence from the PR4C source tree
 
@@ -25,11 +25,11 @@ Run commands from a clean checkout with Bash, GCC/Clang C++17, Python 3, and the
 | `BUNDLE_A_SANITIZERS=1 ./tools/run_bundle_a_checks.sh` | PASS |
 | `BUNDLE_B_SANITIZERS=1 ./tools/run_bundle_b_checks.sh` | PASS |
 | `BUNDLE_C_SANITIZERS=1 ./tools/run_bundle_c_checks.sh` | PASS |
-| PR3 scenario protocol v1–v5 validators, codegen and cross-platform line-ending checks | PASS |
-| PR3 protocol runtime, summary portability and tilt-NEES oracle tests | PASS |
+| PR3 scenario protocol v1–v5 validators and generated-header tests | PASS |
+| PR3 protocol runtime, generator/evaluator, summary portability, factorized figures and Student-t intervals | PASS |
 | `python3 tests/test_firmware_resource_report.py` | PASS; function names retain C++ scopes and argument lists |
 
-Current PR4C source head: `54f3ebbfa45e8453562064c6dc348fbe2a3e86f0`. The pinned CI artifact reports direct/FIFO/binary flash images of `87,724/90,356/80,160 B`, static `.data + .bss` of `36,172/36,136/36,140 B`, and `9,496 B` largest per-function frames in `Eskf15::predict`. Synthetic results and target builds do not replace physical acceptance measurements.
+Current PR4C code head: `efa6a62fbf8929eb85307582d937aa9ff3305308`. The pinned CI artifact reports direct/FIFO/binary flash images of `88,148/90,780/80,584 B`, static `.data + .bss` of `36,196/36,160/36,164 B`, and `9,496 B` largest per-function frames in `Eskf15::predict`. Synthetic results and target builds do not replace physical acceptance measurements.
 
 ## Explicit unresolved items
 
