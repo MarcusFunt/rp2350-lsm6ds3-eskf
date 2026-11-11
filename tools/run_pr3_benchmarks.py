@@ -40,6 +40,39 @@ def compiler_version(compiler):
     return result.stdout.splitlines()[0] if result.returncode == 0 and result.stdout else "UNKNOWN"
 
 
+def refresh_report_artifacts(output, manifest, report_source, figure_prefix, figure_path_prefix):
+    summary_path = output / "pr3_trial_summaries.csv"
+    run([sys.executable, str(ROOT / "tools/summarize_pr3_benchmarks.py"),
+        "--input", str(summary_path), "--output-dir", str(output),
+        "--report-source", report_source, "--figure-prefix", figure_prefix,
+        "--figure-path-prefix", figure_path_prefix], capture=True)
+    report_path = output / "pr3_summary.json"
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    figure_names = [Path(path).name for path in report["figures"]]
+    if not figure_names:
+        raise RuntimeError("summarizer did not generate any figures")
+    figure_hashes = {
+        name: hashlib.sha256((output / "figures" / name).read_bytes()).hexdigest()
+        for name in figure_names
+    }
+    manifest["summary_csv_sha256"] = hashlib.sha256(summary_path.read_bytes()).hexdigest()
+    manifest["summary_report_sha256"] = hashlib.sha256(report_path.read_bytes()).hexdigest()
+    manifest["figure_sha256"] = figure_hashes[figure_names[0]]
+    manifest["additional_figure_sha256"] = {
+        name: digest for name, digest in figure_hashes.items() if name != figure_names[0]
+    }
+    manifest["summarizer_source_sha256"] = hashlib.sha256(
+        (ROOT / "tools/summarize_pr3_benchmarks.py").read_bytes()
+    ).hexdigest()
+    manifest["runner_source_sha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    manifest["summary_source_label"] = report_source
+    manifest["figure_prefix"] = figure_prefix
+    manifest["figure_path_prefix"] = figure_path_prefix
+    (output / "pr3_run_manifest.json").write_text(
+        json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--protocol", type=Path, default=PROTOCOL,
@@ -57,10 +90,30 @@ def main():
     parser.add_argument("--tree-dirty", choices=("yes", "no"), default=os.environ.get("PR3_TREE_DIRTY"))
     parser.add_argument("--summary-source-label", help="stable source label stored in the summary JSON")
     parser.add_argument("--figure-prefix", help="prefix for generated SVG filenames")
-    parser.add_argument("--figure-path-prefix", default="figures/", help="stable figure paths stored in the summary JSON")
+    parser.add_argument("--figure-path-prefix", help="stable figure paths stored in the summary JSON")
     parser.add_argument("--sample-diagnostics", action="store_true",
         help="write per-sample state/covariance diagnostics for exactly one selected trial and profile")
+    parser.add_argument("--refresh-report-only", action="store_true",
+        help="regenerate summary, figures and report hashes from an existing run CSV without rerunning estimators")
     args = parser.parse_args()
+
+    if args.refresh_report_only:
+        if not args.output_dir:
+            parser.error("--refresh-report-only requires --output-dir")
+        output = Path(args.output_dir).resolve()
+        manifest_path = output / "pr3_run_manifest.json"
+        if not manifest_path.is_file() or not (output / "pr3_trial_summaries.csv").is_file():
+            parser.error("--refresh-report-only requires an existing PR3 run manifest and trial summary CSV")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        refresh_report_artifacts(
+            output,
+            manifest,
+            args.summary_source_label or manifest.get("summary_source_label") or "pr3_trial_summaries.csv",
+            args.figure_prefix or manifest.get("figure_prefix") or output.name,
+            args.figure_path_prefix or manifest.get("figure_path_prefix") or "figures/",
+        )
+        print(f"PASS PR3 refreshed report artifacts from {output / 'pr3_trial_summaries.csv'} without estimator replay")
+        return 0
 
     protocol_path = args.protocol.resolve()
     protocol = load_protocol(protocol_path)
@@ -124,6 +177,7 @@ def main():
     summary_path = output / "pr3_trial_summaries.csv"
     summary_source_label = args.summary_source_label or summary_path.name
     figure_prefix = args.figure_prefix or output.name
+    figure_path_prefix = args.figure_path_prefix or "figures/"
     sample_trace_path = output / "pr3_sample_diagnostics.csv" if args.sample_diagnostics else None
     manifest = {
         "protocol_version": protocol["protocol_version"],
@@ -203,24 +257,7 @@ def main():
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
     if not wrote_header:
         raise RuntimeError("no trial summaries were generated")
-    run([sys.executable, str(ROOT / "tools/summarize_pr3_benchmarks.py"),
-        "--input", str(summary_path), "--output-dir", str(output),
-        "--report-source", summary_source_label, "--figure-prefix", figure_prefix,
-        "--figure-path-prefix", args.figure_path_prefix], capture=True)
-    manifest["summary_csv_sha256"] = hashlib.sha256(summary_path.read_bytes()).hexdigest()
-    manifest["summary_report_sha256"] = hashlib.sha256((output / "pr3_summary.json").read_bytes()).hexdigest()
-    figure_stem = f"{figure_prefix}_tilt_rms.svg"
-    manifest["figure_sha256"] = hashlib.sha256((output / "figures" / figure_stem).read_bytes()).hexdigest()
-    manifest["additional_figure_sha256"] = {
-        path.name: hashlib.sha256(path.read_bytes()).hexdigest()
-        for path in sorted((output / "figures").glob("*.svg")) if path.name != figure_stem
-    }
-    manifest["summarizer_source_sha256"] = hashlib.sha256((ROOT / "tools/summarize_pr3_benchmarks.py").read_bytes()).hexdigest()
-    manifest["runner_source_sha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
-    manifest["summary_source_label"] = summary_source_label
-    manifest["figure_prefix"] = figure_prefix
-    manifest["figure_path_prefix"] = args.figure_path_prefix
-    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
+    refresh_report_artifacts(output, manifest, summary_source_label, figure_prefix, figure_path_prefix)
     print(f"PASS PR3 generated {len(manifest['input_streams'])} shared streams and paired summaries at {summary_path}")
     print(f"PR3 evidence manifest: {manifest_path}")
     return 0
