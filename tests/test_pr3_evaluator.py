@@ -54,6 +54,40 @@ class Pr3EvaluatorTests(unittest.TestCase):
                     self.assertEqual(row["tilt_nees_count"], "0")
                     self.assertEqual(row["tilt_nees_mean"], "")
 
+    def test_stress_static_startup_aligns_all_eskf_policies(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            samples = root / "static_stress.bin"
+            generated = subprocess.run(
+                [GENERATOR, str(samples), "development", "static", "1", "stress", "4001"],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(generated.returncode, 0, generated.stdout + generated.stderr)
+            input_sha = hashlib.sha256(samples.read_bytes()).hexdigest()
+            output = root / "summary.csv"
+            evaluated = subprocess.run(
+                [EVALUATOR, str(samples), str(output), "development", "IMU_ONLY", "UNKNOWN", "0", "NONE",
+                 "a" * 40, "b" * 64, input_sha],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(evaluated.returncode, 0, evaluated.stdout + evaluated.stderr)
+            with output.open(newline="", encoding="utf-8") as stream:
+                rows = list(csv.DictReader(stream))
+            eskf_rows = [row for row in rows if row["estimator"].startswith("eskf_")]
+            self.assertEqual(len(eskf_rows), 3)
+            for row in eskf_rows:
+                self.assertEqual(
+                    row["valid"],
+                    row["expected"],
+                    f"{row['estimator']} did not produce outputs for the fixed static stress evaluation window",
+                )
+                self.assertEqual(row["control_valid"], row["expected"])
+                self.assertEqual(row["covariance_valid"], row["expected"])
+
     def test_unverified_startup_calibration_mode_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
