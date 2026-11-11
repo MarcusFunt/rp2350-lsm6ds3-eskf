@@ -7,6 +7,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v3.json"
+PROTOCOL_V4 = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v4.json"
+PROTOCOL_V5 = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v5.json"
 CODEGEN = ROOT / "tools" / "pr3_generate_scenario_header.py"
 
 
@@ -58,6 +60,38 @@ class Pr3ScenarioCodegenTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("protocol validation", result.stderr.lower())
             self.assertFalse(output.exists())
+
+    def test_v4_codegen_carries_disjoint_confirmation_ranges(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "v4.hpp"
+            result = subprocess.run(
+                [sys.executable, str(CODEGEN), str(PROTOCOL_V4), str(output)],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            source = output.read_text(encoding="utf-8")
+            self.assertIn("kProtocolVersion = 4", source)
+            self.assertIn("kHeldOutFirstSeed = 7001", source)
+            self.assertIn("kConfirmationFirstSeed = 8001", source)
+
+    def test_v5_codegen_carries_disjoint_confirmation_ranges(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "v5.hpp"
+            result = subprocess.run(
+                [sys.executable, str(CODEGEN), str(PROTOCOL_V5), str(output)],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            source = output.read_text(encoding="utf-8")
+            self.assertIn("kProtocolVersion = 5", source)
+            self.assertIn("kHeldOutFirstSeed = 9001", source)
+            self.assertIn("kConfirmationFirstSeed = 10001", source)
 
 
 if __name__ == "__main__":

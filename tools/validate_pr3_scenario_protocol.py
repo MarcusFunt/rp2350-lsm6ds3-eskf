@@ -133,8 +133,8 @@ def validate_protocol(document):
     if not isinstance(document, dict):
         _fail("protocol root must be an object")
     version = document.get("protocol_version")
-    if document.get("protocol") != "pr3_statistics_benchmarks" or version not in (1, 2, 3):
-        _fail("protocol identifier/version must be pr3_statistics_benchmarks/1, /2, or /3")
+    if document.get("protocol") != "pr3_statistics_benchmarks" or version not in (1, 2, 3, 4, 5):
+        _fail("protocol identifier/version must be pr3_statistics_benchmarks/1, /2, /3, /4, or /5")
     expected_status = "FROZEN_SPEC_READY" if version >= 2 else "FROZEN_SPEC_UNRUN"
     if document.get("status") != expected_status:
         _fail(f"protocol status must be {expected_status}")
@@ -147,6 +147,37 @@ def validate_protocol(document):
         or "2.0 seconds" not in document["protocol_revision_reason"]
     ):
         _fail("protocol v3 must identify v2 as superseded and explain the vibration startup correction")
+    if version == 4 and (
+        document.get("supersedes_protocol_version") != 3
+        or not isinstance(document.get("protocol_revision_reason"), str)
+        or "disjoint" not in document["protocol_revision_reason"].lower()
+        or "held-out" not in document["protocol_revision_reason"].lower()
+        or "confirmation" not in document["protocol_revision_reason"].lower()
+    ):
+        _fail("protocol v4 must preserve v3 definitions and explain disjoint held-out and confirmation seed ranges")
+    if version == 5 and (
+        document.get("supersedes_protocol_version") != 4
+        or not isinstance(document.get("protocol_revision_reason"), str)
+        or "disjoint" not in document["protocol_revision_reason"].lower()
+        or "held-out" not in document["protocol_revision_reason"].lower()
+        or "confirmation" not in document["protocol_revision_reason"].lower()
+        or "fp64" not in document["protocol_revision_reason"].lower()
+    ):
+        _fail("protocol v5 must preserve v4 definitions and explain disjoint acceptance seeds after the FP64 covariance revision")
+    if version == 5:
+        estimator_definitions = document.get("reference_estimator_definitions")
+        if not isinstance(estimator_definitions, dict) or not estimator_definitions.get("initial_condition"):
+            _fail("protocol v5 must define reference-estimator initial conditions")
+        for estimator in ("mahony", "gyro_only"):
+            definition = estimator_definitions.get(estimator)
+            if not isinstance(definition, dict) or not definition.get("propagation") or not definition.get("outputs") or not definition.get("heading_aid"):
+                _fail(f"protocol v5 must define {estimator} equations, aid behavior, and unsupported outputs")
+        if not estimator_definitions["mahony"].get("gravity_rule") or not estimator_definitions["mahony"].get("integral_bias_rule"):
+            _fail("protocol v5 must define Mahony gravity and bias correction rules")
+        if not estimator_definitions["gyro_only"].get("bias_rule"):
+            _fail("protocol v5 must define gyro-only startup bias behavior")
+        if any(estimator not in document.get("estimator_variants", []) for estimator in ("mahony", "gyro_only")):
+            _fail("protocol v5 must enumerate both reference estimators")
     if (
         not isinstance(document.get("base_commit"), str)
         or len(document["base_commit"]) != 40
@@ -320,6 +351,13 @@ def validate_protocol(document):
             )
 
     _validate_seeds(document.get("seeds"), version)
+    if version == 5:
+        if document["seeds"]["development"]["first_seed"] != 4001 or document["seeds"]["development"]["last_seed"] != 4100:
+            _fail("protocol v5 must preserve the v4 development seed range")
+        if document["seeds"]["held_out"]["first_seed"] != 9001 or document["seeds"]["held_out"]["last_seed"] != 9100:
+            _fail("protocol v5 held-out seeds must be 9001-9100")
+        if document["seeds"]["final_confirmation"]["first_seed"] != 10001 or document["seeds"]["final_confirmation"]["last_seed"] != 10100:
+            _fail("protocol v5 final-confirmation seeds must be 10001-10100")
     if not isinstance(document.get("logging_tiers"), dict) or not isinstance(document.get("failure_scoring"), dict):
         _fail("logging_tiers and failure_scoring contracts are required")
     paired = document.get("paired_comparison")
