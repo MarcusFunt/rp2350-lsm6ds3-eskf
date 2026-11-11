@@ -1,0 +1,1802 @@
+{
+  "protocol_version": 5,
+  "protocol_sha256": "1318acff98ac2641383ef6a568986e912020a6d4c6debeb145a9abf0f8fa4800",
+  "source_commit": "3efd3f89e244e152364773fb26cfb0c5749dce3d",
+  "working_tree_dirty_at_run": false,
+  "generator_source_sha256": "7e159c915412039da66048d1ee7f80a39c9c03f91f88f40033de112ac0513843",
+  "evaluator_source_sha256": "e44fa1eae87e377d7fa4edf47a11a4d28f7d8e9dfd3312ffbb7dc427aee22c3e",
+  "header_codegen_source_sha256": "8b3124cfcd91fd512756906909449a0d5b515fd793c51efcb9e564a6bb70366b",
+  "compiler": "c++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "split": "development",
+  "seed_range_inclusive": [
+    4001,
+    4004
+  ],
+  "scenarios": [
+    "static",
+    "slow_yaw",
+    "lateral_accel",
+    "maneuver",
+    "vibration",
+    "timing_jitter",
+    "stop_start",
+    "compound_motion"
+  ],
+  "rate_modes": [
+    "uniform_200hz",
+    "uniform_208hz",
+    "irregular_208hz"
+  ],
+  "stress_modes": [
+    "nominal",
+    "stress"
+  ],
+  "profiles": [
+    "baseline",
+    "heading_sensor",
+    "external_static",
+    "truth_static",
+    "startup_bias",
+    "independent_heading",
+    "oracle_heading"
+  ],
+  "input_streams": [
+    {
+      "path": "inputs/static__uniform_200hz__nominal__4001.bin",
+      "sha256": "5cd430ab8e0d08dd3ca4a51c334f35524774e3f9e437139c9a4e514c01a18fc8",
+      "scenario": "static",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/static__uniform_200hz__nominal__4002.bin",
+      "sha256": "17c40f473fcebf60e2d4d5f9e2191ae6952925e33495be5940406c318d4ab64b",
+      "scenario": "static",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/static__uniform_200hz__nominal__4003.bin",
+      "sha256": "f15b8d2f05d2e5c4201e72983f30b12601df9d003bdb2321692a959e577df29d",
+      "scenario": "static",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/static__uniform_200hz__nominal__4004.bin",
+      "sha256": "67262ded298a3fb9f18b47d33469923250ff78ce237001679018f0ce605b23ee",
+      "scenario": "static",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/static__uniform_200hz__stress__4001.bin",
+      "sha256": "257a57647756b3e4347ecb67cfc5b15c1cbf2bf00718d73a8de6274f89301c9f",
+      "scenario": "static",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/static__uniform_200hz__stress__4002.bin",
+      "sha256": "35887195fc735ef7dfd42a1e77eee063acfe5228f7dc833c543de3dae0635157",
+      "scenario": "static",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/static__uniform_200hz__stress__4003.bin",
+      "sha256": "29681ea721f933ab543fee3a7fbcdd0444e24d202ae3bbe8cc92d1367826f606",
+      "scenario": "static",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/static__uniform_200hz__stress__4004.bin",
+      "sha256": "c9f9d87ee3f4936008267d3c478dd75249802eb3505ca772d96545de71054df4",
+      "scenario": "static",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/static__uniform_208hz__nominal__4001.bin",
+      "sha256": "7e3ef382889428a5a5ac2c9416058243d0d0d011fe2d858b803c3ecc00171779",
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/static__uniform_208hz__nominal__4002.bin",
+      "sha256": "479850c6fbba44858b8c7f9b3952aa6f5bb9ff116ebdaf43b4addcd8f1403552",
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/static__uniform_208hz__nominal__4003.bin",
+      "sha256": "6bee863a2f8e5f905b2ef6ae4fbb51077e3f4c7406dfe43b2f9e0f724206ba3e",
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/static__uniform_208hz__nominal__4004.bin",
+      "sha256": "e855e523e9c94bdf673f0d7a8005f281211897aed2d5a7ca894cf4cdbb432f5e",
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/static__uniform_208hz__stress__4001.bin",
+      "sha256": "fa56afd58b4ef2237ab61e6aec9f7c519ab685611447511ac77f3d39141d8dd9",
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/static__uniform_208hz__stress__4002.bin",
+      "sha256": "fa727e930fe7be9c2911e364ee1ebbcb0f22bacab3b323d4fde1f4db9f0e84a9",
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/static__uniform_208hz__stress__4003.bin",
+      "sha256": "c31e962d053b567225d3d9882f71ce23c8f905dbc0c6ad8e4e9b9749bbc3d6ba",
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/static__uniform_208hz__stress__4004.bin",
+      "sha256": "def9b9301647c9dc15aa3de4521346a3a1660dee92e077c1488d7236a9988ea7",
+      "scenario": "static",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/static__irregular_208hz__nominal__4001.bin",
+      "sha256": "93f7f41903c71b67c9cfbd9e302d2e2e5551f6b6802b1a4fffb62499cc4adae2",
+      "scenario": "static",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/static__irregular_208hz__nominal__4002.bin",
+      "sha256": "9d0689c44dcd95e5518bd5a9eaa3ded0095db297e05d5eee6548a4f3a7fd8946",
+      "scenario": "static",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/static__irregular_208hz__nominal__4003.bin",
+      "sha256": "ededbccbb06d28f2821504f8b7a0948f0be8759daf538add5b528ba9f41f6570",
+      "scenario": "static",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/static__irregular_208hz__nominal__4004.bin",
+      "sha256": "1df2640619d1230197f76e6ec511b6891c6051efa17959bd3260106af90def45",
+      "scenario": "static",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/static__irregular_208hz__stress__4001.bin",
+      "sha256": "3b8ca86ec8237b5b0e30403bdac5de90c8dceb0570b70ab363e5fff817b39b9c",
+      "scenario": "static",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/static__irregular_208hz__stress__4002.bin",
+      "sha256": "54404ffafc81ff8228351767a8260f41e940f1a997e5e25d331a186d8059fc73",
+      "scenario": "static",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/static__irregular_208hz__stress__4003.bin",
+      "sha256": "82ab29d05c983d4328396f82790967be27498785113a5fc00bd852a318c1fe22",
+      "scenario": "static",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/static__irregular_208hz__stress__4004.bin",
+      "sha256": "8902c86cfa82ad3daa236cb38aabbd9470d498c5ac0077322ffff697dac29aab",
+      "scenario": "static",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_200hz__nominal__4001.bin",
+      "sha256": "27b0bfd723c9277f5f26140c90f1d0ecaa6c56805b749f81ea73087e2a3efe1c",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_200hz__nominal__4002.bin",
+      "sha256": "d599d01483e17426e4650b26ea56a8f0a8d2e6d3f28556f3b1572812047f4760",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_200hz__nominal__4003.bin",
+      "sha256": "fb46e08c92a9e37efb39fd74608b51bb716a35ad5736f4ba42754b0ee0b376fe",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_200hz__nominal__4004.bin",
+      "sha256": "4d5bbfdad6dc1654f8afd22eaf1ddc989b9196082841742c892478a2d91f779e",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_200hz__stress__4001.bin",
+      "sha256": "0dd24083d62e5a002d47afc9aa55146001073373b01a33dae4cbd43aa942b506",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_200hz__stress__4002.bin",
+      "sha256": "5a9ee2a423adb3b34a8ded1d40273aee3cab293da40341bf6c76f29f36535454",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_200hz__stress__4003.bin",
+      "sha256": "23bbd3d04c1e53180982aac7f3f6b7c3b7cf04e01b06fdbae36b8a5137493ab0",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_200hz__stress__4004.bin",
+      "sha256": "68ff5b5bf41959494b3111021088457785e623dff0b9b6e8e1d33d863d52d8db",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_208hz__nominal__4001.bin",
+      "sha256": "08d50afce60f80a7df048d04e870451f04df5ccbc1fb1d312bef289d6903ab6d",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_208hz__nominal__4002.bin",
+      "sha256": "21c2bccb1050b6a233f61b2a5f278aa49f808b24f84d44fe0432fa942f892b73",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_208hz__nominal__4003.bin",
+      "sha256": "5166d00320d62fa8b62ee57800901f851244380c402e1e59702049a3f1c66cb8",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_208hz__nominal__4004.bin",
+      "sha256": "7f4a0610bd0790fe038325bdd4a12224ab6b737223f573279c81287abfabbb8a",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_208hz__stress__4001.bin",
+      "sha256": "dc1cdbe1fecc576a37392f802a6b9a77a381528fa640eb839d5231c457b5aee4",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_208hz__stress__4002.bin",
+      "sha256": "7b579523508baa0538c097a7550961219d1087c25d8a8796c6da5f6283365771",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_208hz__stress__4003.bin",
+      "sha256": "6af7d333cab320f781e66a6654fddcb9cae353a45bf5cb6306e6900182af5551",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/slow_yaw__uniform_208hz__stress__4004.bin",
+      "sha256": "eaebef274c6a754e721552b6475c90bc4ca94131ca508373f327f216658f1438",
+      "scenario": "slow_yaw",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/slow_yaw__irregular_208hz__nominal__4001.bin",
+      "sha256": "2cd35ffa88698163a719723d580ec0062af4a60b6eb21742c950f38c4b5b5b14",
+      "scenario": "slow_yaw",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/slow_yaw__irregular_208hz__nominal__4002.bin",
+      "sha256": "b827f866bdc205fc8c3c3b44f36afb996600a3cfa557baa580cdee816d49c47a",
+      "scenario": "slow_yaw",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/slow_yaw__irregular_208hz__nominal__4003.bin",
+      "sha256": "20c209658d205f7803e51aad3635eac8c1b8bf123690078fd34c6de541877013",
+      "scenario": "slow_yaw",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/slow_yaw__irregular_208hz__nominal__4004.bin",
+      "sha256": "e5028b441354d660e20ec4426c4a0a26d6401fc44c68254e9b42141f45e54f75",
+      "scenario": "slow_yaw",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/slow_yaw__irregular_208hz__stress__4001.bin",
+      "sha256": "75974af43706a0f30e19f2420dbb0955550eae8e569b462c417a42be8be14b44",
+      "scenario": "slow_yaw",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/slow_yaw__irregular_208hz__stress__4002.bin",
+      "sha256": "12a4ff5519849deb6b98efb79f12803a0dfd4c72fce51a40cc9898c614d00b13",
+      "scenario": "slow_yaw",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/slow_yaw__irregular_208hz__stress__4003.bin",
+      "sha256": "35eb138e80af0c37a95809ab714fbcb02a03fbe9c721a463311183bb0e32491a",
+      "scenario": "slow_yaw",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/slow_yaw__irregular_208hz__stress__4004.bin",
+      "sha256": "1a2d952d79ca32c8843281ff49e9f68ce1e15058810403778473b0ed73486c4d",
+      "scenario": "slow_yaw",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_200hz__nominal__4001.bin",
+      "sha256": "6c700b672c1131b15f4ee564f2388dac5b9592b3b205f54de6d9d37b5795bf45",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_200hz__nominal__4002.bin",
+      "sha256": "27776cab25f00f70fe700b2b2f11c96397c84924a965e21a81c58b628fbf3581",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_200hz__nominal__4003.bin",
+      "sha256": "95bddc85dcd0e6b81d4ef81ed0b7fc614d01fda0eab299193e6206c15759d763",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_200hz__nominal__4004.bin",
+      "sha256": "39ba7e5895808c504c50487c1041aed44634fe714e6752acf7c012b83b4fc6f1",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_200hz__stress__4001.bin",
+      "sha256": "f0dab41269c3ab866cad4672d1b7d3c197730e8a3267dbf8ab40c6d365785946",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_200hz__stress__4002.bin",
+      "sha256": "8b519a061dc905b7bb7f74c89f5713ba7b025387c85568d211cc02a3dbb2312c",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_200hz__stress__4003.bin",
+      "sha256": "6d2c6be1a175cf33e3b8d45fd278498a6fd4808d8041d424111448da41eafd8f",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_200hz__stress__4004.bin",
+      "sha256": "e3468360977a706fd4b99ac111c1596d868b2eff9d8b72966a99ff650c4dfc3a",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_208hz__nominal__4001.bin",
+      "sha256": "7bc17be82e4e3ddd57f9ce4cc8945e9abbbd9e422cae41b279de7e89355e41d6",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_208hz__nominal__4002.bin",
+      "sha256": "4469d8613e550ffa31fe4e12b5a07675136a4ddb2c3212c6e995346c3b0ad0f5",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_208hz__nominal__4003.bin",
+      "sha256": "04dc5047d9ba517db6fd9053ba04a95cb9dedd93951a2a90ea5839bcfbb8e9bf",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_208hz__nominal__4004.bin",
+      "sha256": "9013537c7bc89ee0da69ab0b06a3b54b94b5232e880f7807b37a4ddbd95250cb",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_208hz__stress__4001.bin",
+      "sha256": "9d957fa21f89997190d8cac62404e0647fbbb6167fe6ecb4a3d8c9d99268b7a2",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_208hz__stress__4002.bin",
+      "sha256": "91c1b91c1e41db81a5ad7c65f60c8f291bb7bd2d95f9230aef59ca1385927a95",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_208hz__stress__4003.bin",
+      "sha256": "900f6fc769be944625ff64ae442515d2aa8b6890e014467a59400d9cd1caed5f",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/lateral_accel__uniform_208hz__stress__4004.bin",
+      "sha256": "09d9798191976af5bc5f02f3a43d90338a2ec28ae054db046e44838e563d762f",
+      "scenario": "lateral_accel",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/lateral_accel__irregular_208hz__nominal__4001.bin",
+      "sha256": "db38227f99b26a74ce59bb29458a95a053f1fbeae8df32bc2827df928e2c5b7c",
+      "scenario": "lateral_accel",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/lateral_accel__irregular_208hz__nominal__4002.bin",
+      "sha256": "7056c116f841b30166105cf6389aa2de31a761e0a4ca0f4341610d3070306e03",
+      "scenario": "lateral_accel",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/lateral_accel__irregular_208hz__nominal__4003.bin",
+      "sha256": "b8c3ff9a7ae642c6f306c5563338017b99cfa28e71b87baba578fe7f7e45c5ec",
+      "scenario": "lateral_accel",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/lateral_accel__irregular_208hz__nominal__4004.bin",
+      "sha256": "82ebcc763e5802920aa42df65bd5e35661fbf2fbb68869790007b0e6c1ea98b6",
+      "scenario": "lateral_accel",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/lateral_accel__irregular_208hz__stress__4001.bin",
+      "sha256": "ccf412040124e52ca61506dfef72bc9b4f4efb6fac0c8cdc382d46649fbc20df",
+      "scenario": "lateral_accel",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/lateral_accel__irregular_208hz__stress__4002.bin",
+      "sha256": "3aefb8a107ac2a94605399e8e6bc6e96f6c5365c7da6f1f74dffa5d0a577aefd",
+      "scenario": "lateral_accel",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/lateral_accel__irregular_208hz__stress__4003.bin",
+      "sha256": "56b408748c7c45908c67f34ec0f6e1627850946f8310c5f7b79f781819ba6c80",
+      "scenario": "lateral_accel",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/lateral_accel__irregular_208hz__stress__4004.bin",
+      "sha256": "510e908a286ea0f29713d7058081beb2dd5c2f56c63930ea3191a89c19e8cbe9",
+      "scenario": "lateral_accel",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/maneuver__uniform_200hz__nominal__4001.bin",
+      "sha256": "32f29d1da6574a6f0fb1623bcf9bc7cd9ed88723adb137a256f2a3569e0cb5fe",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/maneuver__uniform_200hz__nominal__4002.bin",
+      "sha256": "c04e12fecd0026e4842621dbc3bbadf8466753d1866b7edc32bc2cbb6b98c943",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/maneuver__uniform_200hz__nominal__4003.bin",
+      "sha256": "acc76310d607f1a3ee0de478d1859e04515d7d1185ad0af4e1386f4fe00b25e1",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/maneuver__uniform_200hz__nominal__4004.bin",
+      "sha256": "e042503a07dcbe4acb14b4376ef3bda0063900ea23a96a1e5b731634a1480210",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/maneuver__uniform_200hz__stress__4001.bin",
+      "sha256": "aed4216a34c00718c428974fed787659c7d2b8786a3581a5fd106b86c70aa9a2",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/maneuver__uniform_200hz__stress__4002.bin",
+      "sha256": "50a3e8fd2e8a4253c81432b484fdef3639045ec78689d7bfc3a32ce20c03a6b6",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/maneuver__uniform_200hz__stress__4003.bin",
+      "sha256": "9b387b8bc62fdc59af7d008f20917d83af3b857793a46f0168832127336b8163",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/maneuver__uniform_200hz__stress__4004.bin",
+      "sha256": "b9308e448dccd12652f5d07a1a6a34b6c4805920da41d1b28d6f3e45aa40c906",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/maneuver__uniform_208hz__nominal__4001.bin",
+      "sha256": "8228522f6206968fe8abfed2f4bc09e27ee3053eb1e7aff50ebbd152f50a9784",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/maneuver__uniform_208hz__nominal__4002.bin",
+      "sha256": "9cd5abe527251edf7a3542b4718fc3df87fb9dd8c1130e92939e10bf06e9b155",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/maneuver__uniform_208hz__nominal__4003.bin",
+      "sha256": "82e2990e9a5b51ccd6d37d1231ec804687170fa12aafb82d49ff2da18df447e3",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/maneuver__uniform_208hz__nominal__4004.bin",
+      "sha256": "24e899d87a1330ae1ba4c50f6d872937e7987ca9bc4ede49d2f2c38a2264411a",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/maneuver__uniform_208hz__stress__4001.bin",
+      "sha256": "2e526984b3b48c1085c0c7a5f00fd9a5e949fc4a902ee31a99b5ce168250094b",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/maneuver__uniform_208hz__stress__4002.bin",
+      "sha256": "64edff777b758114d5cb84edae91bce47f389db46e709e01f3c6b48334cf4bae",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/maneuver__uniform_208hz__stress__4003.bin",
+      "sha256": "52b690d7503d518adb62aca2ac0d770f231f281427daf4cef0fe33eb2bbb5a39",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/maneuver__uniform_208hz__stress__4004.bin",
+      "sha256": "ae14dae981e79325eab802d0bd68f8214d33ed947552aad1159641e4d46dd5e5",
+      "scenario": "maneuver",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/maneuver__irregular_208hz__nominal__4001.bin",
+      "sha256": "0c6b2a2150574dc30ae2a56d22f87e2933795885f21ed0a1bf7ba2065cce9a02",
+      "scenario": "maneuver",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/maneuver__irregular_208hz__nominal__4002.bin",
+      "sha256": "a1e91822158edf13abed6fe399a722c7f482885630819870695ada47561a5209",
+      "scenario": "maneuver",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/maneuver__irregular_208hz__nominal__4003.bin",
+      "sha256": "04daf76b5b696f5625db54a843f919460a5df7bea4515cd36c85cce30e85f943",
+      "scenario": "maneuver",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/maneuver__irregular_208hz__nominal__4004.bin",
+      "sha256": "29ae6972a9a6d35ade0d8e7c57ee3dfb6d196d299e41e4d74d23eaabc3461e13",
+      "scenario": "maneuver",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/maneuver__irregular_208hz__stress__4001.bin",
+      "sha256": "97243e15ff842dafc03f65bad7d52a019e5e661f6e4dfb77eba1a423e896be7d",
+      "scenario": "maneuver",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/maneuver__irregular_208hz__stress__4002.bin",
+      "sha256": "17d25b342e2a36c3c2d513b42f59fe34e55eacec6b433ffdad189e98e955a741",
+      "scenario": "maneuver",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/maneuver__irregular_208hz__stress__4003.bin",
+      "sha256": "b8630181a95be8dcf64b61616da217f9fb711afa53a670491d7fa3cd738d610e",
+      "scenario": "maneuver",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/maneuver__irregular_208hz__stress__4004.bin",
+      "sha256": "f4d106e8b03c11d30af8500324177ab4a36617a79a204be323eccc2f1df2dfa4",
+      "scenario": "maneuver",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/vibration__uniform_200hz__nominal__4001.bin",
+      "sha256": "2def80da0c8e9b6b34cc9174e2be20d0d43b20512834726333d1dc81f93ece14",
+      "scenario": "vibration",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/vibration__uniform_200hz__nominal__4002.bin",
+      "sha256": "bad8db5b10b621d6f1bda99681a18a2c29546b5efd9498a42635d5d2263dee56",
+      "scenario": "vibration",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/vibration__uniform_200hz__nominal__4003.bin",
+      "sha256": "421a32f167ee298aa72e1e6bae32f6cb30a03d992753a946cc61e9cf7c1017e7",
+      "scenario": "vibration",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/vibration__uniform_200hz__nominal__4004.bin",
+      "sha256": "750a9883e2bcb0a0cb10fceb61bd92c3101052122a70c374205ab317c84cccae",
+      "scenario": "vibration",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/vibration__uniform_200hz__stress__4001.bin",
+      "sha256": "17c5412e6ba03c7eeb07d1ab615ee805445d6f4152b7ff853b67b4e297c39a3f",
+      "scenario": "vibration",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/vibration__uniform_200hz__stress__4002.bin",
+      "sha256": "1873d4516350f06bcd447c66d18120da203d1ee3f24239bcc0a14f9be895d05a",
+      "scenario": "vibration",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/vibration__uniform_200hz__stress__4003.bin",
+      "sha256": "41d77f1948c790f9dd92f0d911273ab2f1f581453d80aa93146297af50148dd2",
+      "scenario": "vibration",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/vibration__uniform_200hz__stress__4004.bin",
+      "sha256": "c02ed0a2d64e707129fa2b4336d8bde83fef44179adba8316116e4f30f9afddd",
+      "scenario": "vibration",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/vibration__uniform_208hz__nominal__4001.bin",
+      "sha256": "da262597f9c4b8db8c3f97aed74b8f3649cd4883edf349c0fed022f63c735fe5",
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/vibration__uniform_208hz__nominal__4002.bin",
+      "sha256": "9d60b32378687f447bc60c0d4a0d565d659d26db3051eab3a99c9655266f5fab",
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/vibration__uniform_208hz__nominal__4003.bin",
+      "sha256": "58c523329586b4113c47653a017736028c00ec57950d031a475369f39010ffe8",
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/vibration__uniform_208hz__nominal__4004.bin",
+      "sha256": "7ae27384a33aa4b682283dc2e8b447adb58917b5dc29bd217585e69e4623533c",
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/vibration__uniform_208hz__stress__4001.bin",
+      "sha256": "da5001405bb13fc9c14d32b9f8da169ebd00c7d99763bbaae2cc7abec6df7166",
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/vibration__uniform_208hz__stress__4002.bin",
+      "sha256": "a4fffe719ea53a18ab484ba167f47eb1a85e47e6f82ad2a758baf62391c37209",
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/vibration__uniform_208hz__stress__4003.bin",
+      "sha256": "167984badd53e3a77761ab0b3575c8f8312b2fd966ed887dea243f03046a088b",
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/vibration__uniform_208hz__stress__4004.bin",
+      "sha256": "fb98c46243da1f0bf6ffba9bd93c044b5a193f7ef6be4319d9241b2a14c5be36",
+      "scenario": "vibration",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/vibration__irregular_208hz__nominal__4001.bin",
+      "sha256": "412bde7bc9832d9597aba2933c19c7ac90a4c36daec85ca3c6bb13d7ed515325",
+      "scenario": "vibration",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/vibration__irregular_208hz__nominal__4002.bin",
+      "sha256": "deadab350afbf2150bdb937cca71fdf9434afee96bc3ef65214993683e2b62bf",
+      "scenario": "vibration",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/vibration__irregular_208hz__nominal__4003.bin",
+      "sha256": "f8bfc993a9339c18d34d40088bcf6dea65effbc4008e061b93646f53d3f3cbb5",
+      "scenario": "vibration",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/vibration__irregular_208hz__nominal__4004.bin",
+      "sha256": "8ac717b4f5ce898dcb502c406f994147194b61c0555b206c30b68e756f54557a",
+      "scenario": "vibration",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/vibration__irregular_208hz__stress__4001.bin",
+      "sha256": "45d360d47084172d1f9dc6d7c5fe908da1870c7cec3dcc9219bf325a32b75db9",
+      "scenario": "vibration",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/vibration__irregular_208hz__stress__4002.bin",
+      "sha256": "f4e87e13965306f6d9c07895c1c81511b05c131eb28eece2c1d5a640505e6536",
+      "scenario": "vibration",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/vibration__irregular_208hz__stress__4003.bin",
+      "sha256": "0c701e3188d10296a94f9a3b5b767cc421b2df6d18337a2162f7fb0338214814",
+      "scenario": "vibration",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/vibration__irregular_208hz__stress__4004.bin",
+      "sha256": "ecdc288cf27162fa39730e0be51d4df64b9a6dc056fe3884e20310d11a9bd854",
+      "scenario": "vibration",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_200hz__nominal__4001.bin",
+      "sha256": "b5a3dfdd921fb298f9d3e5383b19cc069eb2fca849830808e27f9b7b9320865e",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_200hz__nominal__4002.bin",
+      "sha256": "fa522256c1c0b9252d47f6fd1bf4624367568f51de8c93f586edbbbcb5e24139",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_200hz__nominal__4003.bin",
+      "sha256": "740ca2050cf330a265143d970a1105dddc25cc548679750c76bd7a22583f6e1e",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_200hz__nominal__4004.bin",
+      "sha256": "132aef47ed7896bf8fd77ee1d33fad32d6385ea2f4f0373e90b7f3550601888a",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_200hz__stress__4001.bin",
+      "sha256": "a1a8cca26fcbcaf78edd2845e99ccc289702f71c28066ecfe174d8a33d6f15c3",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_200hz__stress__4002.bin",
+      "sha256": "b985be538b80d846558333edaf4c71a5f02a37a1f0ca2a8000714964cc93a6fc",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_200hz__stress__4003.bin",
+      "sha256": "374750510fcc56234130753c580c7af0d6c700f240d026fdae9b341c6739b391",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_200hz__stress__4004.bin",
+      "sha256": "199d26e0b771b97b78471357c2b896b9c229ac68ef8ad9e06ec70bfb6b6e1609",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_208hz__nominal__4001.bin",
+      "sha256": "5b66905af1eb07e659acf9a2da0dd7113ff26ba10665793cf211cb0a6b7c4f53",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_208hz__nominal__4002.bin",
+      "sha256": "72b47cd872f8004db66822c3669fa3795e7daf597a08da575a36ad442f5b8640",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_208hz__nominal__4003.bin",
+      "sha256": "f2215b67d70f1bb154ded22e83e9a37aa58b4f820ef481e0457e4dc5540fca58",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_208hz__nominal__4004.bin",
+      "sha256": "b8b06700484af7ca357f8e03534ed8ec2c04b79d49a4cb54002ec87cdc01430e",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_208hz__stress__4001.bin",
+      "sha256": "359072afbd3d2a0fbe2e8e0ab7a77cd2d5a6d583beb02f25884d5f4a16a475cf",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_208hz__stress__4002.bin",
+      "sha256": "859395b5984a12618f0442247e7baaf8361a24a046603fa71f1f10f1ca5575fd",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_208hz__stress__4003.bin",
+      "sha256": "90e09de3946a978c06806ef6ef4184ae9f040356c709c99bc893107cf7f7a1b3",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/timing_jitter__uniform_208hz__stress__4004.bin",
+      "sha256": "3a0d94d0195df988aa8bc48146a5c407dada107049416666856f7d4c574be5b2",
+      "scenario": "timing_jitter",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/timing_jitter__irregular_208hz__nominal__4001.bin",
+      "sha256": "75d1d3b89f98fc0638267ea2dfb7283e41e68d34fcd9403260df3acc107f4153",
+      "scenario": "timing_jitter",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/timing_jitter__irregular_208hz__nominal__4002.bin",
+      "sha256": "3cdd9c6a08d98f9d0cc087a0d098aee47cb85a9b808d7ce81dcff5e59eb04a9d",
+      "scenario": "timing_jitter",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/timing_jitter__irregular_208hz__nominal__4003.bin",
+      "sha256": "a470783b930b851fa7a1f70dcfa78f9c443e3deff51cce0bb0ba6d44e39a22f8",
+      "scenario": "timing_jitter",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/timing_jitter__irregular_208hz__nominal__4004.bin",
+      "sha256": "8584130c835bce1e028163101021373bd12db2c8d13677ac5f0b7b617636b9fd",
+      "scenario": "timing_jitter",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/timing_jitter__irregular_208hz__stress__4001.bin",
+      "sha256": "12ddd392479364116adf23dacc30a510b9af702b8ea4a0ff6ee8812cc462a9c9",
+      "scenario": "timing_jitter",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/timing_jitter__irregular_208hz__stress__4002.bin",
+      "sha256": "0489f6c39753002d48d16958d4f38ea536d913c7fbb81b89ab0a87a12e97b78a",
+      "scenario": "timing_jitter",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/timing_jitter__irregular_208hz__stress__4003.bin",
+      "sha256": "82a8417d1d4d27d5278538ed9424af1e1c08cae7d76baaa2c03f5d8c8086e365",
+      "scenario": "timing_jitter",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/timing_jitter__irregular_208hz__stress__4004.bin",
+      "sha256": "9c72708a03d96fb743659ba3d7af37ebeb5b020711121c73ceab19fe90ea2242",
+      "scenario": "timing_jitter",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/stop_start__uniform_200hz__nominal__4001.bin",
+      "sha256": "88325b17590a336389d4964297dc266c16f71cc4660cbdf0176542d823f63dc4",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/stop_start__uniform_200hz__nominal__4002.bin",
+      "sha256": "20e7964a4be97dae4ec586b637e1443b9161c4ac2671c0043c75a5cf4dcf1ea0",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/stop_start__uniform_200hz__nominal__4003.bin",
+      "sha256": "6ee79afd720c2c63de5d101148aa356fbaa0c70ca4c6253d6017dca1c8343c40",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/stop_start__uniform_200hz__nominal__4004.bin",
+      "sha256": "1dc1252cf7f2f7f388298fe3f5889744e7cae792e46fdd0230c035fd769b3b97",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/stop_start__uniform_200hz__stress__4001.bin",
+      "sha256": "43e33822041b672c9d7f633252973f59ba928b824a2d2e8c9c3a3a353aaf1a6e",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/stop_start__uniform_200hz__stress__4002.bin",
+      "sha256": "94c99834dc37e52bb5bb236ef06bda4d295b4a9dcfb025a25c97e902acf2445a",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/stop_start__uniform_200hz__stress__4003.bin",
+      "sha256": "9dcacc4b05e460bae1cc057bd0e8899a7f629cc2a288a8b1915e50f08c59fb30",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/stop_start__uniform_200hz__stress__4004.bin",
+      "sha256": "d2b04a957a86b582283c8456fc8132c932aed62f66e532a1b2da71cd9a756e50",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/stop_start__uniform_208hz__nominal__4001.bin",
+      "sha256": "1ad93664425d30758a2141f140e8bd82994790bc7f9ce8d69d7e6b66b3ede5d0",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/stop_start__uniform_208hz__nominal__4002.bin",
+      "sha256": "0525e34e98bd933fbff436ba986b6e8c7cef140e6451c68a62b3dc2981df3184",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/stop_start__uniform_208hz__nominal__4003.bin",
+      "sha256": "b91d445163d6913731529a6a6c7fb8f7561dc82541daffe54b82c41ca51d94a2",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/stop_start__uniform_208hz__nominal__4004.bin",
+      "sha256": "7ca04a7e9fb95a0cd1a5cd115e23bc59609d277ed5cca5747dabca7d59ec677d",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/stop_start__uniform_208hz__stress__4001.bin",
+      "sha256": "9e2be949b1c2c2aab19334bad3e6620c2c07c7c873d6ac4fd93ad2f7bdf4f402",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/stop_start__uniform_208hz__stress__4002.bin",
+      "sha256": "4f5a3aced114bbe2883c6f574f8c436fd1b553ff959325924d21df874cd4a3ea",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/stop_start__uniform_208hz__stress__4003.bin",
+      "sha256": "7f02c026365f94b35cb6964d57fa01f62d1975829409b969eca30ccddabff3ba",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/stop_start__uniform_208hz__stress__4004.bin",
+      "sha256": "394c7dfa862d54283615e0c187a8dcf7b170e770df1bc4fa94dad4b2f1f4b31a",
+      "scenario": "stop_start",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/stop_start__irregular_208hz__nominal__4001.bin",
+      "sha256": "a7df53877dc6503d4486def811a9418dd06750a3fd55dc27c10a035750cadc73",
+      "scenario": "stop_start",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/stop_start__irregular_208hz__nominal__4002.bin",
+      "sha256": "c8e724cd26903ff9dd79263ae337a8c404c804345abfd84086ea69703b5080dd",
+      "scenario": "stop_start",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/stop_start__irregular_208hz__nominal__4003.bin",
+      "sha256": "96db1e6e1c9dbe7505539b106a919df9846445c2892cbc89eb548b5fcd4118f5",
+      "scenario": "stop_start",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/stop_start__irregular_208hz__nominal__4004.bin",
+      "sha256": "1468c28bb66ba911403b1fb8998fffe40804da5c6a45b3448cead3fed7b7487b",
+      "scenario": "stop_start",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/stop_start__irregular_208hz__stress__4001.bin",
+      "sha256": "48ed28213b4008e6a4f41877c7462f669c543ac7d4a681ce2ee67c24e30bc483",
+      "scenario": "stop_start",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/stop_start__irregular_208hz__stress__4002.bin",
+      "sha256": "fedd4b1d397f3916dd2e3bc395be2abd7791f6858c5bac9b339a9abdf1ab8d2c",
+      "scenario": "stop_start",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/stop_start__irregular_208hz__stress__4003.bin",
+      "sha256": "a36907448f31ac516b9abc56256616c3c78bc15b82bd13bda5e8767281d8f2a1",
+      "scenario": "stop_start",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/stop_start__irregular_208hz__stress__4004.bin",
+      "sha256": "5151bd9ae09847468718ebef0cdf2a1441282cf33f254a67aa537555719fd70f",
+      "scenario": "stop_start",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/compound_motion__uniform_200hz__nominal__4001.bin",
+      "sha256": "d5e002975e8597bb0a0449ef4cd3989668a85dc0d0a3e17af70209cdb2decbf5",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/compound_motion__uniform_200hz__nominal__4002.bin",
+      "sha256": "f6bad70b3bf08ea1d60044d7cf60b442431e3d979c5f5ccbff6fd43f113dcd4f",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/compound_motion__uniform_200hz__nominal__4003.bin",
+      "sha256": "0b8961256d5e778bbda6dc8c5f8efed5d0bcba57d77d08de13b5512a6140aff2",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/compound_motion__uniform_200hz__nominal__4004.bin",
+      "sha256": "8083d25598bae9de1712cb2bf6d287002c25b787c49eaaa5a5638a77248f06a8",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/compound_motion__uniform_200hz__stress__4001.bin",
+      "sha256": "9708fe5aba5c302f81c30e53cb649f5d1eb7f4c241edfa1e95a838ca889c017e",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/compound_motion__uniform_200hz__stress__4002.bin",
+      "sha256": "d37484880b01e7553e9624a4b972e02596eed7f8b88229a6c3a5082a06486ee4",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/compound_motion__uniform_200hz__stress__4003.bin",
+      "sha256": "64bc5413310f291fcf1ce046df60b71d9ebbe5e2ff3773c45ca7527579e72a1d",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/compound_motion__uniform_200hz__stress__4004.bin",
+      "sha256": "6f4443d9a69bcd2dda4508788a70b66fd41aa3b3ff576abed78c300adfc7f9de",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_200hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/compound_motion__uniform_208hz__nominal__4001.bin",
+      "sha256": "7e01cff8f26c3da6680340860d9f443e2603cd6eb088dadb6f98f76715cb5dd5",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/compound_motion__uniform_208hz__nominal__4002.bin",
+      "sha256": "3f6e60855b6e51764316e43ea476bbd151f2fd1582e9d22b12e8add631fafa54",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/compound_motion__uniform_208hz__nominal__4003.bin",
+      "sha256": "99b1f68b35b640f73d578a984a1e6034ee89084285e83051fbba51405e0f9990",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/compound_motion__uniform_208hz__nominal__4004.bin",
+      "sha256": "061846d060ac63c45963a17aa42027ddf0995da6fea3e2a535a40e789309ec19",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/compound_motion__uniform_208hz__stress__4001.bin",
+      "sha256": "bf06d6ebb58f6e7db38f381dc34f47b107076ea78dc9e21882f778ce0205341c",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/compound_motion__uniform_208hz__stress__4002.bin",
+      "sha256": "1d5d26b34ad19d887c123af52cbaf90a3690a0af7688a23b7c30c38bbd24cb52",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/compound_motion__uniform_208hz__stress__4003.bin",
+      "sha256": "0c3c0dd1df79234de7435e9785949bae574701e92102e3e6b32555285f30ab7b",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/compound_motion__uniform_208hz__stress__4004.bin",
+      "sha256": "08c2b99c4169c0aa44df98a38a530f30cf81610628052f9efd92327c5320f2cc",
+      "scenario": "compound_motion",
+      "rate_mode": "uniform_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/compound_motion__irregular_208hz__nominal__4001.bin",
+      "sha256": "919119b2aea350edbbbd05364245708f8a31031ff55aec0ed5f3a0edae13d6fc",
+      "scenario": "compound_motion",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/compound_motion__irregular_208hz__nominal__4002.bin",
+      "sha256": "39ceda2ff145f48207e16909942b046eef3c39a9ce722f52c240a6fff91b77f4",
+      "scenario": "compound_motion",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/compound_motion__irregular_208hz__nominal__4003.bin",
+      "sha256": "0353d6da03b2b03e6520f5480488bd0e15d174392c40d45234d6d898d47c9d1c",
+      "scenario": "compound_motion",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/compound_motion__irregular_208hz__nominal__4004.bin",
+      "sha256": "5917e88206c785f643b27f648cd43ccfddd4f9bba200015a92b1855b6abc9385",
+      "scenario": "compound_motion",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "nominal",
+      "split": "development",
+      "seed": 4004
+    },
+    {
+      "path": "inputs/compound_motion__irregular_208hz__stress__4001.bin",
+      "sha256": "d4fc3d87403322c316ce81737dea16780ecf37b70c1342306c11dafd9f33b54d",
+      "scenario": "compound_motion",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4001
+    },
+    {
+      "path": "inputs/compound_motion__irregular_208hz__stress__4002.bin",
+      "sha256": "89064cbf7f6aef2637c2eae39fc2f44c67a779ee5ea15b6181d2ad00055e68cc",
+      "scenario": "compound_motion",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4002
+    },
+    {
+      "path": "inputs/compound_motion__irregular_208hz__stress__4003.bin",
+      "sha256": "0a67b76e07b58a86aa63adcca8c5ac74112c7fe63db4dcf76bdf43f9431a3588",
+      "scenario": "compound_motion",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4003
+    },
+    {
+      "path": "inputs/compound_motion__irregular_208hz__stress__4004.bin",
+      "sha256": "c276074c157627fe0b463097df8300fd0393632f19744cbbf282d3a0c0bffe8c",
+      "scenario": "compound_motion",
+      "rate_mode": "irregular_208hz",
+      "stress_mode": "stress",
+      "split": "development",
+      "seed": 4004
+    }
+  ],
+  "classification": "SYNTHETIC_HOST_SIMULATION_ONLY; NOT_HARDWARE_QUALIFICATION",
+  "pr2_gate_status": "OPEN",
+  "summary_csv_sha256": "942ed5c2aba3c7d79a00b6b7d68f1d377c8d553408598e9f8d3387a9666d9b16",
+  "summary_report_sha256": "746fee00f953a45cbe0ab4ccd08f7075602b813097d7a10804384165e874c582",
+  "figure_sha256": "948ca3fc13cb76616f16186516b1e9cffda8bd2ae798ea1ab363ec05f5985a2b",
+  "additional_figure_sha256": {
+    "pr3_protocol_v5_factor_pilot_dev4_availability.svg": "0231844030dd3803049a3404ddd23187e78827b0dac4354b28d9ca5cad520334",
+    "pr3_protocol_v5_factor_pilot_dev4_nis_mean.svg": "eb754ee572c1982e55e9df531bfedcddbf7bb43e6bb56113adb71445be16ac65",
+    "pr3_protocol_v5_factor_pilot_dev4_tilt_nees_mean.svg": "19758c38e7899e6afc2618d4f5332ebe2bb715903da8d0bd37e2491ebfd589a2",
+    "pr3_protocol_v5_factor_pilot_dev4_yaw_rms.svg": "2644cea0a929d4cdf779002c235a8c5719e0c533b4fd7425076ccead570921d5"
+  },
+  "summarizer_source_sha256": "00c1ab26f0db6b7df12471ef41060981b07eee695c7e698f810fddaba86b3afe",
+  "repository_figure_sha256": {
+    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_availability.svg": "0231844030dd3803049a3404ddd23187e78827b0dac4354b28d9ca5cad520334",
+    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_nis_mean.svg": "eb754ee572c1982e55e9df531bfedcddbf7bb43e6bb56113adb71445be16ac65",
+    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_tilt_nees_mean.svg": "19758c38e7899e6afc2618d4f5332ebe2bb715903da8d0bd37e2491ebfd589a2",
+    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_tilt_rms.svg": "948ca3fc13cb76616f16186516b1e9cffda8bd2ae798ea1ab363ec05f5985a2b",
+    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_yaw_rms.svg": "2644cea0a929d4cdf779002c235a8c5719e0c533b4fd7425076ccead570921d5"
+  },
+  "generated_output_directory": "benchmarks/generated/pr3_protocol_v5_factor_pilot_dev4",
+  "reproduction_command": "python3 tools/run_pr3_benchmarks.py --protocol benchmarks/scenarios/pr3_scenarios_protocol_v5.json --split development --first-seed 4001 --last-seed 4004 --scenarios static,slow_yaw,lateral_accel,maneuver,vibration,timing_jitter,stop_start,compound_motion --rate-modes uniform_200hz,uniform_208hz,irregular_208hz --stress-modes nominal,stress --profiles baseline,heading_sensor,external_static,truth_static,startup_bias,independent_heading,oracle_heading --output-dir benchmarks/generated/pr3_protocol_v5_factor_pilot_dev4 --source-commit 3efd3f89e244e152364773fb26cfb0c5749dce3d --tree-dirty no --summary-source-label benchmarks/reports/pr3_protocol_v5_factor_pilot_dev4_trials.csv --figure-prefix pr3_protocol_v5_factor_pilot_dev4 --figure-path-prefix benchmarks/figures/",
+  "raw_input_storage_note": "The runner generated one shared input stream per trial and this manifest preserves every input SHA-256. The 192 raw input files total 80,764,928 bytes (~80.8 MB, 77.0 MiB) and are generated under the recorded output directory, not checked into Git; the reproduction command regenerates them for the recorded toolchain.",
+  "summary_source_label": "benchmarks/reports/pr3_protocol_v5_factor_pilot_dev4_trials.csv",
+  "figure_prefix": "pr3_protocol_v5_factor_pilot_dev4",
+  "figure_path_prefix": "benchmarks/figures/",
+  "runner_source_sha256": "7b3ee73d3018e5c322b70ae66775b3abb152b041bd33d7981af4ae2236c6df01",
+  "report_runner_source_sha256": "fc97b1a33348ed436165dc44e5baca7ad9b0a2394866579040d08af95015cb8d",
+  "report_codegen_source_sha256": "47b7104e5936200e13e04825527e1ba0dc8aeaf514632fce1475688f22b9e5e6",
+  "protocol_validator_source_sha256": "0c7c37d94fd56361aa5846298c0b4b3dd885a4d9ba57665aa05e65ce525819df"
+}

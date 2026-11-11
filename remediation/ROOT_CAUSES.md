@@ -1,6 +1,6 @@
-# PR 2 root causes and recovery evidence
+# Root-cause and recovery evidence
 
-**Scope:** PR 2 only, on `fix/eskf-math-recovery` stacked on PR 1 `b749a8aa0e40718ab7b163cad29d9c550b088265`. This file follows the handoff's four primary categories and separates category from disposition. The latest candidate is revision 1, frozen at `55eed3252e3e2af72bd61be66aa14501d9f17399`. The overall PR 2 gate remains **OPEN**.
+**Scope:** PR 2 findings and follow-up PR 3 v5 evidence, on the stack rooted at PR 1 `b749a8aa0e40718ab7b163cad29d9c550b088265`. This file follows the handoff's four primary categories and separates category from disposition. The revision-1 PR2 confirmation is frozen at `55eed3252e3e2af72bd61be66aa14501d9f17399`; the current PR2 branch adds FP64 covariance revision `4d023d0`. The overall PR 2 gate remains **OPEN**.
 
 ## Atomic outcomes
 
@@ -62,3 +62,12 @@ The machine-readable record is `benchmarks/manifests/pr2_candidate_revision1_pro
 - Trace vector gravity/heading innovations and full attitude-to-bias cross-covariance on development failures; no tuning is justified solely from the current partial traces.
 - Continue root-cause work on LegacyHeuristic yaw/bias coupling and synthetic-heading-aid degradation. Keep PR 3 dependent claims blocked until these severe findings are explained or corrected.
 - The ARM cross-build is `NOT_RUN` (`arm-none-eabi-g++` unavailable and `PICO_SDK_PATH` unset). Physical LSM6DS3/Pico 2 validation and on-device timing are `BLOCKED_HARDWARE`; see `remediation/RESOURCE_BUDGETS.md`.
+
+## PR 3 v5 findings
+
+| ID | Primary category | Disposition | Evidence, correction, or blocker |
+|---|---|---|---|
+| COV-PRECISION-PR3 | `CONFIRMED_IMPLEMENTATION_DEFECT` | `FIXED` | The v3 slow-yaw seed-4001 reproducer had only 1,576 / 2,801 ConfirmedOnly covariance checks pass. PR2's FP64 covariance revision `4d023d0` keeps covariance and the numerically sensitive propagation/update operations in double precision. The original v5 development, held-out and final nominal sets each pass 2,330,400 checks per ESKF policy. The three new full-factor 100-seed splits each pass 96,622,400 / 96,622,400 checks per ESKF policy. This is host evidence; RP2350 resource cost remains unmeasured here. |
+| PR3-STRESS-ALIGN-001 | `CONFIRMED_IMPLEMENTATION_DEFECT` | `FIXED` | The original four-seed v5 factor pilot exposed an initialization-gate defect: all 2,016 ESKF stress rows failed, including the selected static/208-Hz/seed-4001 trace that remained `Aligning` for 3,328 samples. The startup correction is recorded in the factor-pilot follow-up. Untouched 100-seed held-out and final-confirmation all-factor runs now complete every stress row across all declared scenarios, rates and profiles; development, held-out and final each report 0 incomplete rows and all expected covariance checks. This fixes startup availability for the declared synthetic cases only. ESKF stress accuracy and consistency remain poor and are still open PR3 acceptance concerns; hardware behavior is unmeasured. The original raw stream, trace and manifest remain checked in. |
+
+The v5 protocol, trial reports and exact hashes are in [PR3_STATUS.md](PR3_STATUS.md), [the factor-pilot report](PR3_FACTOR_PILOT.md), and [the atomic root-cause matrix](ROOT_CAUSE_MATRIX.md). Startup availability is fixed for the declared synthetic matrix; poor stress accuracy/consistency, unresolved PR2 findings, independent review, and hardware qualification remain open, so these results do not constitute a full PR3 pass.

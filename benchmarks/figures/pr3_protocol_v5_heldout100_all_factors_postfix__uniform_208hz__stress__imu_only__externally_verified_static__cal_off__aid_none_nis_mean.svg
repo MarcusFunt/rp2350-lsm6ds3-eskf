@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="620" viewBox="0 0 1160 620">
+<rect width="100%" height="100%" fill="white"/>
+<text x="90" y="34" font-family="sans-serif" font-size="22" font-weight="bold">PR3 mean NIS by scenario</text>
+<text x="90" y="54" font-family="sans-serif" font-size="12">Synthetic host characterization; uniform 208hz | stress | IMU_ONLY | startup EXTERNALLY_VERIFIED_STATIC | calibration OFF | aid NONE; PR2 gate remains OPEN</text>
+<line x1="90" y1="510.0" x2="1100" y2="510.0" stroke="#d1d5db"/>
+<text x="78" y="514.0" text-anchor="end" font-family="sans-serif" font-size="11">0</text>
+<line x1="90" y1="422.0" x2="1100" y2="422.0" stroke="#d1d5db"/>
+<text x="78" y="426.0" text-anchor="end" font-family="sans-serif" font-size="11">1</text>
+<line x1="90" y1="334.0" x2="1100" y2="334.0" stroke="#d1d5db"/>
+<text x="78" y="338.0" text-anchor="end" font-family="sans-serif" font-size="11">2</text>
+<line x1="90" y1="246.0" x2="1100" y2="246.0" stroke="#d1d5db"/>
+<text x="78" y="250.0" text-anchor="end" font-family="sans-serif" font-size="11">3</text>
+<line x1="90" y1="158.0" x2="1100" y2="158.0" stroke="#d1d5db"/>
+<text x="78" y="162.0" text-anchor="end" font-family="sans-serif" font-size="11">4</text>
+<line x1="90" y1="70.0" x2="1100" y2="70.0" stroke="#d1d5db"/>
+<text x="78" y="74.0" text-anchor="end" font-family="sans-serif" font-size="11">5</text>
+<text x="258.3" y="534" text-anchor="middle" font-family="sans-serif" font-size="10">lateral_accel</text>
+<line x1="242.33333333333337" y1="505.9" x2="242.33333333333337" y2="495.3" stroke="#dc2626" stroke-width="2"/>
+<rect x="236.33333333333337" y="498.6" width="12" height="7.3" fill="#dc2626" fill-opacity=".24" stroke="#dc2626"/>
+<line x1="236.33333333333337" y1="499.4" x2="248.33333333333337" y2="499.4" stroke="#dc2626" stroke-width="2"/>
+<line x1="242.33333333333337" y1="506.8" x2="242.33333333333337" y2="492.7" stroke="#111827" stroke-width="1.5"/>
+<line x1="238.33333333333337" y1="506.8" x2="246.33333333333337" y2="506.8" stroke="#111827"/>
+<line x1="238.33333333333337" y1="492.7" x2="246.33333333333337" y2="492.7" stroke="#111827"/>
+<circle cx="242.33333333333337" cy="499.8" r="3.2" fill="#111827" stroke="white" stroke-width=".8"/>
+<text x="595.0" y="534" text-anchor="middle" font-family="sans-serif" font-size="10">slow_yaw</text>
+<line x1="563.0" y1="509.6" x2="563.0" y2="509.6" stroke="#2563eb" stroke-width="2"/>
+<rect x="557.0" y="509.6" width="12" height="1.0" fill="#2563eb" fill-opacity=".24" stroke="#2563eb"/>
+<line x1="557.0" y1="509.6" x2="569.0" y2="509.6" stroke="#2563eb" stroke-width="2"/>
+<line x1="563.0" y1="509.6" x2="563.0" y2="509.6" stroke="#111827" stroke-width="1.5"/>
+<line x1="559.0" y1="509.6" x2="567.0" y2="509.6" stroke="#111827"/>
+<line x1="559.0" y1="509.6" x2="567.0" y2="509.6" stroke="#111827"/>
+<circle cx="563.0" cy="509.6" r="3.2" fill="#111827" stroke="white" stroke-width=".8"/>
+<line x1="579.0" y1="509.5" x2="579.0" y2="507.2" stroke="#dc2626" stroke-width="2"/>
+<rect x="573.0" y="508.0" width="12" height="1.5" fill="#dc2626" fill-opacity=".24" stroke="#dc2626"/>
+<line x1="573.0" y1="508.0" x2="585.0" y2="508.0" stroke="#dc2626" stroke-width="2"/>
+<line x1="579.0" y1="510.0" x2="579.0" y2="505.3" stroke="#111827" stroke-width="1.5"/>
+<line x1="575.0" y1="510.0" x2="583.0" y2="510.0" stroke="#111827"/>
+<line x1="575.0" y1="505.3" x2="583.0" y2="505.3" stroke="#111827"/>
+<circle cx="579.0" cy="508.2" r="3.2" fill="#111827" stroke="white" stroke-width=".8"/>
+<text x="931.7" y="534" text-anchor="middle" font-family="sans-serif" font-size="10">static</text>
+<line x1="899.6666666666667" y1="509.9" x2="899.6666666666667" y2="509.9" stroke="#2563eb" stroke-width="2"/>
+<rect x="893.6666666666667" y="509.9" width="12" height="1.0" fill="#2563eb" fill-opacity=".24" stroke="#2563eb"/>
+<line x1="893.6666666666667" y1="509.9" x2="905.6666666666667" y2="509.9" stroke="#2563eb" stroke-width="2"/>
+<line x1="899.6666666666667" y1="509.9" x2="899.6666666666667" y2="509.9" stroke="#111827" stroke-width="1.5"/>
+<line x1="895.6666666666667" y1="509.9" x2="903.6666666666667" y2="509.9" stroke="#111827"/>
+<line x1="895.6666666666667" y1="509.9" x2="903.6666666666667" y2="509.9" stroke="#111827"/>
+<circle cx="899.6666666666667" cy="509.9" r="3.2" fill="#111827" stroke="white" stroke-width=".8"/>
+<line x1="915.6666666666667" y1="509.9" x2="915.6666666666667" y2="506.6" stroke="#dc2626" stroke-width="2"/>
+<rect x="909.6666666666667" y="509.9" width="12" height="1.0" fill="#dc2626" fill-opacity=".24" stroke="#dc2626"/>
+<line x1="909.6666666666667" y1="509.9" x2="921.6666666666667" y2="509.9" stroke="#dc2626" stroke-width="2"/>
+<line x1="915.6666666666667" y1="510.0" x2="915.6666666666667" y2="486.9" stroke="#111827" stroke-width="1.5"/>
+<line x1="911.6666666666667" y1="510.0" x2="919.6666666666667" y2="510.0" stroke="#111827"/>
+<line x1="911.6666666666667" y1="486.9" x2="919.6666666666667" y2="486.9" stroke="#111827"/>
+<circle cx="915.6666666666667" cy="508.3" r="3.2" fill="#111827" stroke="white" stroke-width=".8"/>
+<rect x="90" y="560" width="12" height="12" fill="#2563eb"/>
+<text x="108" y="571" font-family="sans-serif" font-size="12">eskf_conservative</text>
+<rect x="280" y="560" width="12" height="12" fill="#dc2626"/>
+<text x="298" y="571" font-family="sans-serif" font-size="12">eskf_legacy</text>
+<rect x="470" y="560" width="12" height="12" fill="#059669"/>
+<text x="488" y="571" font-family="sans-serif" font-size="12">eskf_confirmed_only</text>
+<rect x="660" y="560" width="12" height="12" fill="#7c3aed"/>
+<text x="678" y="571" font-family="sans-serif" font-size="12">mahony</text>
+<rect x="850" y="560" width="12" height="12" fill="#d97706"/>
+<text x="868" y="571" font-family="sans-serif" font-size="12">gyro_only</text>
+<text transform="translate(22 320) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="13">Per-trial mean NIS; consistency diagnostic</text>
+<text x="90" y="602" font-family="sans-serif" font-size="10">Boxes: IQR/median; colored whiskers: min/max; black: mean and 95% Student-t CI (n varies by group; see JSON); CIs clip to axis bounds when needed.</text>
+</svg>
