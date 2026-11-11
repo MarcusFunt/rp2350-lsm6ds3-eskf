@@ -1,0 +1,19 @@
+{
+  "purpose": "Golden random-draw sequence hashes from the pre-expansion Bundle B source. They verify that the original six scenarios retain their nominal Gaussian draw order and values.",
+  "source_git_sha": "c397fec8f5df3fb612ea6aa92547d484e9e48c06",
+  "compiler_version": "11.4.0",
+  "standard_library_version": "libstdc++-20230528",
+  "standard_library_note": "Hashes are specific to this compiler and standard-library implementation; cross-toolchain bit identity is not promised.",
+  "base_seed": 20261110,
+  "trial_id": 0,
+  "seed_schedule_version": 1,
+  "hash_algorithm": "FNV-1a 64 over the ordered float outputs of std::normal_distribution<float>",
+  "scenario_hashes": {
+    "static": "f0c5742c41b5cb7e",
+    "slow_yaw": "5190d1feb8c16f01",
+    "lateral_accel": "92af08b864b45f9f",
+    "maneuver": "5190d1feb8c16f01",
+    "vibration": "f92469baf751bb97",
+    "timing_jitter": "92af08b864b45f9f"
+  }
+}
