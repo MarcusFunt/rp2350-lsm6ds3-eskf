@@ -331,8 +331,10 @@ def run_analysis(args):
                 raise ValueError(f"development archive lacks one shared input hash for {mode} seed {seed}")
             input_hash_by_key[(mode,seed)]=next(iter(hashes))
 
-    implementation_commit=run(["git","log","-1","--format=%H","--","eskf15.hpp","tools/pr3_evaluate_stream.cpp","tools/pr3_gravity_suppression.py"],capture=True).strip()
-    if len(implementation_commit)!=40:
+    implementation_commit=args.implementation_commit or run(
+        ["git","log","-1","--format=%H","--","eskf15.hpp","tools/pr3_evaluate_stream.cpp","tools/pr3_gravity_suppression.py"],
+        capture=True).strip()
+    if len(implementation_commit)!=40 or any(char not in "0123456789abcdef" for char in implementation_commit):
         raise ValueError("could not identify the committed A4 diagnostic implementation")
     compiler=shlex.split(args.cxx)
     if not compiler:
@@ -506,7 +508,7 @@ def run_analysis(args):
         "Run under WSL from the repository root (g++ is required):",
         "",
         "```text",
-        f"python3 tools/pr3_gravity_suppression.py --output-dir remediation/analysis/pr3_gravity_suppression_a4 --trace-seed {args.trace_seed}",
+        f"python3 tools/pr3_gravity_suppression.py --output-dir remediation/analysis/pr3_gravity_suppression_a4 --trace-seed {args.trace_seed} --implementation-commit {implementation_commit}",
         "```",
         "",
         "The tool refuses a forensic request outside one development static/208 Hz unknown-startup IMU-only stream and one sample event. L2 capture is not exposed through the full-factor benchmark runner.",
@@ -547,6 +549,7 @@ def main(argv=None):
     parser.add_argument("--output-dir",type=Path,default=ROOT/"remediation/analysis/pr3_gravity_suppression_a4")
     parser.add_argument("--trace-seed",type=int,help="development seed for L1/L2; defaults to largest frozen stress-minus-nominal tilt delta")
     parser.add_argument("--cxx",default=os.environ.get("CXX","c++"))
+    parser.add_argument("--implementation-commit",help="full source commit SHA; useful when the host Git cannot resolve a Windows-linked worktree .git file")
     args=parser.parse_args(argv)
     try:
         return run_analysis(args)
