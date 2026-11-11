@@ -68,3 +68,9 @@ PR4B is stacked on PR4A `fix/eskf-fifo-timing` at `26315b4732b920356c279137c057f
 | Hardware latency, queue high-water and stack high-water | Not measured | Not measured | `BLOCKED_HARDWARE` |
 
 Pinned Pico SDK 2.2.0 run [42925544474](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42925544474) built stacked merge commit `a91abe5ec00028688afea554bad7d19be39f4d70` (PR4B head `5072de0bece33f4fafd62f9a1d76a1733d04b20`). Relative to PR4A, the direct/FIFO/binary `.text` deltas are `+1,008/+1,032/+208 B`; `.data` deltas are zero and `.bss` increases by 8 B for each. These are feature-branch cumulative deltas at the PR merge commits. Standard `size` aggregates read-only data into `text`; PR4C will emit section-level `.rodata`, map files and `-fstack-usage` evidence.
+
+## PR 4C resource report method and pending target evidence
+
+PR4C adds `-fstack-usage` to the firmware target and writes a linker map for each configured build directory. `tools/report_firmware_resources.py` uses `arm-none-eabi-size -A` to report separate `.text`, `.rodata`, `.data`, and `.bss` byte counts, binary image size and linker-map flash capacity/headroom, main-RAM capacity remaining after `.data + .bss`, and the largest individual compiler-reported function frame from the `.su` files. Pinned CI runs it for direct-register, FIFO, and binary-FIFO configurations and uploads each ELF, map, `.su` files, UF2/BIN, and JSON report.
+
+The report is **pending the PR4C pinned CI run**. Individual `.su` frames do not describe maximum whole-call-chain stack depth or dynamic stack effects. The linker map and static sections do not establish usable hardware headroom. Only the dedicated core-1 stack has a sentinel watermark hook; core-0 stack high-water remains unmeasured. The 4,808 µs diagnostic service threshold is a provisional 208 Hz sample interval, not an application deadline. No hardware timing or measured stack result is available.

@@ -22,6 +22,7 @@
 #include "calibration.hpp"
 #include "aiding.hpp"
 #include "runtime_health.hpp"
+#include "runtime_metrics.hpp"
 #include "lsm6ds3_fifo.hpp"
 #include "binary_log.hpp"
 #ifdef RP2350_STREAM_BINARY_LOG
@@ -53,6 +54,7 @@ constexpr uint8_t WHO_AM_I_ORIGINAL_LSM6DS3 = 0x69;
 constexpr uint32_t SAMPLE_SOURCE_ID = 0x4c364433; // local label for original LSM6DS3
 constexpr uint32_t TIMEBASE_ID = 1; // PIO-relative periods, software-anchored to time_us_64()
 constexpr uint32_t CALIBRATION_VERSION = 0; // 0: identity, not a measured calibration
+constexpr uint32_t NOMINAL_SAMPLE_PERIOD_US = 4808; // diagnostic service interval only
 // Calibration must be version-controlled and checked against real data before
 // deployment. Identity is a placeholder, NOT a claim of calibrated accuracy.
 static const inertial::SensorCalibration g_calibration{};
@@ -88,7 +90,15 @@ struct FusionEstimate {
     uint32_t gap_count;
     uint32_t saturation_count;
     uint32_t stale_aiding_updates;
+    uint32_t fusion_p50_us;
+    uint32_t fusion_p95_us;
+    uint32_t fusion_p99_us;
     uint32_t fusion_max_us;
+    uint32_t sample_publication_p50_us;
+    uint32_t sample_publication_p95_us;
+    uint32_t sample_publication_p99_us;
+    uint32_t sample_publication_max_us;
+    uint32_t core1_stack_highwater_bytes;
     uint32_t last_aid_source_id;
     uint64_t last_aid_timestamp_us;
     uint8_t accepted_aid_mask;
@@ -109,6 +119,7 @@ static EdgeEvent g_edge_ring[EVENT_QUEUE_CAPACITY];
 static volatile uint32_t g_edge_write = 0;
 static volatile uint32_t g_edge_read = 0;
 static volatile uint32_t g_event_dropped = 0;
+static volatile uint32_t g_edge_queue_highwater = 0;
 static volatile uint32_t g_edge_sequence = 0;
 static uint64_t g_edge_time_quarter_us = 0;
 static bool g_have_anchor = false;
@@ -119,6 +130,7 @@ static queue_t g_estimate_queue;
 // A dedicated 16 KiB stack avoids relying on the default core-1 stack size.
 alignas(8) static uint32_t g_core1_stack[4096];
 static volatile uint32_t g_sample_dropped = 0;
+static volatile uint32_t g_sample_period_service_overruns = 0;
 static volatile uint32_t g_read_count = 0;
 static volatile uint32_t g_unexpected_periods = 0;
 static volatile uint32_t g_calibration_failed = 0;
@@ -127,6 +139,11 @@ static volatile uint32_t g_fifo_bus_errors = 0;
 static volatile uint32_t g_fifo_backfilled = 0;
 static volatile uint32_t g_fifo_discarded_frames = 0;
 static volatile uint32_t g_fifo_timestamp_errors = 0;
+static inertial::metrics::LatencyHistogram g_fusion_latency;
+static inertial::metrics::LatencyHistogram g_sample_publication_latency;
+static inertial::metrics::LatencyHistogram g_spi_transfer_latency;
+static inertial::metrics::LatencyHistogram g_acquisition_service_latency;
+static inertial::metrics::LatencyHistogram g_edge_dispatch_latency;
 static uint32_t g_fifo_sequence = 0;
 #ifdef RP2350_USE_FIFO
 static bool g_fifo_needs_resync = false;
@@ -140,6 +157,22 @@ static int g_dma_rx = -1;
 static int g_dma_tx = -1;
 static uint8_t g_tx[DMA_FRAME_BYTES] = {static_cast<uint8_t>(REG_OUTX_L_G | 0x80)};
 static uint8_t g_rx[DMA_FRAME_BYTES] = {};
+
+uint32_t elapsed_us_saturated(uint64_t start_us,uint64_t end_us) {
+    if(end_us<start_us) return 0;
+    const uint64_t elapsed=end_us-start_us;
+    return elapsed>UINT32_MAX?UINT32_MAX:static_cast<uint32_t>(elapsed);
+}
+
+uint32_t core1_stack_highwater_bytes() {
+    constexpr uint32_t sentinel=0xa55aa55au;
+    const volatile uint32_t *stack=g_core1_stack;
+    uint32_t first_used=4096;
+    for(uint32_t i=0;i<4096;i++){
+        if(stack[i]!=sentinel){first_used=i;break;}
+    }
+    return (4096u-first_used)*sizeof(uint32_t);
+}
 
 void spi_cs(bool select) {
     gpio_put(PIN_SPI_CS, !select);
@@ -176,9 +209,11 @@ public:
         uint8_t tx[385]{};
         uint8_t rx[385]{};
         tx[0]=static_cast<uint8_t>(reg|0x80);
+        const uint64_t start_us=time_us_64();
         spi_cs(true);
         const int n=spi_write_read_blocking(spi0,tx,rx,count+1);
         spi_cs(false);
+        g_spi_transfer_latency.observe(elapsed_us_saturated(start_us,time_us_64()));
         if (n!=static_cast<int>(count+1)) return false;
         for(std::size_t i=0;i<count;i++) data[i]=rx[i+1];
         return true;
@@ -255,6 +290,7 @@ void dma_init_spi() {
 // At 208 Hz, this blocking wait is about 13 bytes / 8 MHz plus overhead.
 // Interrupts remain enabled; SPI bytes are transferred by DMA, not software.
 void spi_read_sample_dma() {
+    const uint64_t start_us=time_us_64();
     dma_channel_set_write_addr(g_dma_rx, g_rx, false);
     dma_channel_set_read_addr(g_dma_tx, g_tx, false);
     dma_channel_set_trans_count(g_dma_rx, DMA_FRAME_BYTES, false);
@@ -265,6 +301,7 @@ void spi_read_sample_dma() {
     dma_channel_wait_for_finish_blocking(g_dma_tx);
     while (spi_is_busy(spi0)) { tight_loop_contents(); }
     spi_cs(false);
+    g_spi_transfer_latency.observe(elapsed_us_saturated(start_us,time_us_64()));
 }
 
 int16_t le_i16(const uint8_t *p) {
@@ -338,6 +375,8 @@ void __not_in_flash_func(pio_rx_irq_handler)() {
         g_edge_ring[h & (EVENT_QUEUE_CAPACITY - 1)] = {
             g_edge_time_quarter_us, now_us, sequence
         };
+        const uint32_t queued=h+1u-g_edge_read;
+        if(queued>g_edge_queue_highwater) g_edge_queue_highwater=queued;
         __dmb();
         g_edge_write = h + 1;
     }
@@ -380,18 +419,41 @@ float clamp_f(float x, float lo, float hi) {
 }
 
 #ifdef RP2350_STREAM_BINARY_LOG
-void emit_binary_bytes(const uint8_t *data,std::size_t count) {
-    // DEBUG transport. USB CDC writes may stall and are NOT a lossless logger.
-    // Disable every text printf while binary mode is active.
-    if(!stdio_usb_connected()) return;
-    for(std::size_t i=0;i<count;i++) putchar_raw(data[i]);
+static uint32_t g_binary_pending_drops=0;
+static bool g_binary_header_sent=false;
+
+void count_binary_drop() {
+    if(g_binary_pending_drops!=UINT32_MAX) ++g_binary_pending_drops;
 }
-void emit_binary_header() {
+
+bool emit_binary_bytes(const uint8_t *data,std::size_t count) {
+    // DEBUG transport. Pico stdio USB may block and can time out without
+    // reporting a partial write. This boolean only detects disconnected state.
+    // Keep all output on stdio's supported path; do not bypass the USB lock.
+    if(!stdio_usb_connected()) return false;
+    for(std::size_t i=0;i<count;i++) putchar_raw(data[i]);
+    return stdio_usb_connected();
+}
+
+bool ensure_binary_header() {
+    if(g_binary_header_sent) return true;
+    if(!stdio_usb_connected()) return false;
     uint8_t bytes[imu_log::kHeaderSize]{};
     imu_log::encode_header({SAMPLE_SOURCE_ID,TIMEBASE_ID,CALIBRATION_VERSION,208},bytes);
-    emit_binary_bytes(bytes,sizeof(bytes));
+    g_binary_header_sent=emit_binary_bytes(bytes,sizeof(bytes));
+    return g_binary_header_sent;
 }
+
 void emit_binary_sample(const ImuSample &s,bool timestamp_backfilled=false) {
+    if(!stdio_usb_connected()){
+        g_binary_header_sent=false;
+        count_binary_drop();
+        return;
+    }
+    if(!ensure_binary_header()){
+        count_binary_drop();
+        return;
+    }
     uint8_t bytes[imu_log::kRecordSize]{};
     imu_log::Record record{};
     record.capture_us=s.timestamp_us;
@@ -402,9 +464,11 @@ void emit_binary_sample(const ImuSample &s,bool timestamp_backfilled=false) {
         1u |
 #endif
         (timestamp_backfilled?2u:0u);
+    record.dropped_records_before=g_binary_pending_drops;
     record.accel_mps2={s.ax,s.ay,s.az};record.gyro_rps={s.gx,s.gy,s.gz};
     imu_log::encode_record(record,bytes);
-    emit_binary_bytes(bytes,sizeof(bytes));
+    if(emit_binary_bytes(bytes,sizeof(bytes))) g_binary_pending_drops=0;
+    else {count_binary_drop();g_binary_header_sent=false;}
 }
 #endif
 
@@ -426,6 +490,7 @@ void core1_fusion() {
         const uint64_t exec_start_us=time_us_64();
         const bool predicted=filter.process(input);
         const uint32_t exec_us=static_cast<uint32_t>(time_us_64()-exec_start_us);
+        g_fusion_latency.observe(exec_us);
         if(exec_us>max_process_us) max_process_us=exec_us;
         if (predicted) ++successful_updates;
         // Publish invalid/fault state transitions too; otherwise a continuously
@@ -455,7 +520,11 @@ void core1_fusion() {
             estimate.gap_count=filter.gap_count();
             estimate.saturation_count=filter.saturation_count();
             estimate.stale_aiding_updates=filter.stale_aiding_updates();
+            estimate.fusion_p50_us=g_fusion_latency.percentile_upper_bound(5000);
+            estimate.fusion_p95_us=g_fusion_latency.percentile_upper_bound(9500);
+            estimate.fusion_p99_us=g_fusion_latency.percentile_upper_bound(9900);
             estimate.fusion_max_us=max_process_us;
+            estimate.core1_stack_highwater_bytes=core1_stack_highwater_bytes();
             estimate.last_aid_source_id=filter.last_accepted_aid_source();
             estimate.last_aid_timestamp_us=filter.last_accepted_aid_timestamp_us();
             estimate.accepted_aid_mask=filter.accepted_aid_mask();
@@ -465,6 +534,11 @@ void core1_fusion() {
             estimate.last_nis=filter.last_nis();
             estimate.imu_stationary_candidate=filter.imu_stationary_candidate();
             estimate.published_us=time_us_64();
+            g_sample_publication_latency.observe(elapsed_us_saturated(estimate.timestamp_us,estimate.published_us));
+            estimate.sample_publication_p50_us=g_sample_publication_latency.percentile_upper_bound(5000);
+            estimate.sample_publication_p95_us=g_sample_publication_latency.percentile_upper_bound(9500);
+            estimate.sample_publication_p99_us=g_sample_publication_latency.percentile_upper_bound(9900);
+            estimate.sample_publication_max_us=g_sample_publication_latency.max_us();
             estimate.sensor_source_id=SAMPLE_SOURCE_ID;
             estimate.timebase_id=TIMEBASE_ID;
             estimate.calibration_version=CALIBRATION_VERSION;
@@ -500,9 +574,11 @@ int main() {
     dma_init_spi();
 #endif
     pio_init_drdy();
+    volatile uint32_t *stack_words=g_core1_stack;
+    for(uint32_t i=0;i<4096u;i++) stack_words[i]=0xa55aa55au;
     multicore_launch_core1_with_stack(core1_fusion, g_core1_stack, sizeof(g_core1_stack));
 #ifdef RP2350_STREAM_BINARY_LOG
-    emit_binary_header(); // reader must be attached before boot/reset
+    // Header is sent lazily when a host connects; each reconnect starts a new log.
 #else
     printf("WHO_AM_I=0x69; 208Hz gyro+accel; SPI 8MHz; data-ready=GP20; timebase=PIO+SW epoch; cal=0 (UNVERIFIED)\n");
 #endif
@@ -547,10 +623,15 @@ int main() {
         EdgeEvent edge{};
         if (pop_edge(edge)) {
             last_edge_us=time_us_64();
+            g_edge_dispatch_latency.observe(elapsed_us_saturated(edge.irq_us,last_edge_us));
+            const uint64_t acquisition_start_us=time_us_64();
             // With direct registers only the newest measurement is available.
             // FIFO mode instead preserves unconsumed samples until overrun.
             if (g_edge_read!=g_edge_write) {
                 ++g_event_dropped;
+                const uint32_t service_us=elapsed_us_saturated(acquisition_start_us,time_us_64());
+                g_acquisition_service_latency.observe(service_us);
+                if(service_us>NOMINAL_SAMPLE_PERIOD_US) ++g_sample_period_service_overruns;
                 continue;
             }
 #ifdef RP2350_USE_FIFO
@@ -630,6 +711,9 @@ int main() {
             auto sample=decode_sample(edge);
             dispatch_sample(sample,false);
 #endif
+            const uint32_t service_us=elapsed_us_saturated(acquisition_start_us,time_us_64());
+            g_acquisition_service_latency.observe(service_us);
+            if(service_us>NOMINAL_SAMPLE_PERIOD_US) ++g_sample_period_service_overruns;
         }
 
         FusionEstimate new_estimate{};
@@ -666,7 +750,13 @@ int main() {
                        "health=%u output_available=%u runtime_flags=0x%08lx reset_required=%u "
                        "state_age_ms=%.1f publish_age_ms=%.1f sensor_src=%lu timebase=%lu cal_id=%lu "
                        "aid_src=%lu aid_age_ms=%.1f aid_mask=0x%02x yaw_obs=%u pos_obs=%u "
-                       "max_fusion_us=%lu NIS=%.2f "
+                       "fusion_us_p50/p95/p99/max=%lu/%lu/%lu/%lu "
+                       "sample_pub_age_us_p50/p95/p99/max=%lu/%lu/%lu/%lu core1_stack_highwater=%lu "
+                       "spi_us_p50/p95/p99/max=%lu/%lu/%lu/%lu "
+                       "acq_service_us_p50/p95/p99/max=%lu/%lu/%lu/%lu "
+                       "irq_to_dispatch_us_p50/p95/p99/max=%lu/%lu/%lu/%lu "
+                       "queue_highwater=edge:%lu/sample:%lu/estimate:%lu "
+                       "sample_period_service_overruns=%lu(period=%luus provisional) NIS=%.2f "
                        "updates=%lu/%lu gaps=%lu sat=%lu stale_aid=%lu "
                        "read=%lu edge_drop=%lu sample_drop=%lu period_warn=%lu fifo_reset=%lu fifo_bus=%lu backfilled=%lu fifo_discard=%lu fifo_ts_err=%lu cal_fail=%lu\n",
                        static_cast<unsigned long>(latest.sequence),
@@ -690,7 +780,32 @@ int main() {
                        static_cast<unsigned>(latest.accepted_aid_mask),
                        static_cast<unsigned>(runtime.yaw_observable),
                        static_cast<unsigned>(runtime.position_observable),
+                       static_cast<unsigned long>(latest.fusion_p50_us),
+                       static_cast<unsigned long>(latest.fusion_p95_us),
+                       static_cast<unsigned long>(latest.fusion_p99_us),
                        static_cast<unsigned long>(latest.fusion_max_us),
+                       static_cast<unsigned long>(latest.sample_publication_p50_us),
+                       static_cast<unsigned long>(latest.sample_publication_p95_us),
+                       static_cast<unsigned long>(latest.sample_publication_p99_us),
+                       static_cast<unsigned long>(latest.sample_publication_max_us),
+                       static_cast<unsigned long>(latest.core1_stack_highwater_bytes),
+                       static_cast<unsigned long>(g_spi_transfer_latency.percentile_upper_bound(5000)),
+                       static_cast<unsigned long>(g_spi_transfer_latency.percentile_upper_bound(9500)),
+                       static_cast<unsigned long>(g_spi_transfer_latency.percentile_upper_bound(9900)),
+                       static_cast<unsigned long>(g_spi_transfer_latency.max_us()),
+                       static_cast<unsigned long>(g_acquisition_service_latency.percentile_upper_bound(5000)),
+                       static_cast<unsigned long>(g_acquisition_service_latency.percentile_upper_bound(9500)),
+                       static_cast<unsigned long>(g_acquisition_service_latency.percentile_upper_bound(9900)),
+                       static_cast<unsigned long>(g_acquisition_service_latency.max_us()),
+                       static_cast<unsigned long>(g_edge_dispatch_latency.percentile_upper_bound(5000)),
+                       static_cast<unsigned long>(g_edge_dispatch_latency.percentile_upper_bound(9500)),
+                       static_cast<unsigned long>(g_edge_dispatch_latency.percentile_upper_bound(9900)),
+                       static_cast<unsigned long>(g_edge_dispatch_latency.max_us()),
+                       static_cast<unsigned long>(g_edge_queue_highwater),
+                       static_cast<unsigned long>(queue_get_max_level(&g_sample_queue)),
+                       static_cast<unsigned long>(queue_get_max_level(&g_estimate_queue)),
+                       static_cast<unsigned long>(g_sample_period_service_overruns),
+                       static_cast<unsigned long>(NOMINAL_SAMPLE_PERIOD_US),
                        latest.last_nis,
                        static_cast<unsigned long>(latest.accepted_updates),
                        static_cast<unsigned long>(latest.rejected_updates),
