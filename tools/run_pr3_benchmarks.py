@@ -167,7 +167,7 @@ def main():
                                 "startup_knowledge": startup,
                                 "startup_gyro_bias_calibration": "ON" if calibration else "OFF",
                                 "runtime_aid": aid,
-                                "evaluated_estimators": ["eskf_conservative", "eskf_legacy", "eskf_confirmed_only"],
+                                "evaluated_estimators": ["eskf_conservative", "eskf_legacy", "eskf_confirmed_only", "mahony", "gyro_only"],
                             }
                             config_sha = hashlib.sha256(json.dumps(config, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
                             trial_path = build_dir / "trial.csv"

@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cstring>
 #include <fstream>
+#include <iomanip>
 #include <limits>
 #include <string>
 #include <vector>
@@ -44,6 +45,51 @@ struct Run {
     Eskf15 filter;
     TrialMetrics metrics{};
     bool first_covariance_failure_written=false;
+};
+struct AttitudeBaseline {
+    const char* name;
+    bool mahony;
+    Quat orientation{};
+    Vec3 gyro_bias{},gyro_bias_sum{};
+    std::uint32_t calibration_samples=0;
+    std::uint64_t last_us=0;
+    TrialMetrics metrics{};
+    explicit AttitudeBaseline(const char* estimator,bool use_accel):name(estimator),mahony(use_accel){}
+    bool process(const InputRecord& sample,bool static_knowledge,bool startup_calibration,
+                 bool heading_available,const char* aid) {
+        if(startup_calibration&&static_knowledge) {
+            gyro_bias_sum=gyro_bias_sum+sample.gyro;
+            ++calibration_samples;
+            gyro_bias=gyro_bias_sum*(1.0f/static_cast<float>(calibration_samples));
+        }
+        if(last_us==0) {last_us=sample.reported_us;return false;}
+        if(sample.reported_us<=last_us)return false;
+        const float dt=static_cast<float>(sample.reported_us-last_us)*1e-6f;
+        last_us=sample.reported_us;
+        if(!(dt>0.0f)||dt>0.025f)return false;
+        Vec3 rate=sample.gyro-gyro_bias;
+        if(mahony) {
+            const float norm=sample.accel.norm();
+            if(norm>1e-4f) {
+                const Vec3 measured=sample.accel*(1.0f/norm);
+                const Vec3 predicted=orientation.unrotate({0,0,1});
+                const Vec3 error=cross(measured,predicted);
+                rate=rate+error;
+                if(!startup_calibration)gyro_bias=gyro_bias-error*(0.05f*dt);
+            }
+        }
+        orientation=orientation*Quat::exp(rate*dt);
+        orientation.normalize();
+        if(heading_available&&std::strcmp(aid,"NONE")!=0) {
+            const float heading=std::strcmp(aid,"INDEPENDENT_MEASUREMENT")==0
+                ?sample.independent_heading:sample.oracle_heading;
+            const float correction=0.25f*wrap_pi(heading-orientation.yaw());
+            orientation=Quat::exp({0,0,correction})*orientation;
+            orientation.normalize();
+        }
+        return std::isfinite(orientation.w)&&std::isfinite(orientation.x)
+            &&std::isfinite(orientation.y)&&std::isfinite(orientation.z);
+    }
 };
 
 void read_u32(std::istream& in,std::uint32_t& value) {
@@ -106,6 +152,9 @@ float percentile(std::vector<float> values,float p) {
 }
 float rms(double sum,std::uint32_t n) {return n?static_cast<float>(std::sqrt(sum/n)):NAN;}
 void csv_float(std::ostream& out,float x) {if(std::isfinite(x))out<<x;}
+void csv_double(std::ostream& out,double x) {
+    if(std::isfinite(x)) out<<std::scientific<<std::setprecision(17)<<x<<std::defaultfloat<<std::setprecision(8);
+}
 const char* policy_name(GravityPolicy p) {
     switch(p){case GravityPolicy::Conservative:return "eskf_conservative";case GravityPolicy::LegacyHeuristic:return "eskf_legacy";case GravityPolicy::ConfirmedOnly:return "eskf_confirmed_only";}
     return "unknown";
@@ -114,13 +163,13 @@ const char* health_name(Health h) {
     switch(h){case Health::Aligning:return "Aligning";case Health::Nominal:return "Nominal";case Health::Degraded:return "Degraded";case Health::Fault:return "Fault";}
     return "Unknown";
 }
-bool cholesky_failure(const Eskf15& filter,int& failed_pivot,float& pivot_value) {
-    float L[kDim][kDim]={};
+bool cholesky_failure(const Eskf15& filter,int& failed_pivot,double& pivot_value) {
+    double L[kDim][kDim]={};
     for(int i=0;i<kDim;i++) for(int j=0;j<=i;j++) {
-        float value=filter.covariance(i,j);
+        double value=filter.covariance(i,j);
         for(int k=0;k<j;k++) value-=L[i][k]*L[j][k];
         if(i==j) {
-            if(!std::isfinite(value)||value<=1e-12f) {
+            if(!std::isfinite(value)||value<=0.0) {
                 failed_pivot=i;pivot_value=value;return true;
             }
             L[i][j]=std::sqrt(value);
@@ -133,21 +182,21 @@ void write_covariance_header(std::ostream& out) {
     for(int i=0;i<kDim;i++)for(int j=0;j<kDim;j++)out<<",P_"<<i<<'_'<<j;
     out<<'\n';
 }
-void copy_covariance(const Eskf15& filter,float* covariance) {
+void copy_covariance(const Eskf15& filter,double* covariance) {
     for(int i=0;i<kDim;i++)for(int j=0;j<kDim;j++)covariance[i*kDim+j]=filter.covariance(i,j);
 }
 void write_covariance_values(std::ostream& out,const Run& run,const InputRecord& sample,
-                             const char* stage,const float* covariance,int failed_pivot,float pivot_value) {
+                             const char* stage,const double* covariance,int failed_pivot,double pivot_value) {
     out<<policy_name(run.policy)<<','<<sample.index<<','<<stage<<','<<failed_pivot<<',';
-    csv_float(out,pivot_value);
-    for(int i=0;i<kDim;i++)for(int j=0;j<kDim;j++) {out<<',';csv_float(out,covariance[i*kDim+j]);}
+    csv_double(out,pivot_value);
+    for(int i=0;i<kDim;i++)for(int j=0;j<kDim;j++) {out<<',';csv_double(out,covariance[i*kDim+j]);}
     out<<'\n';
 }
 void write_covariance_snapshot(std::ostream& out,const Run& run,const InputRecord& sample,
                                const char* stage,const Eskf15& filter) {
-    float covariance[kDim*kDim];
+    double covariance[kDim*kDim];
     copy_covariance(filter,covariance);
-    int failed_pivot=-1;float pivot_value=NAN;
+    int failed_pivot=-1;double pivot_value=NAN;
     cholesky_failure(filter,failed_pivot,pivot_value);
     write_covariance_values(out,run,sample,stage,covariance,failed_pivot,pivot_value);
 }
@@ -157,8 +206,8 @@ void write_sample_trace(std::ostream& out,const InputRecord& sample,int rate,con
                         std::uint32_t rejected_delta,float nis_after_process,float nis_after_heading,
                         Health health_before,Health health_after_process,bool covariance_before,
                         bool covariance_after_process,bool covariance_after_heading,
-                        int process_failed_pivot,float process_failed_pivot_value,
-                        int heading_failed_pivot,float heading_failed_pivot_value) {
+                        int process_failed_pivot,double process_failed_pivot_value,
+                        int heading_failed_pivot,double heading_failed_pivot_value) {
     const State& state=run.filter.state();
     out<<sample.index<<','<<static_cast<double>(sample.index)/rate<<','<<sample.reported_us<<','<<sample.physical_us<<','
        <<policy_name(run.policy)<<','<<(evaluation_sample?"true":"false")<<','<<(propagated?"true":"false")<<','
@@ -168,14 +217,14 @@ void write_sample_trace(std::ostream& out,const InputRecord& sample,int rate,con
        <<health_name(health_before)<<','<<health_name(health_after_process)<<','<<health_name(run.filter.health())<<','
        <<(covariance_before?"true":"false")<<','<<(covariance_after_process?"true":"false")<<','
        <<(covariance_after_heading?"true":"false")<<','<<process_failed_pivot<<',';
-    csv_float(out,process_failed_pivot_value);out<<','<<heading_failed_pivot<<',';
-    csv_float(out,heading_failed_pivot_value);out<<','<<(run.filter.control_state_valid()?"true":"false")<<',';
+    csv_double(out,process_failed_pivot_value);out<<','<<heading_failed_pivot<<',';
+    csv_double(out,heading_failed_pivot_value);out<<','<<(run.filter.control_state_valid()?"true":"false")<<',';
     const float state_values[]={state.position.x,state.position.y,state.position.z,state.velocity.x,state.velocity.y,state.velocity.z,
         state.orientation.w,state.orientation.x,state.orientation.y,state.orientation.z,
         state.accel_bias.x,state.accel_bias.y,state.accel_bias.z,state.gyro_bias.x,state.gyro_bias.y,state.gyro_bias.z};
     for(float value:state_values){csv_float(out,value);out<<',';}
-    for(int i=0;i<3;i++)for(int j=0;j<3;j++){csv_float(out,run.filter.covariance(6+i,6+j));out<<',';}
-    for(int i=0;i<3;i++)for(int j=0;j<3;j++){csv_float(out,run.filter.covariance(6+i,9+j));if(i!=2||j!=2)out<<',';}
+    for(int i=0;i<3;i++)for(int j=0;j<3;j++){csv_double(out,run.filter.covariance(6+i,6+j));out<<',';}
+    for(int i=0;i<3;i++)for(int j=0;j<3;j++){csv_double(out,run.filter.covariance(6+i,9+j));if(i!=2||j!=2)out<<',';}
     out<<'\n';
 }
 
@@ -213,6 +262,7 @@ int evaluate(const char* input,const char* output,const char* split,const char* 
     if(!seed_ok) {std::fputs("input seed is outside the declared split\n",stderr);return 3;}
     if(count!=static_cast<std::uint32_t>(rate*static_cast<int>(kDurationS))) {std::fputs("sample count mismatches duration/rate\n",stderr);return 3;}
     std::array<Run,3> runs{{Run(GravityPolicy::Conservative),Run(GravityPolicy::LegacyHeuristic),Run(GravityPolicy::ConfirmedOnly)}};
+    std::array<AttitudeBaseline,2> baselines{{AttitudeBaseline("mahony",true),AttitudeBaseline("gyro_only",false)}};
     for(Run& run:runs) {
         Settings cfg{};cfg.accel_noise=static_cast<float>(kAccelDensity);cfg.gyro_noise=static_cast<float>(kGyroDensity);
         cfg.accel_bias_walk=static_cast<float>(kAccelWalk);cfg.gyro_bias_walk=static_cast<float>(kGyroWalk);
@@ -246,12 +296,13 @@ int evaluate(const char* input,const char* output,const char* split,const char* 
         const double nominal_t=static_cast<double>(s.index)/rate;
         const bool in_eval=nominal_t>=2.0 && nominal_t<=kDurationS;
         const double physical_t=static_cast<double>(s.physical_us-kEpochUs)*1e-6;
+        const bool heading_available=(s.flags&1u)!=0;
         for(unsigned r=0;r<runs.size();r++) {
             Run& run=runs[r];
             const bool trace_enabled=sample_trace.is_open();
             const bool static_knowledge=std::strcmp(startup,"UNKNOWN")!=0;
             run.filter.set_external_stationary_confirmed(static_knowledge && physical_t<2.0);
-            std::array<float,kDim*kDim> covariance_before_values{};
+            std::array<double,kDim*kDim> covariance_before_values{};
             if(trace_enabled) copy_covariance(run.filter,covariance_before_values.data());
             const bool covariance_before=!trace_enabled || run.filter.covariance_positive_definite();
             const Health health_before=run.filter.health();
@@ -262,10 +313,10 @@ int evaluate(const char* input,const char* output,const char* split,const char* 
             const auto reset_before=run.filter.reset_required();
             const Imu imu{s.reported_us,s.accel,s.gyro};
             const bool propagated=run.filter.process(imu);
-            int process_failed_pivot=-1;float process_failed_pivot_value=NAN;
+            int process_failed_pivot=-1;double process_failed_pivot_value=NAN;
             const bool covariance_after_process=!trace_enabled ||
                 !cholesky_failure(run.filter,process_failed_pivot,process_failed_pivot_value);
-            std::array<float,kDim*kDim> covariance_after_process_values{};
+            std::array<double,kDim*kDim> covariance_after_process_values{};
             if(trace_enabled) copy_covariance(run.filter,covariance_after_process_values.data());
             const Health health_after_process=run.filter.health();
             const float nis_after_process=run.filter.last_nis();
@@ -274,7 +325,6 @@ int evaluate(const char* input,const char* output,const char* split,const char* 
                 write_covariance_snapshot(covariance_trace,run,s,covariance_before?"process":"preexisting",run.filter);
                 run.first_covariance_failure_written=true;
             }
-            const bool heading_available=(s.flags&1u)!=0;
             const bool heading_attempted=heading_available && std::strcmp(aid,"NONE")!=0;
             bool aid_accepted=false;
             if(heading_attempted) {
@@ -282,7 +332,7 @@ int evaluate(const char* input,const char* output,const char* split,const char* 
                 aid_accepted=run.filter.update_heading_at({s.reported_us,kHeadingSource,0},heading,
                     static_cast<float>(kIndependentHeadingSigma));
             }
-            int heading_failed_pivot=-1;float heading_failed_pivot_value=NAN;
+            int heading_failed_pivot=-1;double heading_failed_pivot_value=NAN;
             const bool covariance_after_heading=!trace_enabled ||
                 !cholesky_failure(run.filter,heading_failed_pivot,heading_failed_pivot_value);
             if(trace_enabled && !run.first_covariance_failure_written && !covariance_after_heading) {
@@ -342,11 +392,31 @@ int evaluate(const char* input,const char* output,const char* split,const char* 
                 }
             }
         }
+        for(AttitudeBaseline& baseline:baselines) {
+            const bool propagated=baseline.process(s,std::strcmp(startup,"UNKNOWN")!=0&&physical_t<2.0,
+                startup_calibration,heading_available,aid);
+            if(!in_eval)continue;
+            TrialMetrics& m=baseline.metrics;++m.expected;
+            if(propagated)++m.produced;
+            if(std::isfinite(baseline.orientation.w)&&std::isfinite(baseline.orientation.x)
+                &&std::isfinite(baseline.orientation.y)&&std::isfinite(baseline.orientation.z)) {
+                ++m.valid;++m.control_valid;
+                const float tilt=tilt_error_deg(baseline.orientation,s.truth_q);
+                const float attitude=attitude_error_deg(baseline.orientation,s.truth_q);
+                const float yaw=wrap_pi(baseline.orientation.yaw()-s.truth_q.yaw())*180.0f/kPi;
+                if(std::isfinite(tilt)&&std::isfinite(attitude)&&std::isfinite(yaw)) {
+                    m.tilt.push_back(tilt);m.attitude.push_back(attitude);m.yaw_abs.push_back(std::fabs(yaw));
+                    m.tilt_sq+=tilt*tilt;m.attitude_sq+=attitude*attitude;m.yaw_sq+=yaw*yaw;
+                    m.gyro_bias_error=(baseline.gyro_bias-s.truth_bg).norm();
+                } else {--m.valid;--m.control_valid;}
+            }
+            if(heading_available&&std::strcmp(aid,"NONE")!=0)++m.aid_accepted;
+        }
         previous_reported=s.reported_us;
         previous_physical=s.physical_us;
     }
     if(in.peek()!=std::char_traits<char>::eof()) {std::fputs("trailing bytes after declared PR3 input records\n",stderr);return 3;}
-    out<<"protocol_version,protocol_sha256,input_sha256,config_sha256,commit_sha,scenario,rate_mode,stress_mode,seed_split,seed,sensor_input,startup_knowledge,startup_gyro_bias_calibration,runtime_aid,estimator,expected,produced,valid,missing,unavailable,unavailable_duration_s,recovery_time_s,recovery_time_reason,stale,control_valid,covariance_valid,faults,resets,rejected,aid_accepted,aid_rejected,availability,tilt_rms_deg,tilt_p95_deg,tilt_max_deg,attitude_rms_deg,yaw_rms_deg,position_rms_m,velocity_rms_m_s,accel_bias_error_m_s2,gyro_bias_error_rad_s,tilt_nees_mean,tilt_nees_count,tilt_nees_coverage95,nis_mean,nis_count,max_state_age_us,health_end,complete_run,pr2_gate_status\n";
+    out<<"protocol_version,protocol_sha256,input_sha256,config_sha256,commit_sha,scenario,rate_mode,stress_mode,seed_split,seed,sensor_input,startup_knowledge,startup_gyro_bias_calibration,runtime_aid,estimator,expected,produced,valid,missing,unavailable,unavailable_duration_s,recovery_time_s,recovery_time_reason,stale,control_valid,covariance_valid,faults,resets,rejected,aid_accepted,aid_rejected,availability,tilt_rms_deg,tilt_p95_deg,tilt_max_deg,attitude_rms_deg,yaw_rms_deg,position_rms_m,velocity_rms_m_s,accel_bias_error_m_s2,gyro_bias_error_rad_s,tilt_nees_mean,tilt_nees_count,tilt_nees_coverage95,nis_mean,nis_count,max_state_age_us,health_end,complete_run,covariance_applicable,navigation_applicable,pr2_gate_status\n";
     out.setf(std::ios::fixed);out.precision(8);
     for(Run& run:runs) {
         TrialMetrics& m=run.metrics;
@@ -366,7 +436,16 @@ int evaluate(const char* input,const char* output,const char* split,const char* 
         out<<',';
         if(m.nis_count) out<<m.nis_sum/m.nis_count;
         out<<','<<m.nis_count<<','<<m.max_state_age_us<<','<<health<<','
-           <<(m.expected==m.produced&&m.valid==m.expected&&m.covariance_valid==m.expected?"true":"false")<<",OPEN\n";
+           <<(m.expected==m.produced&&m.valid==m.expected&&m.covariance_valid==m.expected?"true":"false")<<",true,true,OPEN\n";
+    }
+    for(AttitudeBaseline& baseline:baselines) {
+        TrialMetrics& m=baseline.metrics;
+        const std::uint32_t missing=m.expected-m.produced,unavailable=m.expected-m.valid;
+        out<<kProtocolVersion<<','<<kProtocolSha256<<','<<input_sha<<','<<config_sha<<','<<commit_sha<<','<<kScenarioIds[scenario]<<','<<kRateIds[rate_mode]<<','<<(stress?"stress":"nominal")<<','<<split<<','<<seed<<','<<sensor_input<<','<<startup<<','<<(startup_calibration?"ON":"OFF")<<','<<aid<<','<<baseline.name<<','<<m.expected<<','<<m.produced<<','<<m.valid<<','<<missing<<','<<unavailable<<','<<static_cast<double>(unavailable)/rate<<",,"<<(unavailable?"not_recovered_by_end":"no_unavailability")<<",0,"<<m.control_valid<<",0,0,0,0,"<<m.aid_accepted<<",0,";
+        csv_float(out,m.expected?static_cast<float>(m.valid)/m.expected:NAN);out<<',';
+        csv_float(out,rms(m.tilt_sq,m.valid));out<<',';csv_float(out,percentile(m.tilt,0.95f));out<<',';csv_float(out,m.tilt.empty()?NAN:*std::max_element(m.tilt.begin(),m.tilt.end()));out<<',';
+        csv_float(out,rms(m.attitude_sq,m.valid));out<<',';csv_float(out,rms(m.yaw_sq,m.valid));out<<",,,,";
+        csv_float(out,m.gyro_bias_error);out<<",,0,,,0,0,NOT_PROVIDED,"<<(m.expected==m.produced&&m.valid==m.expected?"true":"false")<<",false,false,OPEN\n";
     }
     if(!out || (sample_trace.is_open() && (!sample_trace || !covariance_trace))) return 4;
     return 0;

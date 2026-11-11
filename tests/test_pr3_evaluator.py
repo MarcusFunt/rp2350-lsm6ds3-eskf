@@ -36,15 +36,23 @@ class Pr3EvaluatorTests(unittest.TestCase):
             self.assertEqual(evaluated.returncode, 0, evaluated.stdout + evaluated.stderr)
             with output.open(newline="", encoding="utf-8") as stream:
                 rows = list(csv.DictReader(stream))
-            self.assertEqual([row["estimator"] for row in rows], ["eskf_conservative", "eskf_legacy", "eskf_confirmed_only"])
+            self.assertEqual([row["estimator"] for row in rows], ["eskf_conservative", "eskf_legacy", "eskf_confirmed_only", "mahony", "gyro_only"])
             for row in rows:
                 self.assertEqual(row["input_sha256"], input_sha)
                 self.assertEqual(row["expected"], "2801")
                 self.assertEqual(row["produced"], row["expected"])
                 self.assertEqual(row["missing"], "0")
                 self.assertEqual(row["control_valid"], row["expected"])
-                self.assertEqual(row["tilt_nees_count"], row["valid"])
                 self.assertEqual(row["pr2_gate_status"], "OPEN")
+                if row["estimator"].startswith("eskf_"):
+                    self.assertEqual(row["covariance_applicable"], "true")
+                    self.assertEqual(row["navigation_applicable"], "true")
+                    self.assertEqual(row["tilt_nees_count"], row["valid"])
+                else:
+                    self.assertEqual(row["covariance_applicable"], "false")
+                    self.assertEqual(row["navigation_applicable"], "false")
+                    self.assertEqual(row["tilt_nees_count"], "0")
+                    self.assertEqual(row["tilt_nees_mean"], "")
 
     def test_unverified_startup_calibration_mode_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -91,6 +99,40 @@ class Pr3EvaluatorTests(unittest.TestCase):
                 confirmed["expected"],
                 "development seed 4001 slow_yaw loses covariance positive-definiteness in ConfirmedOnly",
             )
+
+    def test_covariance_stays_positive_in_static_maneuver_and_jitter_edges(self):
+        cases = (("static", "4013"), ("maneuver", "4002"), ("timing_jitter", "4001"))
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for scenario, seed in cases:
+                with self.subTest(scenario=scenario, seed=seed):
+                    samples = root / f"{scenario}_{seed}.bin"
+                    generated = subprocess.run(
+                        [GENERATOR, str(samples), "development", scenario, "1", "nominal", seed],
+                        text=True,
+                        capture_output=True,
+                        check=False,
+                    )
+                    self.assertEqual(generated.returncode, 0, generated.stdout + generated.stderr)
+                    input_sha = hashlib.sha256(samples.read_bytes()).hexdigest()
+                    output = root / f"{scenario}_{seed}.csv"
+                    evaluated = subprocess.run(
+                        [EVALUATOR, str(samples), str(output), "development", "IMU_ONLY", "UNKNOWN", "0", "NONE",
+                         "a" * 40, "b" * 64, input_sha],
+                        text=True,
+                        capture_output=True,
+                        check=False,
+                    )
+                    self.assertEqual(evaluated.returncode, 0, evaluated.stdout + evaluated.stderr)
+                    with output.open(newline="", encoding="utf-8") as stream:
+                        rows = list(csv.DictReader(stream))
+                    self.assertEqual(len(rows), 5)
+                    for row in rows[:3]:
+                        self.assertEqual(
+                            row["covariance_valid"],
+                            row["expected"],
+                            f"{scenario} seed {seed} regressed covariance positive-definiteness in {row['estimator']}",
+                        )
 
     def test_sample_trace_records_covariance_without_false_failure(self):
         with tempfile.TemporaryDirectory() as directory:

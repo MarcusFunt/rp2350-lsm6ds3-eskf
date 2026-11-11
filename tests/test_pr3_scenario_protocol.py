@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v2.json"
 PROTOCOL_V3 = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v3.json"
 PROTOCOL_V4 = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v4.json"
+PROTOCOL_V5 = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v5.json"
 VALIDATOR = ROOT / "tools" / "validate_pr3_scenario_protocol.py"
 
 
@@ -173,6 +174,29 @@ class Pr3ScenarioProtocolTests(unittest.TestCase):
         self.assertEqual(document["seeds"]["final_confirmation"]["first_seed"], 8001)
         self.assertEqual(document["scenarios"], old["scenarios"])
         self.assertEqual(document["noise_model"], old["noise_model"])
+
+    def test_protocol_v5_allocates_new_disjoint_acceptance_seeds(self):
+        document = json.loads(PROTOCOL_V5.read_text(encoding="utf-8"))
+        old = json.loads(PROTOCOL_V4.read_text(encoding="utf-8"))
+        result = subprocess.run(
+            [sys.executable, str(VALIDATOR), str(PROTOCOL_V5)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(document["protocol_version"], 5)
+        self.assertEqual(document["supersedes_protocol_version"], 4)
+        self.assertEqual(document["seeds"]["development"], old["seeds"]["development"])
+        self.assertEqual(document["seeds"]["held_out"]["first_seed"], 9001)
+        self.assertEqual(document["seeds"]["held_out"]["last_seed"], 9100)
+        self.assertEqual(document["seeds"]["final_confirmation"]["first_seed"], 10001)
+        self.assertEqual(document["seeds"]["final_confirmation"]["last_seed"], 10100)
+        self.assertEqual(document["scenarios"], old["scenarios"])
+        self.assertEqual(document["noise_model"], old["noise_model"])
+        self.assertIn("gravity_rule", document["reference_estimator_definitions"]["mahony"])
+        self.assertIn("propagation", document["reference_estimator_definitions"]["gyro_only"])
 
 
 if __name__ == "__main__":

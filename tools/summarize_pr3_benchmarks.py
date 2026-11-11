@@ -54,7 +54,7 @@ def box_svg(groups, destination):
     left, top, plot_w, plot_h = 90, 70, 1010, 440
     maximum = max((max(values) for values in groups.values() if values), default=1.0)
     maximum = max(1.0, math.ceil(maximum / 5.0) * 5.0)
-    colors = {"eskf_conservative": "#2563eb", "eskf_legacy": "#dc2626", "eskf_confirmed_only": "#059669"}
+    colors = {"eskf_conservative": "#2563eb", "eskf_legacy": "#dc2626", "eskf_confirmed_only": "#059669", "mahony": "#7c3aed", "gyro_only": "#d97706"}
     scenarios = sorted({key[0] for key in groups})
     models = list(colors)
     def y(value):
@@ -148,6 +148,8 @@ def summarize(input_path, output_dir):
             "scenario": key[0], "rate_mode": key[1], "stress_mode": key[2], "sensor_input": key[3],
             "startup_knowledge": key[4], "startup_gyro_bias_calibration": key[5], "runtime_aid": key[6],
             "estimator": estimator, "trial_count": len(values), "finite_metric_count": len(finite_values),
+            "covariance_applicable": trial_rows[0].get("covariance_applicable", "true").lower() == "true",
+            "navigation_applicable": trial_rows[0].get("navigation_applicable", "true").lower() == "true",
             "complete_count": sum(r["complete_run"].lower() == "true" for r in trial_rows),
             "availability_mean": statistics.fmean(float(r["availability"]) for r in trial_rows),
             "metric_distributions": metric_distributions,
@@ -160,7 +162,8 @@ def summarize(input_path, output_dir):
     for row in rows:
         key = (row["scenario"], row["rate_mode"], row["stress_mode"], row["seed"], row["sensor_input"], row["startup_knowledge"], row["startup_gyro_bias_calibration"], row["runtime_aid"])
         pair_keys[key][row["estimator"]] = row
-    model_pairs = (("eskf_conservative", "eskf_legacy"), ("eskf_conservative", "eskf_confirmed_only"), ("eskf_legacy", "eskf_confirmed_only"))
+    model_names = ("eskf_conservative", "eskf_legacy", "eskf_confirmed_only", "mahony", "gyro_only")
+    model_pairs = tuple((model_names[i], model_names[j]) for i in range(len(model_names)) for j in range(i + 1, len(model_names)))
     for left, right in model_pairs:
         grouped = defaultdict(list)
         mismatches = 0
@@ -195,7 +198,7 @@ def summarize(input_path, output_dir):
         "incomplete_or_failed_trials": failures,
         "pr2_gate_status": "OPEN",
         "pr3_gate_status": "OPEN" if failures or minimum_seed_count < 100 else "OPEN_INDEPENDENT_REVIEW_REQUIRED",
-        "limitations": ["Synthetic host inputs only; no physical sensor or RP2350 performance claims.", "This evaluator currently runs the three ESKF gravity policies; Mahony and gyro-only protocol variants remain NOT_RUN.", "Tilt NEES and gravity NIS are consistency diagnostics because simulator truth, propagated IMU and gravity pseudo-measurements are not fully independent."],
+        "limitations": ["Synthetic host inputs only; no physical sensor or RP2350 performance claims.", "Mahony and gyro-only are attitude-only reference estimators; navigation states, covariance, and NEES/NIS are not applicable and are explicitly marked.", "The reference Mahony uses fixed proportional and integral gains of 1.0 and 0.05; its heading correction gain is fixed at 0.25. These comparison baselines are not tuned products.", "Tilt NEES and gravity NIS are consistency diagnostics because simulator truth, propagated IMU and gravity pseudo-measurements are not fully independent."],
     }
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "pr3_summary.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8")
