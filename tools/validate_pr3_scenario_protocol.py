@@ -31,6 +31,11 @@ class ProtocolValidationError(ValueError):
     pass
 
 
+def protocol_source_bytes(path):
+    """Return protocol source bytes with platform line endings normalized."""
+    return Path(path).read_bytes().replace(b"\r\n", b"\n")
+
+
 def _fail(message):
     raise ProtocolValidationError(message)
 

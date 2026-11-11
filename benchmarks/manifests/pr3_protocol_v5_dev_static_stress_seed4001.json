@@ -8,7 +8,7 @@
   "evaluator_source_sha256": "e44fa1eae87e377d7fa4edf47a11a4d28f7d8e9dfd3312ffbb7dc427aee22c3e",
   "header_codegen_source_sha256": "8b3124cfcd91fd512756906909449a0d5b515fd793c51efcb9e564a6bb70366b",
   "runner_source_sha256": "9dad54b6059d3730a83544e5057f6f1da0ff369d35da141ac1d38bb3a5897903",
-  "summarizer_source_sha256": "042e4f3f186680d63cddf2c1f20ca79cb20fda18534c40f5bccc1b9bec028ff9",
+  "summarizer_source_sha256": "00c1ab26f0db6b7df12471ef41060981b07eee695c7e698f810fddaba86b3afe",
   "compiler": "c++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
   "split": "development",
   "seed_range_inclusive": [
@@ -47,5 +47,7 @@
     "scope": "All 3 ESKF policies remain Aligning for all 3,328 samples; no state propagates and no covariance failure is recorded."
   },
   "reproduction_command": "python3 tools/run_pr3_benchmarks.py --protocol benchmarks/scenarios/pr3_scenarios_protocol_v5.json --split development --first-seed 4001 --last-seed 4001 --scenarios static --rate-modes uniform_208hz --stress-modes stress --profiles baseline --output-dir benchmarks/generated/pr3_protocol_v5_dev_static_stress_seed4001 --source-commit 3efd3f89e244e152364773fb26cfb0c5749dce3d --tree-dirty yes --sample-diagnostics",
-  "report_runner_source_sha256": "9dad54b6059d3730a83544e5057f6f1da0ff369d35da141ac1d38bb3a5897903"
+  "report_runner_source_sha256": "fc97b1a33348ed436165dc44e5baca7ad9b0a2394866579040d08af95015cb8d",
+  "report_codegen_source_sha256": "47b7104e5936200e13e04825527e1ba0dc8aeaf514632fce1475688f22b9e5e6",
+  "protocol_validator_source_sha256": "0c7c37d94fd56361aa5846298c0b4b3dd885a4d9ba57665aa05e65ce525819df"
 }

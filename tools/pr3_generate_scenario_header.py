@@ -6,7 +6,7 @@ import json
 import sys
 from pathlib import Path
 
-from validate_pr3_scenario_protocol import ProtocolValidationError, load_protocol
+from validate_pr3_scenario_protocol import ProtocolValidationError, load_protocol, protocol_source_bytes
 
 
 def _f(value):
@@ -168,7 +168,7 @@ def main(argv=None):
         return 2
     protocol_path, output_path = map(Path, args)
     try:
-        protocol_bytes = protocol_path.read_bytes()
+        protocol_bytes = protocol_source_bytes(protocol_path)
         document = load_protocol(protocol_path)
         rendered = generate(document, protocol_bytes)
     except (OSError, ProtocolValidationError) as error:

@@ -1773,21 +1773,21 @@
   "classification": "SYNTHETIC_HOST_SIMULATION_ONLY; NOT_HARDWARE_QUALIFICATION",
   "pr2_gate_status": "OPEN",
   "summary_csv_sha256": "942ed5c2aba3c7d79a00b6b7d68f1d377c8d553408598e9f8d3387a9666d9b16",
-  "summary_report_sha256": "15d470edfe2857cc52879e3f96ac091e31ce51008f7a8ddc04f97048a72666f2",
-  "figure_sha256": "4f35cc7ff30670963459db3ff7bf421858e12559da01a21b4d880e78f643a955",
+  "summary_report_sha256": "746fee00f953a45cbe0ab4ccd08f7075602b813097d7a10804384165e874c582",
+  "figure_sha256": "948ca3fc13cb76616f16186516b1e9cffda8bd2ae798ea1ab363ec05f5985a2b",
   "additional_figure_sha256": {
-    "pr3_protocol_v5_factor_pilot_dev4_yaw_rms.svg": "07d38ca5f1bb026147ea950db61708b1911189b23c14b9a53a9733f84b4daf12",
-    "pr3_protocol_v5_factor_pilot_dev4_availability.svg": "00f807d26ba8363eedf54fbd5d0d96200a3ee47695df8aa0caf7ef4baf675800",
-    "pr3_protocol_v5_factor_pilot_dev4_tilt_nees_mean.svg": "a23059a41ce17e056e769ff512650dfcf09beeb95df07c6ea49226a9f9477724",
-    "pr3_protocol_v5_factor_pilot_dev4_nis_mean.svg": "b37cd7ade3122e6318376a102a51da9459280e7c8edb35de5c0df96bfb5c8ab8"
+    "pr3_protocol_v5_factor_pilot_dev4_availability.svg": "0231844030dd3803049a3404ddd23187e78827b0dac4354b28d9ca5cad520334",
+    "pr3_protocol_v5_factor_pilot_dev4_nis_mean.svg": "eb754ee572c1982e55e9df531bfedcddbf7bb43e6bb56113adb71445be16ac65",
+    "pr3_protocol_v5_factor_pilot_dev4_tilt_nees_mean.svg": "19758c38e7899e6afc2618d4f5332ebe2bb715903da8d0bd37e2491ebfd589a2",
+    "pr3_protocol_v5_factor_pilot_dev4_yaw_rms.svg": "2644cea0a929d4cdf779002c235a8c5719e0c533b4fd7425076ccead570921d5"
   },
-  "summarizer_source_sha256": "042e4f3f186680d63cddf2c1f20ca79cb20fda18534c40f5bccc1b9bec028ff9",
+  "summarizer_source_sha256": "00c1ab26f0db6b7df12471ef41060981b07eee695c7e698f810fddaba86b3afe",
   "repository_figure_sha256": {
-    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_tilt_rms.svg": "4f35cc7ff30670963459db3ff7bf421858e12559da01a21b4d880e78f643a955",
-    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_yaw_rms.svg": "07d38ca5f1bb026147ea950db61708b1911189b23c14b9a53a9733f84b4daf12",
-    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_availability.svg": "00f807d26ba8363eedf54fbd5d0d96200a3ee47695df8aa0caf7ef4baf675800",
-    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_tilt_nees_mean.svg": "a23059a41ce17e056e769ff512650dfcf09beeb95df07c6ea49226a9f9477724",
-    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_nis_mean.svg": "b37cd7ade3122e6318376a102a51da9459280e7c8edb35de5c0df96bfb5c8ab8"
+    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_availability.svg": "0231844030dd3803049a3404ddd23187e78827b0dac4354b28d9ca5cad520334",
+    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_nis_mean.svg": "eb754ee572c1982e55e9df531bfedcddbf7bb43e6bb56113adb71445be16ac65",
+    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_tilt_nees_mean.svg": "19758c38e7899e6afc2618d4f5332ebe2bb715903da8d0bd37e2491ebfd589a2",
+    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_tilt_rms.svg": "948ca3fc13cb76616f16186516b1e9cffda8bd2ae798ea1ab363ec05f5985a2b",
+    "benchmarks/figures/pr3_protocol_v5_factor_pilot_dev4_yaw_rms.svg": "2644cea0a929d4cdf779002c235a8c5719e0c533b4fd7425076ccead570921d5"
   },
   "generated_output_directory": "benchmarks/generated/pr3_protocol_v5_factor_pilot_dev4",
   "reproduction_command": "python3 tools/run_pr3_benchmarks.py --protocol benchmarks/scenarios/pr3_scenarios_protocol_v5.json --split development --first-seed 4001 --last-seed 4004 --scenarios static,slow_yaw,lateral_accel,maneuver,vibration,timing_jitter,stop_start,compound_motion --rate-modes uniform_200hz,uniform_208hz,irregular_208hz --stress-modes nominal,stress --profiles baseline,heading_sensor,external_static,truth_static,startup_bias,independent_heading,oracle_heading --output-dir benchmarks/generated/pr3_protocol_v5_factor_pilot_dev4 --source-commit 3efd3f89e244e152364773fb26cfb0c5749dce3d --tree-dirty no --summary-source-label benchmarks/reports/pr3_protocol_v5_factor_pilot_dev4_trials.csv --figure-prefix pr3_protocol_v5_factor_pilot_dev4 --figure-path-prefix benchmarks/figures/",
@@ -1796,5 +1796,7 @@
   "figure_prefix": "pr3_protocol_v5_factor_pilot_dev4",
   "figure_path_prefix": "benchmarks/figures/",
   "runner_source_sha256": "7b3ee73d3018e5c322b70ae66775b3abb152b041bd33d7981af4ae2236c6df01",
-  "report_runner_source_sha256": "9dad54b6059d3730a83544e5057f6f1da0ff369d35da141ac1d38bb3a5897903"
+  "report_runner_source_sha256": "fc97b1a33348ed436165dc44e5baca7ad9b0a2394866579040d08af95015cb8d",
+  "report_codegen_source_sha256": "47b7104e5936200e13e04825527e1ba0dc8aeaf514632fce1475688f22b9e5e6",
+  "protocol_validator_source_sha256": "0c7c37d94fd56361aa5846298c0b4b3dd885a4d9ba57665aa05e65ce525819df"
 }
