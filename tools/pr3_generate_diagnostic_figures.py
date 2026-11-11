@@ -113,7 +113,7 @@ def render(series, output, title, ylabel, *, log10=False):
     elements.append(f'<text transform="translate(22 {top+plot_h/2:.1f}) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="13">{ylabel}</text>')
     elements.append('</svg>')
     Path(output).parent.mkdir(parents=True, exist_ok=True)
-    Path(output).write_text("\n".join(elements) + "\n", encoding="utf-8")
+    Path(output).write_text("\n".join(elements) + "\n", encoding="utf-8", newline="\n")
 
 
 def main():
@@ -165,7 +165,9 @@ def main():
         "diagnostic_plot_sha256": artifacts,
         "metric_note": "Tilt is the angle between estimated and true body-frame gravity vectors and is invariant to world yaw. Bias error uses truth from the paired shared input. Attitude covariance plot shows the largest diagonal element on a log scale.",
     }
-    (args.output_dir / "diagnostic_figures_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    (args.output_dir / "diagnostic_figures_manifest.json").write_text(
+        json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
     print(f"PASS generated {len(artifacts)} diagnostic figures from {args.trace}")
     return 0
 

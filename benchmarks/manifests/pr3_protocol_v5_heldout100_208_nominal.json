@@ -7236,15 +7236,15 @@
   "classification": "SYNTHETIC_HOST_SIMULATION_ONLY; NOT_HARDWARE_QUALIFICATION",
   "pr2_gate_status": "OPEN",
   "summary_csv_sha256": "bfbe1e3d89635992b080370e677e8e7e00b65025d08a843d3e5ee4a7a83a7083",
-  "summary_report_sha256": "fd818b5045a86ec5e39d0f89624e8a8311abeed5bb31da4d8a0bc363e69258e0",
-  "figure_sha256": "01e41bd3335b1b7bfc4c0cc82db6c24c84170206faff0ea2beb5224b9e119fdc",
-  "summarizer_source_sha256": "042e4f3f186680d63cddf2c1f20ca79cb20fda18534c40f5bccc1b9bec028ff9",
+  "summary_report_sha256": "5728f19d2e05cf74020af856a49d30549e8de5c8f1d228a3696db5798a00e33e",
+  "figure_sha256": "19528a8049346072f1cbb5748fb024b6eef57682fc51d84913d7b3a0379f86fd",
+  "summarizer_source_sha256": "00c1ab26f0db6b7df12471ef41060981b07eee695c7e698f810fddaba86b3afe",
   "repository_figure_sha256": {
-    "benchmarks/figures/pr3_protocol_v5_heldout100_208_nominal_tilt_rms.svg": "01e41bd3335b1b7bfc4c0cc82db6c24c84170206faff0ea2beb5224b9e119fdc",
-    "benchmarks/figures/pr3_protocol_v5_heldout100_208_nominal_yaw_rms.svg": "432202ed4a7f7e4181dd6cae5a739075e11aa015af3fc529b98a7d8a6659c9e2",
-    "benchmarks/figures/pr3_protocol_v5_heldout100_208_nominal_availability.svg": "ef59d689d18fea528a20aec4b38f0e98cbf5ab2668f8d0670607bc7e1d4cd6e4",
-    "benchmarks/figures/pr3_protocol_v5_heldout100_208_nominal_tilt_nees_mean.svg": "be80ee9a8c2f92aebdc7f3805b5a534629eb9afdb95a57e88f5d7e58a5afaead",
-    "benchmarks/figures/pr3_protocol_v5_heldout100_208_nominal_nis_mean.svg": "328d35fe35accf8f8ef89b27d02c1cb4f1de06ff6380c9ac90d8a0cf6f602c0c"
+    "benchmarks/figures/pr3_protocol_v5_heldout100_208_nominal_availability.svg": "06f8c1532b005398194c1749b2930d6bde00be52d5cc4a96b6c1954242240267",
+    "benchmarks/figures/pr3_protocol_v5_heldout100_208_nominal_nis_mean.svg": "2b786560ad4f8f92ed4b65da24986ffcc681cf98cb9bc061cca9f61cb8e80ab6",
+    "benchmarks/figures/pr3_protocol_v5_heldout100_208_nominal_tilt_nees_mean.svg": "17528ddaeac5a4b6e37bf21d4a603b4419a01357255e5281285215184943ec89",
+    "benchmarks/figures/pr3_protocol_v5_heldout100_208_nominal_tilt_rms.svg": "19528a8049346072f1cbb5748fb024b6eef57682fc51d84913d7b3a0379f86fd",
+    "benchmarks/figures/pr3_protocol_v5_heldout100_208_nominal_yaw_rms.svg": "9cd9ccbff1ddcb30eb42130eb756f77f8b4ac8a7e4ac7ec40060ab8da0b29c81"
   },
   "generated_output_directory": "benchmarks/generated/pr3_protocol_v5_heldout100_208_nominal",
   "reproduction_command": "python3 tools/run_pr3_benchmarks.py --protocol benchmarks/scenarios/pr3_scenarios_protocol_v5.json --split held_out --first-seed 9001 --last-seed 9100 --scenarios static,slow_yaw,lateral_accel,maneuver,vibration,timing_jitter,stop_start,compound_motion --rate-modes uniform_208hz --stress-modes nominal --profiles baseline --output-dir benchmarks/generated/pr3_protocol_v5_heldout100_208_nominal --source-commit 3efd3f89e244e152364773fb26cfb0c5749dce3d --tree-dirty no --summary-source-label benchmarks/reports/pr3_protocol_v5_heldout100_208_nominal_trials.csv --figure-prefix pr3_protocol_v5_heldout100_208_nominal --figure-path-prefix benchmarks/figures/",
@@ -7254,10 +7254,12 @@
   "figure_path_prefix": "benchmarks/figures/",
   "runner_source_sha256": "7b3ee73d3018e5c322b70ae66775b3abb152b041bd33d7981af4ae2236c6df01",
   "additional_figure_sha256": {
-    "pr3_protocol_v5_heldout100_208_nominal_yaw_rms.svg": "432202ed4a7f7e4181dd6cae5a739075e11aa015af3fc529b98a7d8a6659c9e2",
-    "pr3_protocol_v5_heldout100_208_nominal_availability.svg": "ef59d689d18fea528a20aec4b38f0e98cbf5ab2668f8d0670607bc7e1d4cd6e4",
-    "pr3_protocol_v5_heldout100_208_nominal_tilt_nees_mean.svg": "be80ee9a8c2f92aebdc7f3805b5a534629eb9afdb95a57e88f5d7e58a5afaead",
-    "pr3_protocol_v5_heldout100_208_nominal_nis_mean.svg": "328d35fe35accf8f8ef89b27d02c1cb4f1de06ff6380c9ac90d8a0cf6f602c0c"
+    "pr3_protocol_v5_heldout100_208_nominal_availability.svg": "06f8c1532b005398194c1749b2930d6bde00be52d5cc4a96b6c1954242240267",
+    "pr3_protocol_v5_heldout100_208_nominal_nis_mean.svg": "2b786560ad4f8f92ed4b65da24986ffcc681cf98cb9bc061cca9f61cb8e80ab6",
+    "pr3_protocol_v5_heldout100_208_nominal_tilt_nees_mean.svg": "17528ddaeac5a4b6e37bf21d4a603b4419a01357255e5281285215184943ec89",
+    "pr3_protocol_v5_heldout100_208_nominal_yaw_rms.svg": "9cd9ccbff1ddcb30eb42130eb756f77f8b4ac8a7e4ac7ec40060ab8da0b29c81"
   },
-  "report_runner_source_sha256": "9dad54b6059d3730a83544e5057f6f1da0ff369d35da141ac1d38bb3a5897903"
+  "report_runner_source_sha256": "fc97b1a33348ed436165dc44e5baca7ad9b0a2394866579040d08af95015cb8d",
+  "report_codegen_source_sha256": "47b7104e5936200e13e04825527e1ba0dc8aeaf514632fce1475688f22b9e5e6",
+  "protocol_validator_source_sha256": "0c7c37d94fd56361aa5846298c0b4b3dd885a4d9ba57665aa05e65ce525819df"
 }

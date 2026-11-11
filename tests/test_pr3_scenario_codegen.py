@@ -93,6 +93,26 @@ class Pr3ScenarioCodegenTests(unittest.TestCase):
             self.assertIn("kHeldOutFirstSeed = 9001", source)
             self.assertIn("kConfirmationFirstSeed = 10001", source)
 
+    def test_protocol_sha_is_stable_across_windows_line_endings(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            normalized = PROTOCOL_V5.read_bytes().replace(b"\r\n", b"\n")
+            lf_protocol = root / "v5-lf.json"
+            crlf_protocol = root / "v5-crlf.json"
+            lf_protocol.write_bytes(normalized)
+            crlf_protocol.write_bytes(normalized.replace(b"\n", b"\r\n"))
+            headers = [root / "lf.hpp", root / "crlf.hpp"]
+            for protocol, output in ((lf_protocol, headers[0]), (crlf_protocol, headers[1])):
+                result = subprocess.run(
+                    [sys.executable, str(CODEGEN), str(protocol), str(output)],
+                    cwd=ROOT,
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                )
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(headers[0].read_bytes(), headers[1].read_bytes())
+
 
 if __name__ == "__main__":
     unittest.main()
