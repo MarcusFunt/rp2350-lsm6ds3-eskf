@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v2.json"
 PROTOCOL_V3 = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v3.json"
+PROTOCOL_V4 = ROOT / "benchmarks" / "scenarios" / "pr3_scenarios_protocol_v4.json"
 VALIDATOR = ROOT / "tools" / "validate_pr3_scenario_protocol.py"
 
 
@@ -155,6 +156,23 @@ class Pr3ScenarioProtocolTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("FAIL protocol validation", result.stderr)
         self.assertNotIn("Traceback", result.stderr)
+
+    def test_protocol_v4_allocates_new_disjoint_acceptance_seeds(self):
+        document = json.loads(PROTOCOL_V4.read_text(encoding="utf-8"))
+        old = json.loads(PROTOCOL_V3.read_text(encoding="utf-8"))
+        result = subprocess.run(
+            [sys.executable, str(VALIDATOR), str(PROTOCOL_V4)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(document["seeds"]["development"], old["seeds"]["development"])
+        self.assertEqual(document["seeds"]["held_out"]["first_seed"], 7001)
+        self.assertEqual(document["seeds"]["final_confirmation"]["first_seed"], 8001)
+        self.assertEqual(document["scenarios"], old["scenarios"])
+        self.assertEqual(document["noise_model"], old["noise_model"])
 
 
 if __name__ == "__main__":

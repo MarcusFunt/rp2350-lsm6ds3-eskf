@@ -104,6 +104,9 @@ def summarize(input_path, output_dir):
     required = {"scenario", "rate_mode", "stress_mode", "seed", "estimator", "input_sha256", "config_sha256", "expected", "produced", "valid", "control_valid", "covariance_valid", "missing", "unavailable", "complete_run", "tilt_rms_deg", "pr2_gate_status"}
     if not rows or not required.issubset(rows[0]):
         raise ValueError(f"summary is empty or missing required columns: {sorted(required-set(rows[0] if rows else []))}")
+    protocol_versions = {int(row["protocol_version"]) for row in rows}
+    if len(protocol_versions) != 1:
+        raise ValueError(f"summary must contain one evaluation protocol version, got {sorted(protocol_versions)}")
 
     configs = defaultdict(list)
     output_groups = defaultdict(list)
@@ -182,7 +185,7 @@ def summarize(input_path, output_dir):
 
     minimum_seed_count = min((len(seeds) for seeds in seeds_by_group.values()), default=0)
     report = {
-        "report_protocol": "pr3_summary_v3",
+        "report_protocol": f"pr3_summary_v{next(iter(protocol_versions))}",
         "source_summary": str(input_path),
         "trial_row_count": len(rows),
         "input_stream_count": len({row["input_sha256"] for row in rows}),

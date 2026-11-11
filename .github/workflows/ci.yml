@@ -23,6 +23,7 @@ jobs:
           python3 tools/validate_pr3_scenario_protocol.py benchmarks/scenarios/pr3_scenarios_protocol_v1.json
           python3 tools/validate_pr3_scenario_protocol.py benchmarks/scenarios/pr3_scenarios_protocol_v2.json
           python3 tools/validate_pr3_scenario_protocol.py benchmarks/scenarios/pr3_scenarios_protocol_v3.json
+          python3 tools/validate_pr3_scenario_protocol.py benchmarks/scenarios/pr3_scenarios_protocol_v4.json
           python3 tests/test_pr3_scenario_codegen.py
           python3 tools/pr3_generate_scenario_header.py benchmarks/scenarios/pr3_scenarios_protocol_v3.json "$RUNNER_TEMP/pr3_scenario_protocol.hpp"
           c++ -std=c++17 -Wall -Wextra -Wpedantic -Werror -I"$RUNNER_TEMP" tests/test_pr3_protocol_runtime.cpp -o "$RUNNER_TEMP/test_pr3_protocol_runtime"

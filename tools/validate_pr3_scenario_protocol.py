@@ -133,8 +133,8 @@ def validate_protocol(document):
     if not isinstance(document, dict):
         _fail("protocol root must be an object")
     version = document.get("protocol_version")
-    if document.get("protocol") != "pr3_statistics_benchmarks" or version not in (1, 2, 3):
-        _fail("protocol identifier/version must be pr3_statistics_benchmarks/1, /2, or /3")
+    if document.get("protocol") != "pr3_statistics_benchmarks" or version not in (1, 2, 3, 4):
+        _fail("protocol identifier/version must be pr3_statistics_benchmarks/1, /2, /3, or /4")
     expected_status = "FROZEN_SPEC_READY" if version >= 2 else "FROZEN_SPEC_UNRUN"
     if document.get("status") != expected_status:
         _fail(f"protocol status must be {expected_status}")
@@ -147,6 +147,14 @@ def validate_protocol(document):
         or "2.0 seconds" not in document["protocol_revision_reason"]
     ):
         _fail("protocol v3 must identify v2 as superseded and explain the vibration startup correction")
+    if version == 4 and (
+        document.get("supersedes_protocol_version") != 3
+        or not isinstance(document.get("protocol_revision_reason"), str)
+        or "disjoint" not in document["protocol_revision_reason"].lower()
+        or "held-out" not in document["protocol_revision_reason"].lower()
+        or "confirmation" not in document["protocol_revision_reason"].lower()
+    ):
+        _fail("protocol v4 must preserve v3 definitions and explain disjoint held-out and confirmation seed ranges")
     if (
         not isinstance(document.get("base_commit"), str)
         or len(document["base_commit"]) != 40
