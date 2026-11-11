@@ -42,7 +42,7 @@ public:
         if (m.type==AidingType::VerifiedZeroRate ? m.frame!=AidingFrame::BodyFLU : m.frame!=AidingFrame::WorldENU)
             return AidingResult::WrongFrame;
         if (!filter.ready() || m.capture_us>filter.state_timestamp_us() ||
-            filter.state_timestamp_us()-m.capture_us>1000) return AidingResult::StaleOrFuture;
+            filter.state_timestamp_us()-m.capture_us>filter.max_aiding_age_us()) return AidingResult::StaleOrFuture;
         int slot=-1,free_slot=-1;
         for(int i=0;i<kSources;i++) {
             if (sources_[i]==m.source_id) slot=i;

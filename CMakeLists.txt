@@ -9,7 +9,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 pico_sdk_init()
 
-add_executable(rp2350_lsm6ds3_fusion main.cpp eskf15.hpp calibration.hpp aiding.hpp lsm6ds3_fifo.hpp binary_log.hpp)
+add_executable(rp2350_lsm6ds3_fusion main.cpp eskf15.hpp calibration.hpp aiding.hpp runtime_health.hpp lsm6ds3_fifo.hpp binary_log.hpp)
 pico_generate_pio_header(rp2350_lsm6ds3_fusion
     ${CMAKE_CURRENT_LIST_DIR}/drdy_period.pio)
 

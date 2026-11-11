@@ -51,3 +51,20 @@ PR4A is stacked on PR3 base `a9e58286eb320687ae53959052c466a5da18feaa`. It chang
 | DRDY-to-publication latency, queue peaks/drops, FIFO age | No board measurements | Telemetry counters are present; no physical capture | `BLOCKED_HARDWARE` |
 
 Pinned Pico SDK 2.2.0 CI run [42922199617](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42922199617) built the stacked PR4A merge commit `7984be8f55dd23453f0786933003bc414785936e` (PR4A head `610dfde6de4ded783414d81f17b67897ad28f64a`). `arm-none-eabi-size` reports the values above. At the same commit/configuration, FIFO adds 2,108 bytes of `text` and uses 12 fewer bytes of `bss` than direct-register; `text` includes read-only data in this tool output, so `.rodata` is not separately reported. The direct-register `.text` total is 1,152 bytes lower than the historical `c397fec` baseline, while `.bss` is 8 bytes higher; this is a cumulative stacked comparison and does not isolate PR4A. The workflow does not yet produce link maps or `-fstack-usage` output. No host binary size is substituted. See [PR4A status](PR4A_STATUS.md) and [hardware validation](HARDWARE_VALIDATION.md).
+
+The preceding pinned PR3 CI run [42922194992](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42922194992) built stacked merge commit `f718113f31c25604f6d93b6c05c30e87e08792a8` and reported direct-register `77,884/0/25,552 B`. Comparing that run with PR4A's `77,940/0/25,560 B` gives a direct-register PR4A cumulative delta of `+56 B text`, `0 B data`, and `+8 B bss`. The CI run uses merge commits, but the feature head delta is the PR4A commit range. PR3 CI did not print FIFO or binary-FIFO sizes, so an isolated sub-PR delta for those variants is unavailable.
+
+## PR 4B status — calibration, aiding and runtime health
+
+PR4B is stacked on PR4A `fix/eskf-fifo-timing` at `26315b4732b920356c279137c057f4e88b148632`. It adds a fixed calibration serialization format, transform conditioning checks, aid-age alignment, per-component aid metadata and runtime freshness/availability flags. Resource numbers below are pending the PR4B pinned CI run; they must be compared to the PR4A values above after that run.
+
+| Configuration / metric | PR4A | PR4B | Status |
+|---|---:|---:|---|
+| Direct-register `.text/.data/.bss` | `77,940/0/25,560 B` | `78,948/0/25,568 B` | `PASS` pinned CI |
+| FIFO `.text/.data/.bss` | `80,048/0/25,548 B` | `81,080/0/25,556 B` | `PASS` pinned CI |
+| Binary FIFO `.text/.data/.bss` | `71,244/0/25,548 B` | `71,452/0/25,556 B` | `PASS` pinned CI |
+| Separate `.rodata`, linker maps and compiler stack-use files | Not recorded | Pending | `NOT_RECORDED` |
+| Heap/dynamic allocation audit | Not run | Not run | `NOT_RECORDED` |
+| Hardware latency, queue high-water and stack high-water | Not measured | Not measured | `BLOCKED_HARDWARE` |
+
+Pinned Pico SDK 2.2.0 run [42925544474](https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/actions/runs/42925544474) built stacked merge commit `a91abe5ec00028688afea554bad7d19be39f4d70` (PR4B head `5072de0bece33f4fafd62f9a1d76a1733d04b20`). Relative to PR4A, the direct/FIFO/binary `.text` deltas are `+1,008/+1,032/+208 B`; `.data` deltas are zero and `.bss` increases by 8 B for each. These are feature-branch cumulative deltas at the PR merge commits. Standard `size` aggregates read-only data into `text`; PR4C will emit section-level `.rodata`, map files and `-fstack-usage` evidence.

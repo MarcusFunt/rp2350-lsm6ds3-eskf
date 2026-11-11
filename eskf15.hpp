@@ -134,6 +134,11 @@ struct Settings {
 // Operational status only: alignment, continuity and numeric/input faults.
 // Nominal does not certify attitude accuracy, observability or control safety.
 enum class Health : uint8_t { Aligning=0, Nominal=1, Degraded=2, Fault=3 };
+// Accepted independent aiding dimensions; IMU-only yaw and absolute position
+// remain unobservable regardless of nominal estimator health.
+constexpr uint8_t kAidPosition=1u<<0;
+constexpr uint8_t kAidVelocity=1u<<1;
+constexpr uint8_t kAidHeading=1u<<2;
 
 struct AidingStamp {
     uint64_t timestamp_us=0;  // must match propagated state to within max_aiding_age_us
@@ -178,6 +183,7 @@ public:
         last_nis_gate_=NAN;
         last_accepted_aid_source_=0;
         last_accepted_aid_time_us_=0;
+        accepted_aid_mask_=0;
         samples_propagated_=0;
         for (int i=0;i<kDim;i++) for(int j=0;j<kDim;j++) P_[i][j]=0;
         for (int i=0;i<3;i++) {
@@ -384,14 +390,18 @@ public:
         float r[3]={pos.x-state_.position.x,pos.y-state_.position.y,pos.z-state_.position.z};
         float H[3][kDim]={};
         for(int i=0;i<3;i++) H[i][i]=1;
-        return update_external(stamp,r,H,3,sigma_m,16.0f);
+        const bool ok=update_external(stamp,r,H,3,sigma_m,16.0f);
+        if(ok) accepted_aid_mask_|=kAidPosition;
+        return ok;
     }
     bool update_velocity_world_at(AidingStamp stamp,Vec3 vel,float sigma_mps) {
         if (!aiding_time_ok(stamp) || !finite(vel) || !valid_sigma(sigma_mps)) return false;
         float r[3]={vel.x-state_.velocity.x,vel.y-state_.velocity.y,vel.z-state_.velocity.z};
         float H[3][kDim]={};
         for(int i=0;i<3;i++) H[i][3+i]=1;
-        return update_external(stamp,r,H,3,sigma_mps,16.0f);
+        const bool ok=update_external(stamp,r,H,3,sigma_mps,16.0f);
+        if(ok) accepted_aid_mask_|=kAidVelocity;
+        return ok;
     }
     // Expose the heading linearization used by the production update path.
     static bool heading_measurement_model(Quat q,float yaw_rad,
@@ -418,7 +428,9 @@ public:
         if (!aiding_time_ok(stamp) || !valid_sigma(sigma_rad)) return false;
         float residual[3],H[3][kDim];
         if(!heading_measurement_model(state_.orientation,yaw_rad,residual,H)) return false;
-        return update_external(stamp,residual,H,1,sigma_rad,9.0f);
+        const bool ok=update_external(stamp,residual,H,1,sigma_rad,9.0f);
+        if(ok) accepted_aid_mask_|=kAidHeading;
+        return ok;
     }
     bool update_zero_angular_rate_at(AidingStamp stamp,Vec3 gyro,float sigma=0.025f) {
         if (!aiding_time_ok(stamp) || !finite(gyro) || !valid_sigma(sigma)) return false;
@@ -453,6 +465,7 @@ public:
     uint32_t accepted_updates() const { return accepted_updates_; }
     uint32_t last_accepted_aid_source() const {return last_accepted_aid_source_;}
     uint64_t last_accepted_aid_timestamp_us() const {return last_accepted_aid_time_us_;}
+    uint8_t accepted_aid_mask() const {return accepted_aid_mask_;}
     uint32_t stale_aiding_updates() const { return stale_aiding_updates_; }
     uint32_t gap_count() const { return gap_count_; }
     uint32_t saturation_count() const { return saturation_count_; }
@@ -460,6 +473,7 @@ public:
     uint32_t samples_propagated() const { return samples_propagated_; }
     uint64_t state_timestamp_us() const { return state_time_us_; }
     uint64_t last_received_timestamp_us() const { return last_time_us_; }
+    uint64_t max_aiding_age_us() const { return config_.max_aiding_age_us; }
     Health health() const { return health_; }
     bool reset_required() const { return reset_required_; }
     // True means the state is initialized, current and not fault-latched.
@@ -862,6 +876,7 @@ private:
     float last_nis_=NAN,last_nis_gate_=NAN;
     uint32_t last_accepted_aid_source_=0;
     uint64_t last_accepted_aid_time_us_=0;
+    uint8_t accepted_aid_mask_=0;
     unsigned init_count_=0,init_verified_count_=0,init_accel_step_window_count_=0;
     Vec3 init_accel_sum_{},init_accel_step_window_sum_{},init_last_accel_step_window_mean_{};
     Vec3 init_gyro_sum_{},init_gyro_sq_sum_{};
