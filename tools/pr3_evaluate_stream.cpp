@@ -266,7 +266,7 @@ void write_gravity_summary_row(std::ostream& out,const Run& run,
        <<c.innovation_covariance_rejected<<','<<c.nis_rejected<<','<<c.nonfinite_correction_rejected<<'\n';
 }
 void write_gravity_trace_header(std::ostream& out) {
-    out<<"protocol_version,protocol_sha256,input_sha256,scenario,rate_mode,stress_mode,split,seed,estimator,sensor_input,startup_knowledge,startup_gyro_bias_calibration,runtime_aid,sample_index,nominal_time_s,physical_time_s,reported_timestamp_us,initialized,health,control_state_valid,accel_norm_m_s2,gyro_norm_rad_s,accel_step_m_s2,accel_norm_gate_pass,gyro_norm_gate_pass,accel_step_gate_pass,raw_candidate,consecutive_candidate_samples,stationary,external_stationary_confirmed,gravity_allowed,gravity_attempted,gravity_accepted,gravity_reason,gravity_innovation_angle_rad,gravity_effective_noise_sigma,gravity_nis,gravity_nis_gate,tilt_error_deg,accel_bias_x,accel_bias_y,accel_bias_z,accel_bias_error_m_s2,gyro_bias_x,gyro_bias_y,gyro_bias_z,gyro_bias_error_rad_s,tilt_cov_00,tilt_cov_01,tilt_cov_11,tilt_cov_trace,tilt_cov_eigen_min,tilt_cov_eigen_max\n";
+    out<<"protocol_version,protocol_sha256,input_sha256,scenario,rate_mode,stress_mode,split,seed,estimator,sensor_input,startup_knowledge,startup_gyro_bias_calibration,runtime_aid,sample_index,nominal_time_s,physical_time_s,reported_timestamp_us,initialized,health,control_state_valid,accel_norm_m_s2,gyro_norm_rad_s,accel_step_m_s2,accel_norm_gate_pass,gyro_norm_gate_pass,accel_step_gate_pass,raw_candidate,consecutive_candidate_samples,stationary,external_stationary_confirmed,gravity_allowed,gravity_attempted,gravity_accepted,gravity_reason,gravity_innovation_angle_rad,gravity_effective_noise_sigma,gravity_nis,gravity_nis_gate,tilt_error_deg,accel_bias_x,accel_bias_y,accel_bias_z,accel_bias_error_m_s2,gyro_bias_x,gyro_bias_y,gyro_bias_z,gyro_bias_error_rad_s,tilt_cov_00,tilt_cov_01,tilt_cov_11,tilt_cov_trace,tilt_cov_eigen_min,tilt_cov_eigen_max,tilt_nees_observable_2d,covariance_positive_definite\n";
 }
 void write_gravity_trace_row(std::ostream& out,const InputRecord& sample,int scenario,int rate_mode,
                              int rate,bool stress,const char* split,std::uint32_t seed,
@@ -309,7 +309,9 @@ void write_gravity_trace_row(std::ostream& out,const InputRecord& sample,int sce
     csv_float(out,state.accel_bias.x);out<<',';csv_float(out,state.accel_bias.y);out<<',';csv_float(out,state.accel_bias.z);out<<',';csv_float(out,accel_bias_error);out<<',';
     csv_float(out,state.gyro_bias.x);out<<',';csv_float(out,state.gyro_bias.y);out<<',';csv_float(out,state.gyro_bias.z);out<<',';csv_float(out,gyro_bias_error);out<<',';
     csv_double(out,c00);out<<',';csv_double(out,c01);out<<',';csv_double(out,c11);out<<',';
-    csv_double(out,trace);out<<',';csv_double(out,eigen_min);out<<',';csv_double(out,eigen_max);out<<'\n';
+    csv_double(out,trace);out<<',';csv_double(out,eigen_min);out<<',';csv_double(out,eigen_max);out<<',';
+    csv_double(out,tilt_nees(run.filter,sample.truth_q));out<<',';
+    out<<(run.filter.covariance_positive_definite()?"true":"false")<<'\n';
 }
 #endif
 bool cholesky_failure(const Eskf15& filter,int& failed_pivot,double& pivot_value) {
