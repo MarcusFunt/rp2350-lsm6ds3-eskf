@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf/external_benchmarks/schema/imu_trial_v1.schema.json",
+  "title": "External benchmark IMU trial v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "trial_id",
+    "source_id",
+    "source_artifact_sha256",
+    "sensor_set",
+    "timebase",
+    "frame_convention",
+    "units",
+    "sample_count",
+    "samples"
+  ],
+  "properties": {
+    "schema_id": {"const": "org.marcusfunt.external_benchmarks.imu_trial"},
+    "schema_version": {"const": 1},
+    "trial_id": {"type": "string", "minLength": 1},
+    "source_id": {"type": "string", "minLength": 1},
+    "source_artifact_sha256": {"$ref": "#/$defs/sha256"},
+    "sensor_set": {"enum": ["gyro_accel_6d", "gyro_accel_mag_9d"]},
+    "timebase": {"$ref": "#/$defs/timebase"},
+    "frame_convention": {"$ref": "#/$defs/input_frame_convention"},
+    "units": {"$ref": "#/$defs/units"},
+    "sample_count": {"type": "integer", "minimum": 1},
+    "samples": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/sample"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"sensor_set": {"const": "gyro_accel_6d"}}, "required": ["sensor_set"]},
+      "then": {
+        "properties": {
+          "units": {"not": {"required": ["magnetometer"]}},
+          "samples": {
+            "items": {
+              "properties": {
+                "aid": {
+                  "not": {
+                    "type": "object",
+                    "properties": {"kind": {"const": "magnetometer"}},
+                    "required": ["kind"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"sensor_set": {"const": "gyro_accel_mag_9d"}}, "required": ["sensor_set"]},
+      "then": {
+        "properties": {
+          "units": {"required": ["magnetometer"]},
+          "samples": {
+            "items": {
+              "required": ["aid"],
+              "properties": {
+                "aid": {
+                  "type": "object",
+                  "properties": {"kind": {"const": "magnetometer"}},
+                  "required": ["kind"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"timebase": {"properties": {"sampling_mode": {"const": "uniform"}}, "required": ["sampling_mode"]}}, "required": ["timebase"]},
+      "then": {"properties": {"timebase": {"properties": {"nominal_rate_hz": {"type": "object"}}}}}
+    },
+    {
+      "if": {"properties": {"timebase": {"properties": {"sampling_mode": {"const": "irregular"}}, "required": ["sampling_mode"]}}, "required": ["timebase"]},
+      "then": {"properties": {"timebase": {"properties": {"nominal_rate_hz": {"type": "null"}}}}}
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "vector3": {
+      "type": "array",
+      "items": {"type": "number"},
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "rate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["numerator", "denominator"],
+      "properties": {
+        "numerator": {"type": "integer", "minimum": 1},
+        "denominator": {"type": "integer", "minimum": 1}
+      }
+    },
+    "timebase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timestamp_unit", "sampling_mode", "nominal_rate_hz"],
+      "properties": {
+        "timestamp_unit": {"enum": ["ns", "us"]},
+        "sampling_mode": {"enum": ["uniform", "irregular"]},
+        "nominal_rate_hz": {"oneOf": [{"$ref": "#/$defs/rate"}, {"type": "null"}]}
+      }
+    },
+    "input_frame_convention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["body_frame", "world_frame", "gravity_world_mps2", "accelerometer_quantity"],
+      "properties": {
+        "body_frame": {"const": "sensor_body_right_handed"},
+        "world_frame": {"const": "ENU"},
+        "gravity_world_mps2": {"const": [0, 0, -9.80665]},
+        "accelerometer_quantity": {"const": "specific_force"}
+      }
+    },
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timestamp", "accelerometer", "gyroscope"],
+      "properties": {
+        "timestamp": {"enum": ["ns", "us"]},
+        "accelerometer": {"const": "m/s^2"},
+        "gyroscope": {"const": "rad/s"},
+        "magnetometer": {"const": "uT"}
+      }
+    },
+    "independent_heading_aid": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value_rad", "units", "source_id", "reference_frame", "independence"],
+      "properties": {
+        "kind": {"const": "independent_heading"},
+        "value_rad": {"type": "number"},
+        "units": {"const": "rad"},
+        "source_id": {"type": "string", "minLength": 1},
+        "reference_frame": {"const": "ENU"},
+        "independence": {"const": "independent_of_imu"}
+      }
+    },
+    "magnetometer_aid": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "field_uT", "units", "source_id", "frame", "independence"],
+      "properties": {
+        "kind": {"const": "magnetometer"},
+        "field_uT": {"$ref": "#/$defs/vector3"},
+        "units": {"const": "uT"},
+        "source_id": {"type": "string", "minLength": 1},
+        "frame": {"const": "sensor_body_right_handed"},
+        "independence": {"const": "part_of_sensor_set"}
+      }
+    },
+    "sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timestamp", "accel_mps2", "gyro_rad_s", "valid"],
+      "properties": {
+        "timestamp": {"type": "integer", "minimum": 0},
+        "accel_mps2": {"$ref": "#/$defs/vector3"},
+        "gyro_rad_s": {"$ref": "#/$defs/vector3"},
+        "valid": {"type": "boolean"},
+        "aid": {
+          "oneOf": [
+            {"$ref": "#/$defs/independent_heading_aid"},
+            {"$ref": "#/$defs/magnetometer_aid"}
+          ]
+        }
+      }
+    }
+  }
+}
