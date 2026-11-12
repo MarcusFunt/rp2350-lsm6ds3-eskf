@@ -1,0 +1,474 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="1577" viewBox="0 0 1320 1577">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="104" y="34" font-family="sans-serif" font-size="21" font-weight="bold">A5 full-state heading gain and attitude–bias covariance</text>
+<text x="104" y="57" font-family="sans-serif" font-size="12" fill="#475569">Gain and covariance values are logged for each of the 11 events; no full 15×15 matrix dump</text>
+<text x="104" y="107" font-family="sans-serif" font-size="14" font-weight="bold">Kalman gain norm: position state block</text>
+<line x1="104" y1="250.00" x2="1224" y2="250.00" stroke="#e2e8f0"/>
+<text x="95" y="254.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">-9.82</text>
+<line x1="104" y1="224.25" x2="1224" y2="224.25" stroke="#e2e8f0"/>
+<text x="95" y="228.25" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">15.6</text>
+<line x1="104" y1="198.50" x2="1224" y2="198.50" stroke="#e2e8f0"/>
+<text x="95" y="202.50" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">40.9</text>
+<line x1="104" y1="172.75" x2="1224" y2="172.75" stroke="#e2e8f0"/>
+<text x="95" y="176.75" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">66.3</text>
+<line x1="104" y1="147.00" x2="1224" y2="147.00" stroke="#e2e8f0"/>
+<text x="95" y="151.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">91.7</text>
+<line x1="104.00" y1="147" x2="104.00" y2="250" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="216.00" y1="147" x2="216.00" y2="250" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="328.00" y1="147" x2="328.00" y2="250" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="440.00" y1="147" x2="440.00" y2="250" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="552.00" y1="147" x2="552.00" y2="250" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="664.00" y1="147" x2="664.00" y2="250" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="776.00" y1="147" x2="776.00" y2="250" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="888.00" y1="147" x2="888.00" y2="250" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1000.00" y1="147" x2="1000.00" y2="250" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1112.00" y1="147" x2="1112.00" y2="250" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1224.00" y1="147" x2="1224.00" y2="250" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<path d="M104.00,240.03 L216.00,240.02 L328.00,240.00 L440.00,239.96 L552.00,239.90 L664.00,239.81 L776.00,239.69 L888.00,239.44 L1000.00,239.40 L1112.00,239.40 L1224.00,239.30" fill="none" stroke="#64748b" stroke-width="1.7"/>
+<circle cx="104.00" cy="240.03" r="2.7" fill="#64748b"/>
+<circle cx="216.00" cy="240.02" r="2.7" fill="#64748b"/>
+<circle cx="328.00" cy="240.00" r="2.7" fill="#64748b"/>
+<circle cx="440.00" cy="239.96" r="2.7" fill="#64748b"/>
+<circle cx="552.00" cy="239.90" r="2.7" fill="#64748b"/>
+<circle cx="664.00" cy="239.81" r="2.7" fill="#64748b"/>
+<circle cx="776.00" cy="239.69" r="2.7" fill="#64748b"/>
+<circle cx="888.00" cy="239.44" r="2.7" fill="#64748b"/>
+<circle cx="1000.00" cy="239.40" r="2.7" fill="#64748b"/>
+<circle cx="1112.00" cy="239.40" r="2.7" fill="#64748b"/>
+<circle cx="1224.00" cy="239.30" r="2.7" fill="#64748b"/>
+<path d="M104.00,240.03 L216.00,240.01 L328.00,239.92 L440.00,237.92 L552.00,229.05 L664.00,205.38 L776.00,156.97 L888.00,222.26 L1000.00,221.44 L1112.00,220.71 L1224.00,220.44" fill="none" stroke="#dc2626" stroke-width="1.7"/>
+<circle cx="104.00" cy="240.03" r="2.7" fill="#dc2626"/>
+<circle cx="216.00" cy="240.01" r="2.7" fill="#dc2626"/>
+<circle cx="328.00" cy="239.92" r="2.7" fill="#dc2626"/>
+<circle cx="440.00" cy="237.92" r="2.7" fill="#dc2626"/>
+<circle cx="552.00" cy="229.05" r="2.7" fill="#dc2626"/>
+<circle cx="664.00" cy="205.38" r="2.7" fill="#dc2626"/>
+<circle cx="776.00" cy="156.97" r="2.7" fill="#dc2626"/>
+<circle cx="888.00" cy="222.26" r="2.7" fill="#dc2626"/>
+<circle cx="1000.00" cy="221.44" r="2.7" fill="#dc2626"/>
+<circle cx="1112.00" cy="220.71" r="2.7" fill="#dc2626"/>
+<circle cx="1224.00" cy="220.44" r="2.7" fill="#dc2626"/>
+<path d="M104.00,240.03 L216.00,240.01 L328.00,239.93 L440.00,237.92 L552.00,229.38 L664.00,206.69 L776.00,163.30 L888.00,222.42 L1000.00,221.62 L1112.00,220.88 L1224.00,220.62" fill="none" stroke="#2563eb" stroke-width="1.7"/>
+<circle cx="104.00" cy="240.03" r="2.7" fill="#2563eb"/>
+<circle cx="216.00" cy="240.01" r="2.7" fill="#2563eb"/>
+<circle cx="328.00" cy="239.93" r="2.7" fill="#2563eb"/>
+<circle cx="440.00" cy="237.92" r="2.7" fill="#2563eb"/>
+<circle cx="552.00" cy="229.38" r="2.7" fill="#2563eb"/>
+<circle cx="664.00" cy="206.69" r="2.7" fill="#2563eb"/>
+<circle cx="776.00" cy="163.30" r="2.7" fill="#2563eb"/>
+<circle cx="888.00" cy="222.42" r="2.7" fill="#2563eb"/>
+<circle cx="1000.00" cy="221.62" r="2.7" fill="#2563eb"/>
+<circle cx="1112.00" cy="220.88" r="2.7" fill="#2563eb"/>
+<circle cx="1224.00" cy="220.62" r="2.7" fill="#2563eb"/>
+<text transform="translate(21 198.5) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="11">Position block gain (m/rad)</text>
+<line x1="104" y1="118" x2="121" y2="118" stroke="#64748b" stroke-width="2"/>
+<text x="126" y="122" font-family="sans-serif" font-size="9" fill="#334155">No heading aid</text>
+<line x1="469" y1="118" x2="486" y2="118" stroke="#dc2626" stroke-width="2"/>
+<text x="491" y="122" font-family="sans-serif" font-size="9" fill="#334155">Independent noisy heading</text>
+<line x1="834" y1="118" x2="851" y2="118" stroke="#2563eb" stroke-width="2"/>
+<text x="856" y="122" font-family="sans-serif" font-size="9" fill="#334155">Simulator-oracle heading</text>
+<text x="104" y="312" font-family="sans-serif" font-size="14" font-weight="bold">Kalman gain norm: velocity state block</text>
+<line x1="104" y1="455.00" x2="1224" y2="455.00" stroke="#e2e8f0"/>
+<text x="95" y="459.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">-4.33</text>
+<line x1="104" y1="429.25" x2="1224" y2="429.25" stroke="#e2e8f0"/>
+<text x="95" y="433.25" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">6.88</text>
+<line x1="104" y1="403.50" x2="1224" y2="403.50" stroke="#e2e8f0"/>
+<text x="95" y="407.50" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">18.1</text>
+<line x1="104" y1="377.75" x2="1224" y2="377.75" stroke="#e2e8f0"/>
+<text x="95" y="381.75" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">29.3</text>
+<line x1="104" y1="352.00" x2="1224" y2="352.00" stroke="#e2e8f0"/>
+<text x="95" y="356.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">40.5</text>
+<line x1="104.00" y1="352" x2="104.00" y2="455" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="216.00" y1="352" x2="216.00" y2="455" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="328.00" y1="352" x2="328.00" y2="455" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="440.00" y1="352" x2="440.00" y2="455" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="552.00" y1="352" x2="552.00" y2="455" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="664.00" y1="352" x2="664.00" y2="455" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="776.00" y1="352" x2="776.00" y2="455" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="888.00" y1="352" x2="888.00" y2="455" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1000.00" y1="352" x2="1000.00" y2="455" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1112.00" y1="352" x2="1112.00" y2="455" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1224.00" y1="352" x2="1224.00" y2="455" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<path d="M104.00,445.03 L216.00,445.02 L328.00,444.98 L440.00,444.93 L552.00,444.86 L664.00,444.79 L776.00,444.70 L888.00,444.71 L1000.00,444.75 L1112.00,444.80 L1224.00,444.81" fill="none" stroke="#64748b" stroke-width="1.7"/>
+<circle cx="104.00" cy="445.03" r="2.7" fill="#64748b"/>
+<circle cx="216.00" cy="445.02" r="2.7" fill="#64748b"/>
+<circle cx="328.00" cy="444.98" r="2.7" fill="#64748b"/>
+<circle cx="440.00" cy="444.93" r="2.7" fill="#64748b"/>
+<circle cx="552.00" cy="444.86" r="2.7" fill="#64748b"/>
+<circle cx="664.00" cy="444.79" r="2.7" fill="#64748b"/>
+<circle cx="776.00" cy="444.70" r="2.7" fill="#64748b"/>
+<circle cx="888.00" cy="444.71" r="2.7" fill="#64748b"/>
+<circle cx="1000.00" cy="444.75" r="2.7" fill="#64748b"/>
+<circle cx="1112.00" cy="444.80" r="2.7" fill="#64748b"/>
+<circle cx="1224.00" cy="444.81" r="2.7" fill="#64748b"/>
+<path d="M104.00,445.03 L216.00,444.93 L328.00,444.84 L440.00,442.22 L552.00,430.63 L664.00,405.30 L776.00,361.97 L888.00,433.67 L1000.00,435.47 L1112.00,436.72 L1224.00,437.77" fill="none" stroke="#dc2626" stroke-width="1.7"/>
+<circle cx="104.00" cy="445.03" r="2.7" fill="#dc2626"/>
+<circle cx="216.00" cy="444.93" r="2.7" fill="#dc2626"/>
+<circle cx="328.00" cy="444.84" r="2.7" fill="#dc2626"/>
+<circle cx="440.00" cy="442.22" r="2.7" fill="#dc2626"/>
+<circle cx="552.00" cy="430.63" r="2.7" fill="#dc2626"/>
+<circle cx="664.00" cy="405.30" r="2.7" fill="#dc2626"/>
+<circle cx="776.00" cy="361.97" r="2.7" fill="#dc2626"/>
+<circle cx="888.00" cy="433.67" r="2.7" fill="#dc2626"/>
+<circle cx="1000.00" cy="435.47" r="2.7" fill="#dc2626"/>
+<circle cx="1112.00" cy="436.72" r="2.7" fill="#dc2626"/>
+<circle cx="1224.00" cy="437.77" r="2.7" fill="#dc2626"/>
+<path d="M104.00,445.03 L216.00,444.93 L328.00,444.87 L440.00,442.23 L552.00,431.15 L664.00,406.98 L776.00,368.76 L888.00,433.79 L1000.00,435.56 L1112.00,436.79 L1224.00,437.83" fill="none" stroke="#2563eb" stroke-width="1.7"/>
+<circle cx="104.00" cy="445.03" r="2.7" fill="#2563eb"/>
+<circle cx="216.00" cy="444.93" r="2.7" fill="#2563eb"/>
+<circle cx="328.00" cy="444.87" r="2.7" fill="#2563eb"/>
+<circle cx="440.00" cy="442.23" r="2.7" fill="#2563eb"/>
+<circle cx="552.00" cy="431.15" r="2.7" fill="#2563eb"/>
+<circle cx="664.00" cy="406.98" r="2.7" fill="#2563eb"/>
+<circle cx="776.00" cy="368.76" r="2.7" fill="#2563eb"/>
+<circle cx="888.00" cy="433.79" r="2.7" fill="#2563eb"/>
+<circle cx="1000.00" cy="435.56" r="2.7" fill="#2563eb"/>
+<circle cx="1112.00" cy="436.79" r="2.7" fill="#2563eb"/>
+<circle cx="1224.00" cy="437.83" r="2.7" fill="#2563eb"/>
+<text transform="translate(21 403.5) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="11">Velocity block gain ((m/s)/rad)</text>
+<line x1="104" y1="323" x2="121" y2="323" stroke="#64748b" stroke-width="2"/>
+<text x="126" y="327" font-family="sans-serif" font-size="9" fill="#334155">No heading aid</text>
+<line x1="469" y1="323" x2="486" y2="323" stroke="#dc2626" stroke-width="2"/>
+<text x="491" y="327" font-family="sans-serif" font-size="9" fill="#334155">Independent noisy heading</text>
+<line x1="834" y1="323" x2="851" y2="323" stroke="#2563eb" stroke-width="2"/>
+<text x="856" y="327" font-family="sans-serif" font-size="9" fill="#334155">Simulator-oracle heading</text>
+<text x="104" y="517" font-family="sans-serif" font-size="14" font-weight="bold">Kalman gain norm: attitude state block</text>
+<line x1="104" y1="660.00" x2="1224" y2="660.00" stroke="#e2e8f0"/>
+<text x="95" y="664.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.206</text>
+<line x1="104" y1="634.25" x2="1224" y2="634.25" stroke="#e2e8f0"/>
+<text x="95" y="638.25" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.458</text>
+<line x1="104" y1="608.50" x2="1224" y2="608.50" stroke="#e2e8f0"/>
+<text x="95" y="612.50" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.71</text>
+<line x1="104" y1="582.75" x2="1224" y2="582.75" stroke="#e2e8f0"/>
+<text x="95" y="586.75" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.961</text>
+<line x1="104" y1="557.00" x2="1224" y2="557.00" stroke="#e2e8f0"/>
+<text x="95" y="561.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">1.21</text>
+<line x1="104.00" y1="557" x2="104.00" y2="660" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="216.00" y1="557" x2="216.00" y2="660" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="328.00" y1="557" x2="328.00" y2="660" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="440.00" y1="557" x2="440.00" y2="660" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="552.00" y1="557" x2="552.00" y2="660" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="664.00" y1="557" x2="664.00" y2="660" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="776.00" y1="557" x2="776.00" y2="660" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="888.00" y1="557" x2="888.00" y2="660" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1000.00" y1="557" x2="1000.00" y2="660" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1112.00" y1="557" x2="1112.00" y2="660" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1224.00" y1="557" x2="1224.00" y2="660" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<path d="M104.00,578.81 L216.00,578.81 L328.00,578.81 L440.00,578.81 L552.00,578.81 L664.00,578.81 L776.00,578.81 L888.00,578.81 L1000.00,578.81 L1112.00,578.81 L1224.00,578.81" fill="none" stroke="#64748b" stroke-width="1.7"/>
+<circle cx="104.00" cy="578.81" r="2.7" fill="#64748b"/>
+<circle cx="216.00" cy="578.81" r="2.7" fill="#64748b"/>
+<circle cx="328.00" cy="578.81" r="2.7" fill="#64748b"/>
+<circle cx="440.00" cy="578.81" r="2.7" fill="#64748b"/>
+<circle cx="552.00" cy="578.81" r="2.7" fill="#64748b"/>
+<circle cx="664.00" cy="578.81" r="2.7" fill="#64748b"/>
+<circle cx="776.00" cy="578.81" r="2.7" fill="#64748b"/>
+<circle cx="888.00" cy="578.81" r="2.7" fill="#64748b"/>
+<circle cx="1000.00" cy="578.81" r="2.7" fill="#64748b"/>
+<circle cx="1112.00" cy="578.81" r="2.7" fill="#64748b"/>
+<circle cx="1224.00" cy="578.81" r="2.7" fill="#64748b"/>
+<path d="M104.00,578.81 L216.00,602.93 L328.00,605.40 L440.00,614.37 L552.00,620.05 L664.00,606.59 L776.00,566.97 L888.00,640.59 L1000.00,644.31 L1112.00,647.38 L1224.00,650.02" fill="none" stroke="#dc2626" stroke-width="1.7"/>
+<circle cx="104.00" cy="578.81" r="2.7" fill="#dc2626"/>
+<circle cx="216.00" cy="602.93" r="2.7" fill="#dc2626"/>
+<circle cx="328.00" cy="605.40" r="2.7" fill="#dc2626"/>
+<circle cx="440.00" cy="614.37" r="2.7" fill="#dc2626"/>
+<circle cx="552.00" cy="620.05" r="2.7" fill="#dc2626"/>
+<circle cx="664.00" cy="606.59" r="2.7" fill="#dc2626"/>
+<circle cx="776.00" cy="566.97" r="2.7" fill="#dc2626"/>
+<circle cx="888.00" cy="640.59" r="2.7" fill="#dc2626"/>
+<circle cx="1000.00" cy="644.31" r="2.7" fill="#dc2626"/>
+<circle cx="1112.00" cy="647.38" r="2.7" fill="#dc2626"/>
+<circle cx="1224.00" cy="650.02" r="2.7" fill="#dc2626"/>
+<path d="M104.00,578.81 L216.00,602.93 L328.00,605.40 L440.00,614.37 L552.00,620.43 L664.00,608.65 L776.00,575.96 L888.00,640.49 L1000.00,644.28 L1112.00,647.37 L1224.00,650.03" fill="none" stroke="#2563eb" stroke-width="1.7"/>
+<circle cx="104.00" cy="578.81" r="2.7" fill="#2563eb"/>
+<circle cx="216.00" cy="602.93" r="2.7" fill="#2563eb"/>
+<circle cx="328.00" cy="605.40" r="2.7" fill="#2563eb"/>
+<circle cx="440.00" cy="614.37" r="2.7" fill="#2563eb"/>
+<circle cx="552.00" cy="620.43" r="2.7" fill="#2563eb"/>
+<circle cx="664.00" cy="608.65" r="2.7" fill="#2563eb"/>
+<circle cx="776.00" cy="575.96" r="2.7" fill="#2563eb"/>
+<circle cx="888.00" cy="640.49" r="2.7" fill="#2563eb"/>
+<circle cx="1000.00" cy="644.28" r="2.7" fill="#2563eb"/>
+<circle cx="1112.00" cy="647.37" r="2.7" fill="#2563eb"/>
+<circle cx="1224.00" cy="650.03" r="2.7" fill="#2563eb"/>
+<text transform="translate(21 608.5) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="11">Attitude block gain (rad/rad)</text>
+<line x1="104" y1="528" x2="121" y2="528" stroke="#64748b" stroke-width="2"/>
+<text x="126" y="532" font-family="sans-serif" font-size="9" fill="#334155">No heading aid</text>
+<line x1="469" y1="528" x2="486" y2="528" stroke="#dc2626" stroke-width="2"/>
+<text x="491" y="532" font-family="sans-serif" font-size="9" fill="#334155">Independent noisy heading</text>
+<line x1="834" y1="528" x2="851" y2="528" stroke="#2563eb" stroke-width="2"/>
+<text x="856" y="532" font-family="sans-serif" font-size="9" fill="#334155">Simulator-oracle heading</text>
+<text x="104" y="722" font-family="sans-serif" font-size="14" font-weight="bold">Kalman gain norm: accel bias state block</text>
+<line x1="104" y1="865.00" x2="1224" y2="865.00" stroke="#e2e8f0"/>
+<text x="95" y="869.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">-0.0199</text>
+<line x1="104" y1="839.25" x2="1224" y2="839.25" stroke="#e2e8f0"/>
+<text x="95" y="843.25" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.0265</text>
+<line x1="104" y1="813.50" x2="1224" y2="813.50" stroke="#e2e8f0"/>
+<text x="95" y="817.50" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.073</text>
+<line x1="104" y1="787.75" x2="1224" y2="787.75" stroke="#e2e8f0"/>
+<text x="95" y="791.75" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.119</text>
+<line x1="104" y1="762.00" x2="1224" y2="762.00" stroke="#e2e8f0"/>
+<text x="95" y="766.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.166</text>
+<line x1="104.00" y1="762" x2="104.00" y2="865" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="216.00" y1="762" x2="216.00" y2="865" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="328.00" y1="762" x2="328.00" y2="865" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="440.00" y1="762" x2="440.00" y2="865" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="552.00" y1="762" x2="552.00" y2="865" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="664.00" y1="762" x2="664.00" y2="865" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="776.00" y1="762" x2="776.00" y2="865" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="888.00" y1="762" x2="888.00" y2="865" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1000.00" y1="762" x2="1000.00" y2="865" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1112.00" y1="762" x2="1112.00" y2="865" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1224.00" y1="762" x2="1224.00" y2="865" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<path d="M104.00,853.88 L216.00,853.88 L328.00,853.88 L440.00,853.88 L552.00,853.88 L664.00,853.88 L776.00,853.87 L888.00,853.71 L1000.00,853.84 L1112.00,853.91 L1224.00,853.14" fill="none" stroke="#64748b" stroke-width="1.7"/>
+<circle cx="104.00" cy="853.88" r="2.7" fill="#64748b"/>
+<circle cx="216.00" cy="853.88" r="2.7" fill="#64748b"/>
+<circle cx="328.00" cy="853.88" r="2.7" fill="#64748b"/>
+<circle cx="440.00" cy="853.88" r="2.7" fill="#64748b"/>
+<circle cx="552.00" cy="853.88" r="2.7" fill="#64748b"/>
+<circle cx="664.00" cy="853.88" r="2.7" fill="#64748b"/>
+<circle cx="776.00" cy="853.87" r="2.7" fill="#64748b"/>
+<circle cx="888.00" cy="853.71" r="2.7" fill="#64748b"/>
+<circle cx="1000.00" cy="853.84" r="2.7" fill="#64748b"/>
+<circle cx="1112.00" cy="853.91" r="2.7" fill="#64748b"/>
+<circle cx="1224.00" cy="853.14" r="2.7" fill="#64748b"/>
+<path d="M104.00,853.88 L216.00,852.20 L328.00,846.06 L440.00,841.90 L552.00,827.25 L664.00,806.83 L776.00,773.09 L888.00,814.35 L1000.00,817.48 L1112.00,824.40 L1224.00,824.27" fill="none" stroke="#dc2626" stroke-width="1.7"/>
+<circle cx="104.00" cy="853.88" r="2.7" fill="#dc2626"/>
+<circle cx="216.00" cy="852.20" r="2.7" fill="#dc2626"/>
+<circle cx="328.00" cy="846.06" r="2.7" fill="#dc2626"/>
+<circle cx="440.00" cy="841.90" r="2.7" fill="#dc2626"/>
+<circle cx="552.00" cy="827.25" r="2.7" fill="#dc2626"/>
+<circle cx="664.00" cy="806.83" r="2.7" fill="#dc2626"/>
+<circle cx="776.00" cy="773.09" r="2.7" fill="#dc2626"/>
+<circle cx="888.00" cy="814.35" r="2.7" fill="#dc2626"/>
+<circle cx="1000.00" cy="817.48" r="2.7" fill="#dc2626"/>
+<circle cx="1112.00" cy="824.40" r="2.7" fill="#dc2626"/>
+<circle cx="1224.00" cy="824.27" r="2.7" fill="#dc2626"/>
+<path d="M104.00,853.88 L216.00,852.19 L328.00,849.06 L440.00,844.26 L552.00,837.45 L664.00,829.48 L776.00,822.34 L888.00,843.72 L1000.00,843.37 L1112.00,844.44 L1224.00,846.23" fill="none" stroke="#2563eb" stroke-width="1.7"/>
+<circle cx="104.00" cy="853.88" r="2.7" fill="#2563eb"/>
+<circle cx="216.00" cy="852.19" r="2.7" fill="#2563eb"/>
+<circle cx="328.00" cy="849.06" r="2.7" fill="#2563eb"/>
+<circle cx="440.00" cy="844.26" r="2.7" fill="#2563eb"/>
+<circle cx="552.00" cy="837.45" r="2.7" fill="#2563eb"/>
+<circle cx="664.00" cy="829.48" r="2.7" fill="#2563eb"/>
+<circle cx="776.00" cy="822.34" r="2.7" fill="#2563eb"/>
+<circle cx="888.00" cy="843.72" r="2.7" fill="#2563eb"/>
+<circle cx="1000.00" cy="843.37" r="2.7" fill="#2563eb"/>
+<circle cx="1112.00" cy="844.44" r="2.7" fill="#2563eb"/>
+<circle cx="1224.00" cy="846.23" r="2.7" fill="#2563eb"/>
+<text transform="translate(21 813.5) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="11">Accelerometer bias block gain ((m/s²)/rad)</text>
+<line x1="104" y1="733" x2="121" y2="733" stroke="#64748b" stroke-width="2"/>
+<text x="126" y="737" font-family="sans-serif" font-size="9" fill="#334155">No heading aid</text>
+<line x1="469" y1="733" x2="486" y2="733" stroke="#dc2626" stroke-width="2"/>
+<text x="491" y="737" font-family="sans-serif" font-size="9" fill="#334155">Independent noisy heading</text>
+<line x1="834" y1="733" x2="851" y2="733" stroke="#2563eb" stroke-width="2"/>
+<text x="856" y="737" font-family="sans-serif" font-size="9" fill="#334155">Simulator-oracle heading</text>
+<text x="104" y="927" font-family="sans-serif" font-size="14" font-weight="bold">Kalman gain norm: gyro bias state block</text>
+<line x1="104" y1="1070.00" x2="1224" y2="1070.00" stroke="#e2e8f0"/>
+<text x="95" y="1074.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">-0.0633</text>
+<line x1="104" y1="1044.25" x2="1224" y2="1044.25" stroke="#e2e8f0"/>
+<text x="95" y="1048.25" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.101</text>
+<line x1="104" y1="1018.50" x2="1224" y2="1018.50" stroke="#e2e8f0"/>
+<text x="95" y="1022.50" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.265</text>
+<line x1="104" y1="992.75" x2="1224" y2="992.75" stroke="#e2e8f0"/>
+<text x="95" y="996.75" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.429</text>
+<line x1="104" y1="967.00" x2="1224" y2="967.00" stroke="#e2e8f0"/>
+<text x="95" y="971.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.592</text>
+<line x1="104.00" y1="967" x2="104.00" y2="1070" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="216.00" y1="967" x2="216.00" y2="1070" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="328.00" y1="967" x2="328.00" y2="1070" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="440.00" y1="967" x2="440.00" y2="1070" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="552.00" y1="967" x2="552.00" y2="1070" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="664.00" y1="967" x2="664.00" y2="1070" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="776.00" y1="967" x2="776.00" y2="1070" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="888.00" y1="967" x2="888.00" y2="1070" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1000.00" y1="967" x2="1000.00" y2="1070" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1112.00" y1="967" x2="1112.00" y2="1070" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1224.00" y1="967" x2="1224.00" y2="1070" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<path d="M104.00,1059.96 L216.00,1059.91 L328.00,1059.85 L440.00,1059.80 L552.00,1059.76 L664.00,1059.72 L776.00,1059.69 L888.00,1059.82 L1000.00,1059.93 L1112.00,1060.02 L1224.00,1060.03" fill="none" stroke="#64748b" stroke-width="1.7"/>
+<circle cx="104.00" cy="1059.96" r="2.7" fill="#64748b"/>
+<circle cx="216.00" cy="1059.91" r="2.7" fill="#64748b"/>
+<circle cx="328.00" cy="1059.85" r="2.7" fill="#64748b"/>
+<circle cx="440.00" cy="1059.80" r="2.7" fill="#64748b"/>
+<circle cx="552.00" cy="1059.76" r="2.7" fill="#64748b"/>
+<circle cx="664.00" cy="1059.72" r="2.7" fill="#64748b"/>
+<circle cx="776.00" cy="1059.69" r="2.7" fill="#64748b"/>
+<circle cx="888.00" cy="1059.82" r="2.7" fill="#64748b"/>
+<circle cx="1000.00" cy="1059.93" r="2.7" fill="#64748b"/>
+<circle cx="1112.00" cy="1060.02" r="2.7" fill="#64748b"/>
+<circle cx="1224.00" cy="1060.03" r="2.7" fill="#64748b"/>
+<path d="M104.00,1059.96 L216.00,976.97 L328.00,995.77 L440.00,1017.11 L552.00,1030.29 L664.00,1035.13 L776.00,1031.95 L888.00,1047.06 L1000.00,1049.57 L1112.00,1051.47 L1224.00,1052.94" fill="none" stroke="#dc2626" stroke-width="1.7"/>
+<circle cx="104.00" cy="1059.96" r="2.7" fill="#dc2626"/>
+<circle cx="216.00" cy="976.97" r="2.7" fill="#dc2626"/>
+<circle cx="328.00" cy="995.77" r="2.7" fill="#dc2626"/>
+<circle cx="440.00" cy="1017.11" r="2.7" fill="#dc2626"/>
+<circle cx="552.00" cy="1030.29" r="2.7" fill="#dc2626"/>
+<circle cx="664.00" cy="1035.13" r="2.7" fill="#dc2626"/>
+<circle cx="776.00" cy="1031.95" r="2.7" fill="#dc2626"/>
+<circle cx="888.00" cy="1047.06" r="2.7" fill="#dc2626"/>
+<circle cx="1000.00" cy="1049.57" r="2.7" fill="#dc2626"/>
+<circle cx="1112.00" cy="1051.47" r="2.7" fill="#dc2626"/>
+<circle cx="1224.00" cy="1052.94" r="2.7" fill="#dc2626"/>
+<path d="M104.00,1059.96 L216.00,976.97 L328.00,995.77 L440.00,1017.11 L552.00,1030.34 L664.00,1035.47 L776.00,1033.59 L888.00,1047.05 L1000.00,1049.57 L1112.00,1051.48 L1224.00,1052.95" fill="none" stroke="#2563eb" stroke-width="1.7"/>
+<circle cx="104.00" cy="1059.96" r="2.7" fill="#2563eb"/>
+<circle cx="216.00" cy="976.97" r="2.7" fill="#2563eb"/>
+<circle cx="328.00" cy="995.77" r="2.7" fill="#2563eb"/>
+<circle cx="440.00" cy="1017.11" r="2.7" fill="#2563eb"/>
+<circle cx="552.00" cy="1030.34" r="2.7" fill="#2563eb"/>
+<circle cx="664.00" cy="1035.47" r="2.7" fill="#2563eb"/>
+<circle cx="776.00" cy="1033.59" r="2.7" fill="#2563eb"/>
+<circle cx="888.00" cy="1047.05" r="2.7" fill="#2563eb"/>
+<circle cx="1000.00" cy="1049.57" r="2.7" fill="#2563eb"/>
+<circle cx="1112.00" cy="1051.48" r="2.7" fill="#2563eb"/>
+<circle cx="1224.00" cy="1052.95" r="2.7" fill="#2563eb"/>
+<text transform="translate(21 1018.5) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="11">Gyroscope bias block gain ((rad/s)/rad)</text>
+<line x1="104" y1="938" x2="121" y2="938" stroke="#64748b" stroke-width="2"/>
+<text x="126" y="942" font-family="sans-serif" font-size="9" fill="#334155">No heading aid</text>
+<line x1="469" y1="938" x2="486" y2="938" stroke="#dc2626" stroke-width="2"/>
+<text x="491" y="942" font-family="sans-serif" font-size="9" fill="#334155">Independent noisy heading</text>
+<line x1="834" y1="938" x2="851" y2="938" stroke="#2563eb" stroke-width="2"/>
+<text x="856" y="942" font-family="sans-serif" font-size="9" fill="#334155">Simulator-oracle heading</text>
+<text x="104" y="1132" font-family="sans-serif" font-size="14" font-weight="bold">Attitude–accelerometer-bias covariance cross-block norm</text>
+<line x1="104" y1="1275.00" x2="1224" y2="1275.00" stroke="#e2e8f0"/>
+<text x="95" y="1279.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">-0.00733</text>
+<line x1="104" y1="1249.25" x2="1224" y2="1249.25" stroke="#e2e8f0"/>
+<text x="95" y="1253.25" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.00428</text>
+<line x1="104" y1="1223.50" x2="1224" y2="1223.50" stroke="#e2e8f0"/>
+<text x="95" y="1227.50" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.0159</text>
+<line x1="104" y1="1197.75" x2="1224" y2="1197.75" stroke="#e2e8f0"/>
+<text x="95" y="1201.75" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.0275</text>
+<line x1="104" y1="1172.00" x2="1224" y2="1172.00" stroke="#e2e8f0"/>
+<text x="95" y="1176.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.0391</text>
+<line x1="104.00" y1="1172" x2="104.00" y2="1275" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="216.00" y1="1172" x2="216.00" y2="1275" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="328.00" y1="1172" x2="328.00" y2="1275" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="440.00" y1="1172" x2="440.00" y2="1275" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="552.00" y1="1172" x2="552.00" y2="1275" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="664.00" y1="1172" x2="664.00" y2="1275" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="776.00" y1="1172" x2="776.00" y2="1275" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="888.00" y1="1172" x2="888.00" y2="1275" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1000.00" y1="1172" x2="1000.00" y2="1275" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1112.00" y1="1172" x2="1112.00" y2="1275" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1224.00" y1="1172" x2="1224.00" y2="1275" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<path d="M104.00,1230.65 L216.00,1229.96 L328.00,1229.28 L440.00,1228.63 L552.00,1228.00 L664.00,1227.41 L776.00,1226.85 L888.00,1228.90 L1000.00,1229.73 L1112.00,1229.79 L1224.00,1216.35" fill="none" stroke="#64748b" stroke-width="1.7"/>
+<circle cx="104.00" cy="1230.65" r="2.7" fill="#64748b"/>
+<circle cx="216.00" cy="1229.96" r="2.7" fill="#64748b"/>
+<circle cx="328.00" cy="1229.28" r="2.7" fill="#64748b"/>
+<circle cx="440.00" cy="1228.63" r="2.7" fill="#64748b"/>
+<circle cx="552.00" cy="1228.00" r="2.7" fill="#64748b"/>
+<circle cx="664.00" cy="1227.41" r="2.7" fill="#64748b"/>
+<circle cx="776.00" cy="1226.85" r="2.7" fill="#64748b"/>
+<circle cx="888.00" cy="1228.90" r="2.7" fill="#64748b"/>
+<circle cx="1000.00" cy="1229.73" r="2.7" fill="#64748b"/>
+<circle cx="1112.00" cy="1229.79" r="2.7" fill="#64748b"/>
+<circle cx="1224.00" cy="1216.35" r="2.7" fill="#64748b"/>
+<path d="M104.00,1230.65 L216.00,1230.08 L328.00,1229.40 L440.00,1228.72 L552.00,1228.07 L664.00,1227.47 L776.00,1227.05 L888.00,1230.42 L1000.00,1230.00 L1112.00,1229.77 L1224.00,1229.86" fill="none" stroke="#dc2626" stroke-width="1.7"/>
+<circle cx="104.00" cy="1230.65" r="2.7" fill="#dc2626"/>
+<circle cx="216.00" cy="1230.08" r="2.7" fill="#dc2626"/>
+<circle cx="328.00" cy="1229.40" r="2.7" fill="#dc2626"/>
+<circle cx="440.00" cy="1228.72" r="2.7" fill="#dc2626"/>
+<circle cx="552.00" cy="1228.07" r="2.7" fill="#dc2626"/>
+<circle cx="664.00" cy="1227.47" r="2.7" fill="#dc2626"/>
+<circle cx="776.00" cy="1227.05" r="2.7" fill="#dc2626"/>
+<circle cx="888.00" cy="1230.42" r="2.7" fill="#dc2626"/>
+<circle cx="1000.00" cy="1230.00" r="2.7" fill="#dc2626"/>
+<circle cx="1112.00" cy="1229.77" r="2.7" fill="#dc2626"/>
+<circle cx="1224.00" cy="1229.86" r="2.7" fill="#dc2626"/>
+<path d="M104.00,1230.65 L216.00,1230.08 L328.00,1229.40 L440.00,1228.72 L552.00,1228.05 L664.00,1227.43 L776.00,1226.92 L888.00,1230.38 L1000.00,1229.95 L1112.00,1229.72 L1224.00,1229.80" fill="none" stroke="#2563eb" stroke-width="1.7"/>
+<circle cx="104.00" cy="1230.65" r="2.7" fill="#2563eb"/>
+<circle cx="216.00" cy="1230.08" r="2.7" fill="#2563eb"/>
+<circle cx="328.00" cy="1229.40" r="2.7" fill="#2563eb"/>
+<circle cx="440.00" cy="1228.72" r="2.7" fill="#2563eb"/>
+<circle cx="552.00" cy="1228.05" r="2.7" fill="#2563eb"/>
+<circle cx="664.00" cy="1227.43" r="2.7" fill="#2563eb"/>
+<circle cx="776.00" cy="1226.92" r="2.7" fill="#2563eb"/>
+<circle cx="888.00" cy="1230.38" r="2.7" fill="#2563eb"/>
+<circle cx="1000.00" cy="1229.95" r="2.7" fill="#2563eb"/>
+<circle cx="1112.00" cy="1229.72" r="2.7" fill="#2563eb"/>
+<circle cx="1224.00" cy="1229.80" r="2.7" fill="#2563eb"/>
+<text transform="translate(21 1223.5) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="11">Frobenius norm (state-unit product)</text>
+<line x1="104" y1="1143" x2="121" y2="1143" stroke="#64748b" stroke-width="2"/>
+<text x="126" y="1147" font-family="sans-serif" font-size="9" fill="#334155">No heading aid</text>
+<line x1="469" y1="1143" x2="486" y2="1143" stroke="#dc2626" stroke-width="2"/>
+<text x="491" y="1147" font-family="sans-serif" font-size="9" fill="#334155">Independent noisy heading</text>
+<line x1="834" y1="1143" x2="851" y2="1143" stroke="#2563eb" stroke-width="2"/>
+<text x="856" y="1147" font-family="sans-serif" font-size="9" fill="#334155">Simulator-oracle heading</text>
+<text x="104" y="1337" font-family="sans-serif" font-size="14" font-weight="bold">Attitude–gyroscope-bias covariance cross-block norm</text>
+<line x1="104" y1="1480.00" x2="1224" y2="1480.00" stroke="#e2e8f0"/>
+<text x="95" y="1484.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">-0.0199</text>
+<line x1="104" y1="1454.25" x2="1224" y2="1454.25" stroke="#e2e8f0"/>
+<text x="95" y="1458.25" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">-0.00328</text>
+<line x1="104" y1="1428.50" x2="1224" y2="1428.50" stroke="#e2e8f0"/>
+<text x="95" y="1432.50" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.0133</text>
+<line x1="104" y1="1402.75" x2="1224" y2="1402.75" stroke="#e2e8f0"/>
+<text x="95" y="1406.75" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.0299</text>
+<line x1="104" y1="1377.00" x2="1224" y2="1377.00" stroke="#e2e8f0"/>
+<text x="95" y="1381.00" text-anchor="end" font-family="sans-serif" font-size="10" fill="#334155">0.0465</text>
+<line x1="104.00" y1="1377" x2="104.00" y2="1480" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="216.00" y1="1377" x2="216.00" y2="1480" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="328.00" y1="1377" x2="328.00" y2="1480" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="440.00" y1="1377" x2="440.00" y2="1480" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="552.00" y1="1377" x2="552.00" y2="1480" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="664.00" y1="1377" x2="664.00" y2="1480" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="776.00" y1="1377" x2="776.00" y2="1480" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="888.00" y1="1377" x2="888.00" y2="1480" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1000.00" y1="1377" x2="1000.00" y2="1480" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1112.00" y1="1377" x2="1112.00" y2="1480" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<line x1="1224.00" y1="1377" x2="1224.00" y2="1480" stroke="#cbd5e1" stroke-dasharray="2 5"/>
+<path d="M104.00,1439.75 L216.00,1434.18 L328.00,1428.61 L440.00,1423.14 L552.00,1417.86 L664.00,1412.82 L776.00,1408.05 L888.00,1425.96 L1000.00,1436.46 L1112.00,1444.96 L1224.00,1446.51" fill="none" stroke="#64748b" stroke-width="1.7"/>
+<circle cx="104.00" cy="1439.75" r="2.7" fill="#64748b"/>
+<circle cx="216.00" cy="1434.18" r="2.7" fill="#64748b"/>
+<circle cx="328.00" cy="1428.61" r="2.7" fill="#64748b"/>
+<circle cx="440.00" cy="1423.14" r="2.7" fill="#64748b"/>
+<circle cx="552.00" cy="1417.86" r="2.7" fill="#64748b"/>
+<circle cx="664.00" cy="1412.82" r="2.7" fill="#64748b"/>
+<circle cx="776.00" cy="1408.05" r="2.7" fill="#64748b"/>
+<circle cx="888.00" cy="1425.96" r="2.7" fill="#64748b"/>
+<circle cx="1000.00" cy="1436.46" r="2.7" fill="#64748b"/>
+<circle cx="1112.00" cy="1444.96" r="2.7" fill="#64748b"/>
+<circle cx="1224.00" cy="1446.51" r="2.7" fill="#64748b"/>
+<path d="M104.00,1439.75 L216.00,1443.03 L328.00,1443.53 L440.00,1443.28 L552.00,1442.08 L664.00,1440.71 L776.00,1439.50 L888.00,1448.73 L1000.00,1448.85 L1112.00,1448.91 L1224.00,1448.95" fill="none" stroke="#dc2626" stroke-width="1.7"/>
+<circle cx="104.00" cy="1439.75" r="2.7" fill="#dc2626"/>
+<circle cx="216.00" cy="1443.03" r="2.7" fill="#dc2626"/>
+<circle cx="328.00" cy="1443.53" r="2.7" fill="#dc2626"/>
+<circle cx="440.00" cy="1443.28" r="2.7" fill="#dc2626"/>
+<circle cx="552.00" cy="1442.08" r="2.7" fill="#dc2626"/>
+<circle cx="664.00" cy="1440.71" r="2.7" fill="#dc2626"/>
+<circle cx="776.00" cy="1439.50" r="2.7" fill="#dc2626"/>
+<circle cx="888.00" cy="1448.73" r="2.7" fill="#dc2626"/>
+<circle cx="1000.00" cy="1448.85" r="2.7" fill="#dc2626"/>
+<circle cx="1112.00" cy="1448.91" r="2.7" fill="#dc2626"/>
+<circle cx="1224.00" cy="1448.95" r="2.7" fill="#dc2626"/>
+<path d="M104.00,1439.75 L216.00,1443.03 L328.00,1443.53 L440.00,1443.28 L552.00,1442.07 L664.00,1440.70 L776.00,1439.46 L888.00,1448.73 L1000.00,1448.85 L1112.00,1448.91 L1224.00,1448.95" fill="none" stroke="#2563eb" stroke-width="1.7"/>
+<circle cx="104.00" cy="1439.75" r="2.7" fill="#2563eb"/>
+<circle cx="216.00" cy="1443.03" r="2.7" fill="#2563eb"/>
+<circle cx="328.00" cy="1443.53" r="2.7" fill="#2563eb"/>
+<circle cx="440.00" cy="1443.28" r="2.7" fill="#2563eb"/>
+<circle cx="552.00" cy="1442.07" r="2.7" fill="#2563eb"/>
+<circle cx="664.00" cy="1440.70" r="2.7" fill="#2563eb"/>
+<circle cx="776.00" cy="1439.46" r="2.7" fill="#2563eb"/>
+<circle cx="888.00" cy="1448.73" r="2.7" fill="#2563eb"/>
+<circle cx="1000.00" cy="1448.85" r="2.7" fill="#2563eb"/>
+<circle cx="1112.00" cy="1448.91" r="2.7" fill="#2563eb"/>
+<circle cx="1224.00" cy="1448.95" r="2.7" fill="#2563eb"/>
+<text transform="translate(21 1428.5) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="11">Frobenius norm (state-unit product)</text>
+<line x1="104.00" y1="1480" x2="104.00" y2="1484" stroke="#475569"/>
+<text x="104.00" y="1497" text-anchor="middle" font-family="sans-serif" font-size="10">2</text>
+<line x1="328.00" y1="1480" x2="328.00" y2="1484" stroke="#475569"/>
+<text x="328.00" y="1497" text-anchor="middle" font-family="sans-serif" font-size="10">4</text>
+<line x1="552.00" y1="1480" x2="552.00" y2="1484" stroke="#475569"/>
+<text x="552.00" y="1497" text-anchor="middle" font-family="sans-serif" font-size="10">6</text>
+<line x1="776.00" y1="1480" x2="776.00" y2="1484" stroke="#475569"/>
+<text x="776.00" y="1497" text-anchor="middle" font-family="sans-serif" font-size="10">8</text>
+<line x1="1000.00" y1="1480" x2="1000.00" y2="1484" stroke="#475569"/>
+<text x="1000.00" y="1497" text-anchor="middle" font-family="sans-serif" font-size="10">10</text>
+<line x1="1224.00" y1="1480" x2="1224.00" y2="1484" stroke="#475569"/>
+<text x="1224.00" y="1497" text-anchor="middle" font-family="sans-serif" font-size="10">12</text>
+<text x="664.0" y="1516" text-anchor="middle" font-family="sans-serif" font-size="11">Trial time (s)</text>
+<line x1="104" y1="1348" x2="121" y2="1348" stroke="#64748b" stroke-width="2"/>
+<text x="126" y="1352" font-family="sans-serif" font-size="9" fill="#334155">No heading aid</text>
+<line x1="469" y1="1348" x2="486" y2="1348" stroke="#dc2626" stroke-width="2"/>
+<text x="491" y="1352" font-family="sans-serif" font-size="9" fill="#334155">Independent noisy heading</text>
+<line x1="834" y1="1348" x2="851" y2="1348" stroke="#2563eb" stroke-width="2"/>
+<text x="856" y="1352" font-family="sans-serif" font-size="9" fill="#334155">Simulator-oracle heading</text>
+<text x="104" y="1559" font-family="monospace" font-size="9" fill="#64748b">input SHA-256 b6643cce0bdc3a1095b772afdb7e970b366d155fbd9c8fb77c8b58d7d50cd551 · protocol SHA-256 a17547e0260f4da6bded86b2a7df5a92069add7f38df896d0ceffa5c5c5f20f7</text>
+</svg>
