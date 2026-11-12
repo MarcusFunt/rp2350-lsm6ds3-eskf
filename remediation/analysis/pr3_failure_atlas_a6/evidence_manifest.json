@@ -1,0 +1,182 @@
+{
+  "archive_manifest_path": "benchmarks/manifests/pr3_protocol_v5_dev100_all_factors_postfix.json",
+  "archive_manifest_sha256": "394278986dd83fad6f43799194d0ec4f3f407381eb5b761aa1ac5a22ffd2d22c",
+  "archive_path": "benchmarks/reports/pr3_protocol_v5_dev100_all_factors_postfix_trials.csv.gz",
+  "archive_sha256": "ad73e542d57d43fc4a707a82b9011dfc5ece30a44313574b49dbea14eeaee755",
+  "checks": {
+    "development_archive_hashes": "PASS",
+    "eskf_header_unchanged_from_baseline": "PASS",
+    "full_factorial_rerun": "NOT_RUN",
+    "hardware_validation": "NOT_RUN",
+    "held_out_or_final_accessed": "NO",
+    "paired_nominal_stress_identity": "PASS",
+    "regenerated_raw_input_hashes": "PASS",
+    "replayed_trial_metrics_match_archive": "PASS",
+    "selected_group_counts_100": "PASS",
+    "trace_sample_index_and_clock_quality": "PASS"
+  },
+  "classification": "development-only synthetic host diagnostics",
+  "compile_flags": [
+    "-std=c++17",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Werror",
+    "-DINERTIAL_GRAVITY_DIAGNOSTICS=1"
+  ],
+  "compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "config": {
+    "evaluated_estimators": [
+      "eskf_conservative",
+      "eskf_legacy",
+      "eskf_confirmed_only",
+      "mahony",
+      "gyro_only"
+    ],
+    "runtime_aid": "NONE",
+    "sensor_input": "IMU_ONLY",
+    "startup_gyro_bias_calibration": "OFF",
+    "startup_knowledge": "UNKNOWN"
+  },
+  "config_sha256": "d5846fd833a2df91d69293d7545ee34bb719f848e238dfdd2eaa9317d4215fdd",
+  "development_seed_range": [
+    4001,
+    4100
+  ],
+  "diagnostic_branch": "codex/noise-covariance-atlas-a6-20261112",
+  "diagnostic_commit": "950ff10cb966705dad593a2290c96fa9962d0eef",
+  "implementation_branch": "codex/heading-independent-a5-20261112",
+  "implementation_commit": "9f2dcdb6a5abb2043805f2f298f9af9c881f27db",
+  "l0_rollup_groups": 90,
+  "l0_trial_rows": 9000,
+  "motion_regime_thresholds": {
+    "angular_rate_rad_s": 0.01,
+    "linear_accel_m_s2": 0.05
+  },
+  "outputs": {
+    "A6_NOISE_COVARIANCE_FAILURE_ATLAS.md": {
+      "bytes": 12929,
+      "sha256": "978a436a4e0ea213b8757132ac1380d39d004902897a46818edf07ebcb18226c"
+    },
+    "INDEPENDENT_REVIEW_CHECKLIST.md": {
+      "bytes": 1440,
+      "sha256": "7e5f39fee1404a6a49b8e8b40056ea647df29fd26c7900152cd0caf73f32abda"
+    },
+    "compound_motion__irregular_208hz__seed4001.svg": {
+      "bytes": 96487,
+      "sha256": "a7e91da326817ec31b6f046d608a4ea1efca8484b6a12e02519ea6330582cacd"
+    },
+    "compound_motion__uniform_200hz__seed4001.svg": {
+      "bytes": 92991,
+      "sha256": "830799ee33b39a0fc44c4c41dcaf7e86e68e4e5be2e38e62870069cc0c55e4c2"
+    },
+    "compound_motion__uniform_208hz__seed4001.svg": {
+      "bytes": 96483,
+      "sha256": "ac0f297669d893ccf6594859fcc45f11453074f9d7934df79f8b7a4496a6cf98"
+    },
+    "development_group_rollups.csv": {
+      "bytes": 34184,
+      "sha256": "aff16fdd27987a1b344f99e85e1a2f2261e35c7333b8d7e3efd4f2c0ec51ef2f"
+    },
+    "development_paired_stress_deltas.csv": {
+      "bytes": 9395,
+      "sha256": "79a440c7499fd8fc6034042af900bbe505e56d99ae6de5eff6c29447ce097d70"
+    },
+    "lateral_accel__irregular_208hz__seed4001.svg": {
+      "bytes": 99646,
+      "sha256": "0a348cf7446bcc5872683a93025bd019ec9fe333dc44d17b970b4e7c19b0ad04"
+    },
+    "lateral_accel__uniform_200hz__seed4001.svg": {
+      "bytes": 96067,
+      "sha256": "a5bb0d42b8092ae773d1f95ea29d50fd6455cf9dd100368654a923a9c4e6a749"
+    },
+    "lateral_accel__uniform_208hz__seed4001.svg": {
+      "bytes": 99729,
+      "sha256": "32e0421f56f1cc5a20f40b6893a1c4f08c69f4b552ae56504d140767e9c4d648"
+    },
+    "selected_l1_traces.csv.gz": {
+      "bytes": 16915231,
+      "sha256": "fc3c71b1d3fa3c2890aeafe420a8b5e1764e89b1a59f3521c123269331079bc8"
+    },
+    "selected_trace_atlas.csv": {
+      "bytes": 27836,
+      "sha256": "4813247e49f0cfd7e10c2885733416d47cef81b14bde536b70ab88a913bf64be"
+    },
+    "slow_yaw__irregular_208hz__seed4001.svg": {
+      "bytes": 108206,
+      "sha256": "af4874989577cf68db96d371744dacf014a218413d0246ef1427942457a5b37b"
+    },
+    "slow_yaw__uniform_200hz__seed4001.svg": {
+      "bytes": 104203,
+      "sha256": "dac6a538119c9abdf6f16d2e50334d76d27ccd0486206e4a2fa8b958c1e38c64"
+    },
+    "slow_yaw__uniform_208hz__seed4001.svg": {
+      "bytes": 108203,
+      "sha256": "7ce5fe8ceedc399c82530f427ecec489ae399e1a03359629bf00191ee445d294"
+    },
+    "static__irregular_208hz__seed4001.svg": {
+      "bytes": 108203,
+      "sha256": "8ec53494a7cc19b7f11ae1a7534689069d2e166dcc404856c81212a8d86b2d42"
+    },
+    "static__uniform_200hz__seed4001.svg": {
+      "bytes": 104198,
+      "sha256": "e238f5abcebeb694ce202726e3bb7932469e0483641e4d7dab9222f995c94136"
+    },
+    "static__uniform_208hz__seed4001.svg": {
+      "bytes": 108198,
+      "sha256": "f931141657450831ede965a99568dc62ae60777532b2f9d66ce2bfadd4358f2b"
+    },
+    "vibration__irregular_208hz__seed4001.svg": {
+      "bytes": 96477,
+      "sha256": "7c5541b9589c356bbd3bc7f407033dd4ba94226694b791192c809620b740a0ff"
+    },
+    "vibration__uniform_200hz__seed4001.svg": {
+      "bytes": 92982,
+      "sha256": "d3ae1780d554e81538f56996d2ff37e8cc6a3b050d5c9a14c2461a00ae770b9a"
+    },
+    "vibration__uniform_208hz__seed4001.svg": {
+      "bytes": 96473,
+      "sha256": "9808c468236adf3f9f6c94b1e4a8bb31417b8d082200c8a3a65391bd06b144b1"
+    }
+  },
+  "paired_rollup_groups": 45,
+  "profile": "IMU_ONLY/UNKNOWN/calibration-OFF/aid-NONE",
+  "protocol_path": "benchmarks/scenarios/pr3_scenarios_protocol_v5.json",
+  "protocol_sha256": "1318acff98ac2641383ef6a568986e912020a6d4c6debeb145a9abf0f8fa4800",
+  "rate_modes": [
+    "uniform_200hz",
+    "uniform_208hz",
+    "irregular_208hz"
+  ],
+  "replay_command_count": 60,
+  "replay_commands_sha256": "869185a363f3b975583e6c0aa082d8f6ca763be3c1ba31cf8aeb782eed165efb",
+  "reproduction_command": "python3 tools/pr3_failure_atlas.py --output-dir remediation/analysis/pr3_failure_atlas_a6 --trace-seed 4001 --cxx g++ --implementation-commit 9f2dcdb6a5abb2043805f2f298f9af9c881f27db --implementation-branch codex/heading-independent-a5-20261112 --diagnostic-commit 950ff10cb966705dad593a2290c96fa9962d0eef --diagnostic-branch codex/noise-covariance-atlas-a6-20261112",
+  "scenarios": [
+    "static",
+    "slow_yaw",
+    "lateral_accel",
+    "vibration",
+    "compound_motion"
+  ],
+  "schema_version": 1,
+  "selected_l1_samples": 98560,
+  "selected_l1_streams": 30,
+  "selected_trace_seed": 4001,
+  "source_file_sha256": {
+    "archive": "ad73e542d57d43fc4a707a82b9011dfc5ece30a44313574b49dbea14eeaee755",
+    "archive_manifest": "394278986dd83fad6f43799194d0ec4f3f407381eb5b761aa1ac5a22ffd2d22c",
+    "evaluator": "2d2c2bd9e7dec4e627b166cd6be7d9d9a58081edaf053b707b498999a95ad680",
+    "evaluator_pre_instrumentation": "27b0ee17a1e5ab55c4157f7da22ff58667fd84f3907b3ccabf1fed81e3bf7e0f",
+    "filter": "05a6b4de9a85abf8f85a8a0c4d24dfe058dda75f4ed4791584a8cc3e7dd84b61",
+    "generator": "7e159c915412039da66048d1ee7f80a39c9c03f91f88f40033de112ac0513843",
+    "protocol": "1318acff98ac2641383ef6a568986e912020a6d4c6debeb145a9abf0f8fa4800"
+  },
+  "split": "development",
+  "status": "PASS",
+  "stress_modes": [
+    "nominal",
+    "stress"
+  ],
+  "tool_id": "pr3-noise-covariance-failure-atlas-a6"
+}
