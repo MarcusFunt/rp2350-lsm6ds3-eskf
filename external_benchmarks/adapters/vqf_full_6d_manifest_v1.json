@@ -1,0 +1,37 @@
+{
+  "schema_id": "org.marcusfunt.external_benchmarks.adapter_manifest",
+  "schema_version": 1,
+  "adapter_id": "official.vqf",
+  "variant_id": "vqf_full_6d_causal_v2.1.2",
+  "algorithm_name": "Versatile Quaternion-based Filter (full, 6D)",
+  "implementation_version": "vqf-2.1.2",
+  "execution_mode": "causal_online",
+  "supported_sensor_sets": ["gyro_accel_6d"],
+  "supported_aid_types": [],
+  "supported_timestamp_units": ["ns", "us"],
+  "supported_sampling_modes": ["uniform"],
+  "allowed_yaw_gauges": ["unobservable_startup"],
+  "initialization": {
+    "orientation_source": "algorithm_default",
+    "initial_yaw_gauge": "unobservable_startup",
+    "uses_truth": false,
+    "warmup_policy": "Process each valid sample from the first sample; official VQF default coefficients and state initialization.",
+    "reset_clears_all_state": true
+  },
+  "output_convention": {
+    "quaternion_order": "wxyz",
+    "rotation_direction": "body_to_world",
+    "reference_world_frame": "ENU",
+    "gravity_world_mps2": [0, 0, -9.80665],
+    "accelerometer_quantity": "specific_force"
+  },
+  "source_fidelity": {
+    "classification": "official_unmodified",
+    "source_uri": "https://github.com/dlaidig/vqf",
+    "source_revision": "86ba56bdd3158b9b05f9f9fe5596866ba326438c",
+    "implementation_sha256": "2bf7134ffb181d518ac8c0855a239881c5a3e06e927605c351e72bbce1623233",
+    "adapter_sha256": "299dcf2ef69b00a1619bc88b173e968c7d4a162252a81c14cd93321fc60fd766",
+    "model_sha256": null,
+    "license": "MIT"
+  }
+}

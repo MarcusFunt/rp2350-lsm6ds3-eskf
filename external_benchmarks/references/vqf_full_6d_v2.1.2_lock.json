@@ -1,0 +1,64 @@
+{
+  "algorithm": "VQF",
+  "variant": "full_causal_6d",
+  "upstream_repository": "https://github.com/dlaidig/vqf",
+  "upstream_tag": "v2.1.2",
+  "upstream_commit": "86ba56bdd3158b9b05f9f9fe5596866ba326438c",
+  "license": "MIT",
+  "distribution": {
+    "name": "vqf",
+    "version": "2.1.2",
+    "official_source_distribution_sha256": "2bf7134ffb181d518ac8c0855a239881c5a3e06e927605c351e72bbce1623233",
+    "validated_wheel": {
+      "filename": "vqf-2.1.2-cp311-cp311-win_amd64.whl",
+      "sha256": "99eceab93e1cd671bdadbd344bd7115dc12d4b14ac99c64287a1f4cd02fd0211"
+    }
+  },
+  "runtime": {
+    "python": "3.11.4",
+    "numpy": "2.0.2",
+    "dependencies": ["numpy>=1.20.0"],
+    "source_build_dependencies": ["setuptools", "wheel", "Cython>=0.29.21", "numpy>=1.20.0"],
+    "adapter_uses": "vqf.VQF Cython binding to the official C++ implementation"
+  },
+  "settings": {
+    "variant": "full VQF, 6D getQuat6D output",
+    "gyro_sample_period": "denominator/numerator seconds from reset config sampling_rate_hz",
+    "accelerometer_sample_period": "same as gyro sample period",
+    "parameters": {
+      "tauAcc": 3.0,
+      "tauMag": 9.0,
+      "motionBiasEstEnabled": true,
+      "restBiasEstEnabled": true,
+      "magDistRejectionEnabled": true,
+      "biasSigmaInit": 0.5,
+      "biasForgettingTime": 100.0,
+      "biasClip": 2.0,
+      "biasSigmaMotion": 0.1,
+      "biasVerticalForgettingFactor": 0.0001,
+      "biasSigmaRest": 0.03,
+      "restMinT": 1.5,
+      "restFilterTau": 0.5,
+      "restThGyr": 2.0,
+      "restThAcc": 0.5,
+      "magCurrentTau": 0.05,
+      "magRefTau": 20.0,
+      "magNormTh": 0.1,
+      "magDipTh": 10.0,
+      "magNewTime": 20.0,
+      "magNewFirstTime": 5.0,
+      "magNewMinGyr": 20.0,
+      "magMinUndisturbedTime": 0.5,
+      "magMaxRejectionTime": 60.0,
+      "magRejectionFactor": 2.0
+    },
+    "magnetometer": "not supplied; 6D output only",
+    "heading_aids": "none",
+    "execution": "one causal VQF.update(gyr, acc) call per input sample"
+  },
+  "source_fidelity": {
+    "algorithm_code": "official package Cython wrapper and upstream C++ sources, unmodified",
+    "adapter_code": "host-only wrapper that calls update then getQuat6D; no firmware imports",
+    "offline_variant_used_for_online_score": false
+  }
+}

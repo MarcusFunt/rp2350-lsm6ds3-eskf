@@ -1,0 +1,4 @@
+# Optional dependencies for the official VQF B3 reference and fidelity tests.
+# Install in an isolated environment; the shared contract has no runtime deps.
+numpy==2.0.2
+vqf==2.1.2

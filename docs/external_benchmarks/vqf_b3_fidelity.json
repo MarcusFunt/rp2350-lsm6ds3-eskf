@@ -1,0 +1,280 @@
+{
+  "adapter_sha256": "299dcf2ef69b00a1619bc88b173e968c7d4a162252a81c14cd93321fc60fd766",
+  "algorithm": "official VQF full causal 6D",
+  "implementation_sha256": "2bf7134ffb181d518ac8c0855a239881c5a3e06e927605c351e72bbce1623233",
+  "interpretation": {
+    "batch_vs_streaming": "The official C++ updateBatch path matched its per-sample update path within the recorded floating-point deltas.",
+    "bias": "Only VQF's gyro-bias estimate, its uncertainty, and rest state are reported; VQF has no accelerometer-bias output.",
+    "python_vs_cpp": "Official PyVQF and the official C++-backed VQF wrapper are separate official implementations; deltas quantify numerical fidelity only.",
+    "yaw": "Six-axis yaw is startup-gauge relative; no absolute or magnetic heading was supplied."
+  },
+  "license": "MIT",
+  "numpy": "2.0.2",
+  "python": "3.11.4",
+  "report_schema": "org.marcusfunt.vqf_b3_fidelity.v1",
+  "sequences": [
+    {
+      "accelerometer_bias_available": false,
+      "adapter_last_gyroscope_bias_estimate_rad_s": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "adapter_last_gyroscope_bias_std_rad_s": 0.0008560095061276729,
+      "adapter_vs_official_cpp_streaming_max_geodesic_rad": 0.0,
+      "canonical_input_sha256": "235f776a7f815c3ed043e2e4d59e3462030353a4268d120b3c350f6871b5736b",
+      "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+      "last_gyroscope_bias_estimate_rad_s": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "last_gyroscope_bias_std_rad_s": 0.0008560095061276729,
+      "last_rest_detected": true,
+      "official_cpp_batch_vs_streaming_max_abs_quaternion_component": 0.0,
+      "official_cpp_batch_vs_streaming_max_geodesic_rad": 0.0,
+      "official_python_vs_official_cpp_streaming_max_geodesic_rad": 0.0,
+      "sample_count": 500,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "stationary",
+      "source_artifact_sha256": "8563f4faa16392fb97ce535a5bc94bc38b13d190528b5a969d48511311412d9d",
+      "timestamp_unit": "ns",
+      "trajectory_checks": {}
+    },
+    {
+      "accelerometer_bias_available": false,
+      "adapter_last_gyroscope_bias_estimate_rad_s": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "adapter_last_gyroscope_bias_std_rad_s": 0.008726646259971648,
+      "adapter_vs_official_cpp_streaming_max_geodesic_rad": 0.0,
+      "canonical_input_sha256": "6babbad692fedb3f8d41c33dbb8f88047e17926f4c9ef2040eb8c98de2e1b601",
+      "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+      "last_gyroscope_bias_estimate_rad_s": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "last_gyroscope_bias_std_rad_s": 0.008726646259971648,
+      "last_rest_detected": false,
+      "official_cpp_batch_vs_streaming_max_abs_quaternion_component": 0.0,
+      "official_cpp_batch_vs_streaming_max_geodesic_rad": 0.0,
+      "official_python_vs_official_cpp_streaming_max_geodesic_rad": 0.0,
+      "sample_count": 500,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "yaw_only",
+      "source_artifact_sha256": "e43f96d166def10f93fdd32472110aa37a998bdcdc7dfef57ef68a68f52ae66b",
+      "timestamp_unit": "ns",
+      "trajectory_checks": {}
+    },
+    {
+      "accelerometer_bias_available": false,
+      "adapter_last_gyroscope_bias_estimate_rad_s": [
+        -6.948915820295516e-07,
+        0.0,
+        0.0
+      ],
+      "adapter_last_gyroscope_bias_std_rad_s": 0.0007675861209907674,
+      "adapter_vs_official_cpp_streaming_max_geodesic_rad": 0.0,
+      "canonical_input_sha256": "bb1962f925ce687e75cfb7a529e754c58838cc8cb15e4bcc5d8f05e9fa7eb148",
+      "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+      "last_gyroscope_bias_estimate_rad_s": [
+        -6.948915820295516e-07,
+        0.0,
+        0.0
+      ],
+      "last_gyroscope_bias_std_rad_s": 0.0007675861209907674,
+      "last_rest_detected": true,
+      "official_cpp_batch_vs_streaming_max_abs_quaternion_component": 0.0,
+      "official_cpp_batch_vs_streaming_max_geodesic_rad": 0.0,
+      "official_python_vs_official_cpp_streaming_max_geodesic_rad": 0.0,
+      "sample_count": 600,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "tilted_stationary",
+      "source_artifact_sha256": "e5210fddf682e68cf772d752244d7ecfea99b1b352d63906eecb4ca925e57773",
+      "timestamp_unit": "ns",
+      "trajectory_checks": {
+        "final_gravity_tilt_error_rad": 2.099886100929965e-05
+      }
+    },
+    {
+      "accelerometer_bias_available": false,
+      "adapter_last_gyroscope_bias_estimate_rad_s": [
+        -5.3437701162246404e-05,
+        3.3876829077299054e-06,
+        -2.37375085143444e-06
+      ],
+      "adapter_last_gyroscope_bias_std_rad_s": 0.008726646259971648,
+      "adapter_vs_official_cpp_streaming_max_geodesic_rad": 1.2412670766236366e-16,
+      "canonical_input_sha256": "bddc15e97024eeedf6dcc2d2035620755b78e254dbcdcab003b7ff63170c5026",
+      "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+      "last_gyroscope_bias_estimate_rad_s": [
+        -5.3437701162246404e-05,
+        3.3876829077299054e-06,
+        -2.37375085143444e-06
+      ],
+      "last_gyroscope_bias_std_rad_s": 0.008726646259971648,
+      "last_rest_detected": false,
+      "official_cpp_batch_vs_streaming_max_abs_quaternion_component": 0.0,
+      "official_cpp_batch_vs_streaming_max_geodesic_rad": 1.2412670766236366e-16,
+      "official_python_vs_official_cpp_streaming_max_geodesic_rad": 1.2412670766236366e-16,
+      "sample_count": 800,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "tilted_yaw",
+      "source_artifact_sha256": "0cab61de799c407984961b97f984c3177524264aedb26356c7dd0622206ab944",
+      "timestamp_unit": "ns",
+      "trajectory_checks": {
+        "final_gravity_tilt_error_rad": 0.00017029672510309517,
+        "relative_heading_integration_error_rad": 0.00017029672689215293
+      }
+    },
+    {
+      "accelerometer_bias_available": false,
+      "adapter_last_gyroscope_bias_estimate_rad_s": [
+        0.02602315595297127,
+        -0.012093451878478254,
+        -0.0013604417763339435
+      ],
+      "adapter_last_gyroscope_bias_std_rad_s": 0.008726646259971648,
+      "adapter_vs_official_cpp_streaming_max_geodesic_rad": 1.1102230246251565e-16,
+      "canonical_input_sha256": "d31d5998956704b423bac6d3566991fd639a5ca30f840fc777d990eba6ce0116",
+      "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+      "last_gyroscope_bias_estimate_rad_s": [
+        0.02602315595297127,
+        -0.012093451878478254,
+        -0.0013604417763339435
+      ],
+      "last_gyroscope_bias_std_rad_s": 0.008726646259971648,
+      "last_rest_detected": false,
+      "official_cpp_batch_vs_streaming_max_abs_quaternion_component": 0.0,
+      "official_cpp_batch_vs_streaming_max_geodesic_rad": 1.1102230246251565e-16,
+      "official_python_vs_official_cpp_streaming_max_geodesic_rad": 1.1102230246251565e-16,
+      "sample_count": 500,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "constant_rate",
+      "source_artifact_sha256": "48abd25246be212eaa5ee93ab893a785c25553a732d5e5ddee6fa94e2c30216f",
+      "timestamp_unit": "ns",
+      "trajectory_checks": {}
+    },
+    {
+      "accelerometer_bias_available": false,
+      "adapter_last_gyroscope_bias_estimate_rad_s": [
+        0.011689864128927302,
+        -0.003091432787730206,
+        -0.00037576566775469834
+      ],
+      "adapter_last_gyroscope_bias_std_rad_s": 0.008726646259971648,
+      "adapter_vs_official_cpp_streaming_max_geodesic_rad": 5.561946577567962e-17,
+      "canonical_input_sha256": "c6b0bb07192088df36346c9a7bcf90d0f6280d0084af3680a85d63be5458353d",
+      "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+      "last_gyroscope_bias_estimate_rad_s": [
+        0.011689864128927302,
+        -0.003091432787730206,
+        -0.00037576566775469834
+      ],
+      "last_gyroscope_bias_std_rad_s": 0.008726646259971648,
+      "last_rest_detected": false,
+      "official_cpp_batch_vs_streaming_max_abs_quaternion_component": 0.0,
+      "official_cpp_batch_vs_streaming_max_geodesic_rad": 5.561946577567962e-17,
+      "official_python_vs_official_cpp_streaming_max_geodesic_rad": 5.561946577567962e-17,
+      "sample_count": 500,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "slowly_varying_rate",
+      "source_artifact_sha256": "e21db708fbc59d172aa10a0f35e26613519f4da54d155521f54b74f0177f6986",
+      "timestamp_unit": "ns",
+      "trajectory_checks": {}
+    },
+    {
+      "accelerometer_bias_available": false,
+      "adapter_last_gyroscope_bias_estimate_rad_s": [
+        -0.0036772785869589146,
+        0.0016487624437643103,
+        2.0500166948687934e-05
+      ],
+      "adapter_last_gyroscope_bias_std_rad_s": 0.008726646259971648,
+      "adapter_vs_official_cpp_streaming_max_geodesic_rad": 6.938893903907228e-18,
+      "canonical_input_sha256": "73dd41ca0a7a6f577b3c9ed6ccbf6b6ca7a91cd8c7ccc6ce5931881609250aa3",
+      "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+      "last_gyroscope_bias_estimate_rad_s": [
+        -0.0036772785869589146,
+        0.0016487624437643103,
+        2.0500166948687934e-05
+      ],
+      "last_gyroscope_bias_std_rad_s": 0.008726646259971648,
+      "last_rest_detected": false,
+      "official_cpp_batch_vs_streaming_max_abs_quaternion_component": 0.0,
+      "official_cpp_batch_vs_streaming_max_geodesic_rad": 6.938893903907228e-18,
+      "official_python_vs_official_cpp_streaming_max_geodesic_rad": 2.1103821920200805e-17,
+      "sample_count": 250,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "acceleration_pulse_during_rotation",
+      "source_artifact_sha256": "2ddf003f513e0fc756f82c0186fffa9f4926f9563461cec818c22915c5307e6d",
+      "timestamp_unit": "ns",
+      "trajectory_checks": {}
+    }
+  ],
+  "settings": {
+    "aid_supplied": false,
+    "all_vqf_parameters": "official defaults",
+    "execution_mode": "causal_online",
+    "magnetometer_supplied": false,
+    "official_default_parameters": {
+      "biasClip": 2.0,
+      "biasForgettingTime": 100.0,
+      "biasSigmaInit": 0.5,
+      "biasSigmaMotion": 0.1,
+      "biasSigmaRest": 0.03,
+      "biasVerticalForgettingFactor": 0.0001,
+      "magCurrentTau": 0.05,
+      "magDipTh": 10.0,
+      "magDistRejectionEnabled": true,
+      "magMaxRejectionTime": 60.0,
+      "magMinUndisturbedTime": 0.5,
+      "magNewFirstTime": 5.0,
+      "magNewMinGyr": 20.0,
+      "magNewTime": 20.0,
+      "magNormTh": 0.1,
+      "magRefTau": 20.0,
+      "magRejectionFactor": 2.0,
+      "motionBiasEstEnabled": true,
+      "restBiasEstEnabled": true,
+      "restFilterTau": 0.5,
+      "restMinT": 1.5,
+      "restThAcc": 0.5,
+      "restThGyr": 2.0,
+      "tauAcc": 3.0,
+      "tauMag": 9.0
+    },
+    "output_getter": "getQuat6D",
+    "sampling_rate_hz": {
+      "denominator": 1,
+      "numerator": 100
+    },
+    "timestamp_interval_ns": 10000000
+  },
+  "upstream_revision": "86ba56bdd3158b9b05f9f9fe5596866ba326438c",
+  "vqf_package": "2.1.2"
+}

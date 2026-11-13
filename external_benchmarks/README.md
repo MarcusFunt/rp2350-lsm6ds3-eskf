@@ -164,3 +164,37 @@ python3 -m unittest discover -s tests -p 'test_external_benchmark_contract.py' -
 
 These tests use a small deterministic contract fixture only. They do not
 download, install, or score VQF, Seel/qmt, RIANN, Mahony, or Madgwick.
+
+## Official VQF full causal 6D reference (B3)
+
+The optional [`official.vqf` adapter](adapters/vqf_full_6d.py) is independent of
+production firmware and wraps the author-maintained `vqf.VQF` Cython binding to
+its C++ implementation. It runs one `update(gyr, acc)` per timestamp, returns
+only `getQuat6D()`, supplies no magnetometer or heading aid, and accepts only
+uniformly sampled 6D trials. It does not use the acausal `offlineVQF` function.
+VQF bias telemetry is available through the adapter's separate `diagnostics()`
+method; the shared output contract stays unchanged because VQF does not report
+accelerometer bias.
+
+The exact source commit, MIT license, PyPI artifact hashes, supported host
+runtime and official default parameters are pinned in
+[`vqf_full_6d_v2.1.2_lock.json`](references/vqf_full_6d_v2.1.2_lock.json) and
+the adapter manifest. The measured synthetic fidelity results and all sample,
+input and configuration hashes are in
+[`vqf_b3_fidelity.json`](../docs/external_benchmarks/vqf_b3_fidelity.json);
+the method and interpretation are documented in
+[`vqf_b3_fidelity.md`](../docs/external_benchmarks/vqf_b3_fidelity.md).
+
+Run the pinned B3 tests in an isolated environment:
+
+```bash
+python -m venv .venv-vqf-b3
+# Activate the environment using the platform's normal command, then:
+python -m pip install -r external_benchmarks/requirements-vqf-b3.txt
+python -m unittest tests.test_vqf_full_6d_adapter -v
+python scripts/run_vqf_b3_fidelity.py --output docs/external_benchmarks/vqf_b3_fidelity.json
+```
+
+This optional environment does not add dependencies to the shared contract or
+firmware. The reference fixture is synthetic and is not an external performance
+benchmark.
