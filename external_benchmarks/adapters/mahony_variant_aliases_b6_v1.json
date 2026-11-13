@@ -1,0 +1,18 @@
+{
+  "schema_id": "org.marcusfunt.external_benchmarks.variant_aliases",
+  "schema_version": 1,
+  "purpose": "Keep historical repository labels distinct from canonical algorithm references in future benchmark output.",
+  "mappings": [
+    {
+      "scope": "PR3 v5 no-startup-calibration, no-heading AttitudeBaseline",
+      "legacy_stored_label": "mahony",
+      "display_variant_id": "mahony_internal_historical",
+      "manifest": "mahony_internal_historical_manifest_v1.json",
+      "frozen_evidence_policy": "Do not rewrite frozen v1-v5 artifacts; apply this alias only when presenting their historical PR3 baseline in new charts."
+    }
+  ],
+  "canonical_variant_ids": [
+    "mahony_reference_6d_ahrs_0.4.0_kp1.0_ki0.3_v1",
+    "madgwick_reference_6d_ahrs_0.4.0_beta0.033_v1"
+  ]
+}

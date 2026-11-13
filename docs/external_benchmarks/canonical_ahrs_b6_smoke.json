@@ -1,0 +1,222 @@
+{
+  "fixed_parameters": {
+    "accelerometer_policy": "None or norm <= 1e-12 m/s^2 skips correction; valid gyro is still integrated. Nonfinite vectors fail closed.",
+    "initial_quaternion_wxyz": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "madgwick_reference": {
+      "beta_rad_s": 0.033
+    },
+    "mahony_internal_historical": {
+      "k_i_s_inv2": 0.05,
+      "k_p_s_inv": 1.0
+    },
+    "mahony_reference": {
+      "k_i_s_inv2": 0.3,
+      "k_p_s_inv": 1.0
+    }
+  },
+  "interpretation": {
+    "heading": "All variants are six-axis and use an unobservable startup yaw gauge; no heading is supplied.",
+    "historical_scope": "mahony_internal_historical denotes the PR3 v5 no-startup-calibration/no-heading profile only. Frozen v1-v5 evidence keeps its historical raw label mahony.",
+    "not_tuned_on_sealed_trials": true,
+    "pairwise_metric": "Geodesic quaternion separation for identically hashed samples and shared identity startup gauge; it measures estimator disagreement, not absolute accuracy."
+  },
+  "report_schema": "org.marcusfunt.canonical_ahrs_b6_smoke.v1",
+  "sampling_rate_hz": 100,
+  "sensor_set": "gyro_accel_6d",
+  "sequence_count": 4,
+  "sequences": [
+    {
+      "configuration_sha256": {
+        "madgwick_reference": "d9b1d652904af87b1608afaf9a9a385b0544c2e8e57f824227199202f8762239",
+        "mahony_internal_historical": "dd4fc625392f049db771a43bf488e49cdc64f0324fab69267d4e5a76c2f240fa",
+        "mahony_reference": "4126040eb2c8b4bc7bce76e6f3f6e0aa27d017f5f876ec177759bcce4983797b"
+      },
+      "input_sha256": "f618e8b6059797f76ea692911e9c708ba6028be46e82dcdb5914891035f8ace9",
+      "pairwise_same_startup_gauge_separation": {
+        "madgwick_reference_vs_internal_historical": {
+          "final_geodesic_rad": 0.014878666903754837,
+          "maximum_geodesic_rad": 0.2580275611402017,
+          "mean_geodesic_rad": 0.11735832365495688,
+          "median_geodesic_rad": 0.10630175005971042,
+          "p95_geodesic_rad": 0.25602493538226684
+        },
+        "mahony_reference_vs_internal_historical": {
+          "final_geodesic_rad": 0.008146971427562382,
+          "maximum_geodesic_rad": 0.06433379287530684,
+          "mean_geodesic_rad": 0.02932626134932271,
+          "median_geodesic_rad": 0.02599367744515563,
+          "p95_geodesic_rad": 0.0637895490380119
+        },
+        "mahony_reference_vs_madgwick_reference": {
+          "final_geodesic_rad": 0.006731695476192508,
+          "maximum_geodesic_rad": 0.31702070574020647,
+          "mean_geodesic_rad": 0.14514427147606432,
+          "median_geodesic_rad": 0.13440993921473782,
+          "p95_geodesic_rad": 0.314735198453635
+        }
+      },
+      "same_input_verified": true,
+      "sample_count": 1000,
+      "trial_id": "tilted_stationary_zero_gyro",
+      "variant_ids": [
+        "mahony_reference_6d_ahrs_0.4.0_kp1.0_ki0.3_v1",
+        "madgwick_reference_6d_ahrs_0.4.0_beta0.033_v1",
+        "pr3_v5_mahony_internal_historical_v1"
+      ]
+    },
+    {
+      "configuration_sha256": {
+        "madgwick_reference": "d9b1d652904af87b1608afaf9a9a385b0544c2e8e57f824227199202f8762239",
+        "mahony_internal_historical": "dd4fc625392f049db771a43bf488e49cdc64f0324fab69267d4e5a76c2f240fa",
+        "mahony_reference": "4126040eb2c8b4bc7bce76e6f3f6e0aa27d017f5f876ec177759bcce4983797b"
+      },
+      "input_sha256": "49612d90b4e7bd3c48ed34ae09f742efeca66df96c4dda1701fcde1f5731e6d7",
+      "pairwise_same_startup_gauge_separation": {
+        "madgwick_reference_vs_internal_historical": {
+          "final_geodesic_rad": 0.00015616099756712417,
+          "maximum_geodesic_rad": 0.004312774504042339,
+          "mean_geodesic_rad": 0.0006191657319142154,
+          "median_geodesic_rad": 0.0004944242009300975,
+          "p95_geodesic_rad": 0.0024003832761431594
+        },
+        "mahony_reference_vs_internal_historical": {
+          "final_geodesic_rad": 8.435860692549456e-05,
+          "maximum_geodesic_rad": 0.0006628153532871498,
+          "mean_geodesic_rad": 0.00030176603219487754,
+          "median_geodesic_rad": 0.0002674073508345549,
+          "p95_geodesic_rad": 0.000657099727048423
+        },
+        "mahony_reference_vs_madgwick_reference": {
+          "final_geodesic_rad": 7.180239064152103e-05,
+          "maximum_geodesic_rad": 0.004309653493497588,
+          "mean_geodesic_rad": 0.0007820387548111226,
+          "median_geodesic_rad": 0.000659426762467257,
+          "p95_geodesic_rad": 0.0022584073861945065
+        }
+      },
+      "same_input_verified": true,
+      "sample_count": 1000,
+      "trial_id": "constant_body_roll_0p45_rad_s",
+      "variant_ids": [
+        "mahony_reference_6d_ahrs_0.4.0_kp1.0_ki0.3_v1",
+        "madgwick_reference_6d_ahrs_0.4.0_beta0.033_v1",
+        "pr3_v5_mahony_internal_historical_v1"
+      ]
+    },
+    {
+      "configuration_sha256": {
+        "madgwick_reference": "d9b1d652904af87b1608afaf9a9a385b0544c2e8e57f824227199202f8762239",
+        "mahony_internal_historical": "dd4fc625392f049db771a43bf488e49cdc64f0324fab69267d4e5a76c2f240fa",
+        "mahony_reference": "4126040eb2c8b4bc7bce76e6f3f6e0aa27d017f5f876ec177759bcce4983797b"
+      },
+      "input_sha256": "811100da9b5bf9534106758bbd3d850589fd1ee084fcd15091ad5c1a98c5926d",
+      "pairwise_same_startup_gauge_separation": {
+        "madgwick_reference_vs_internal_historical": {
+          "final_geodesic_rad": 0.08992274088496716,
+          "maximum_geodesic_rad": 0.08992274088496716,
+          "mean_geodesic_rad": 0.035367210980002825,
+          "median_geodesic_rad": 0.03331002956163321,
+          "p95_geodesic_rad": 0.08119672677841631
+        },
+        "mahony_reference_vs_internal_historical": {
+          "final_geodesic_rad": 0.05088103603399607,
+          "maximum_geodesic_rad": 0.052303147340742435,
+          "mean_geodesic_rad": 0.03364433668553651,
+          "median_geodesic_rad": 0.041637683389071985,
+          "p95_geodesic_rad": 0.052261732000188445
+        },
+        "mahony_reference_vs_madgwick_reference": {
+          "final_geodesic_rad": 0.14080377691896323,
+          "maximum_geodesic_rad": 0.14080377691896323,
+          "mean_geodesic_rad": 0.05937848892708135,
+          "median_geodesic_rad": 0.044595997904269984,
+          "p95_geodesic_rad": 0.13275047731085185
+        }
+      },
+      "same_input_verified": true,
+      "sample_count": 1000,
+      "trial_id": "stationary_constant_gyro_bias_0p08_rad_s",
+      "variant_ids": [
+        "mahony_reference_6d_ahrs_0.4.0_kp1.0_ki0.3_v1",
+        "madgwick_reference_6d_ahrs_0.4.0_beta0.033_v1",
+        "pr3_v5_mahony_internal_historical_v1"
+      ]
+    },
+    {
+      "configuration_sha256": {
+        "madgwick_reference": "d9b1d652904af87b1608afaf9a9a385b0544c2e8e57f824227199202f8762239",
+        "mahony_internal_historical": "dd4fc625392f049db771a43bf488e49cdc64f0324fab69267d4e5a76c2f240fa",
+        "mahony_reference": "4126040eb2c8b4bc7bce76e6f3f6e0aa27d017f5f876ec177759bcce4983797b"
+      },
+      "input_sha256": "13a3b180effc2fd94c6b84ae34422b7eb3c1bab779375745c5a83984895f7af5",
+      "pairwise_same_startup_gauge_separation": {
+        "madgwick_reference_vs_internal_historical": {
+          "final_geodesic_rad": 0.007762103541031306,
+          "maximum_geodesic_rad": 0.11932406060678924,
+          "mean_geodesic_rad": 0.03721464528154432,
+          "median_geodesic_rad": 0.01270606005101838,
+          "p95_geodesic_rad": 0.11801507124284907
+        },
+        "mahony_reference_vs_internal_historical": {
+          "final_geodesic_rad": 0.02259399575112221,
+          "maximum_geodesic_rad": 0.039708964997504065,
+          "mean_geodesic_rad": 0.014947861675220695,
+          "median_geodesic_rad": 0.013425092858939327,
+          "p95_geodesic_rad": 0.03869223946506658
+        },
+        "mahony_reference_vs_madgwick_reference": {
+          "final_geodesic_rad": 0.014831892210090906,
+          "maximum_geodesic_rad": 0.14998679002758075,
+          "mean_geodesic_rad": 0.04690980057202812,
+          "median_geodesic_rad": 0.010042294309943602,
+          "p95_geodesic_rad": 0.1486929239497465
+        }
+      },
+      "same_input_verified": true,
+      "sample_count": 800,
+      "trial_id": "stationary_lateral_acceleration_pulse",
+      "variant_ids": [
+        "mahony_reference_6d_ahrs_0.4.0_kp1.0_ki0.3_v1",
+        "madgwick_reference_6d_ahrs_0.4.0_beta0.033_v1",
+        "pr3_v5_mahony_internal_historical_v1"
+      ]
+    }
+  ],
+  "source_selection": {
+    "equation_reference": "Mayitzin/ahrs v0.4.0, MIT, commit 6a94a803fdb87d7a1f757906b9282b524764a7f1",
+    "historical_replay": "Python replay of PR3 v5 AttitudeBaseline source; the original C++ executable was not run because no C++ compiler was available.",
+    "upstream_equation_differential": {
+      "nonzero_rate_results": {
+        "madgwick_reference": {
+          "input_sha256": "b4f4e0ceda9b0e3316ba2a2d1c52c6af19c8fe18eab9be41dc6edd9f9280b2e7",
+          "max_abs_quaternion_component_difference": 2.220446049250313e-16,
+          "max_geodesic_difference_rad": 2.0600126591609917e-17,
+          "same_input_verified": true,
+          "sample_count": 120
+        },
+        "mahony_reference": {
+          "input_sha256": "b4f4e0ceda9b0e3316ba2a2d1c52c6af19c8fe18eab9be41dc6edd9f9280b2e7",
+          "max_abs_quaternion_component_difference": 2.220446049250313e-16,
+          "max_geodesic_difference_rad": 3.49563998084297e-17,
+          "same_input_verified": true,
+          "sample_count": 120
+        }
+      },
+      "source_package": "ahrs==0.4.0",
+      "source_revision": "6a94a803fdb87d7a1f757906b9282b524764a7f1",
+      "zero_rate_short_circuit_confirmed": true
+    },
+    "zero_gyro_divergence": "The upstream Python methods early-return when gyro norm is exactly zero, suppressing valid accelerometer feedback. B6 follows the published equations in that edge case and is classified faithful_reimplementation."
+  },
+  "total_samples": 3800,
+  "units": {
+    "accelerometer": "m/s^2 specific force",
+    "gyroscope": "rad/s",
+    "timestamp": "ns"
+  }
+}

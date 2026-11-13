@@ -12,10 +12,14 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
-from summarize_pr3_benchmarks import summarize
+from summarize_pr3_benchmarks import display_estimator_id, summarize
 
 
 class Pr3SummaryTests(unittest.TestCase):
+    def test_internal_mahony_legacy_label_maps_to_versioned_historical_id(self):
+        self.assertEqual(display_estimator_id("mahony"), "mahony_internal_historical")
+        self.assertEqual(display_estimator_id("mahony_reference"), "mahony_reference")
+
     def test_reports_sample_standard_deviation_and_student_t_mean_interval(self):
         source = ROOT / "benchmarks/reports/pr3_protocol_v5_dev100_208_nominal_trials.csv"
         with tempfile.TemporaryDirectory() as directory:
@@ -39,6 +43,17 @@ class Pr3SummaryTests(unittest.TestCase):
             output = root / "output"
             summarize(sample, output, report_source="eight_trials.csv", figure_prefix="eight")
             report = json.loads((output / "pr3_summary.json").read_text(encoding="utf-8"))
+            self.assertEqual(report["estimator_display_ids"]["mahony"], "mahony_internal_historical")
+            self.assertEqual(
+                report["variant_alias_registry"],
+                "external_benchmarks/adapters/mahony_variant_aliases_b6_v1.json",
+            )
+            self.assertTrue(
+                any(
+                    "mahony_internal_historical" in (output / figure).read_text(encoding="utf-8")
+                    for figure in report["figures"]
+                )
+            )
             group = next(
                 item for item in report["distribution_groups"]
                 if item["scenario"] == "static" and item["estimator"] == "eskf_conservative"

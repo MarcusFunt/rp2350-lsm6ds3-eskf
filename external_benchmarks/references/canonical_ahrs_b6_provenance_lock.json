@@ -1,0 +1,97 @@
+{
+  "schema_id": "org.marcusfunt.external_benchmarks.canonical_ahrs_provenance_lock",
+  "schema_version": 1,
+  "step": "Prompt 12 / B6",
+  "canonical_references": {
+    "upstream": "Mayitzin/ahrs",
+    "tag": "v0.4.0",
+    "commit": "6a94a803fdb87d7a1f757906b9282b524764a7f1",
+    "repository": "https://github.com/Mayitzin/ahrs/tree/v0.4.0",
+    "license": "MIT",
+    "wheel": {
+      "filename": "ahrs-0.4.0-py3-none-any.whl",
+      "sha256": "7be83963d8021ae326d20b646c05a2218401e559f645bb5c2e40ff7dd54245d7"
+    },
+    "source_files": {
+      "ahrs/filters/mahony.py": {
+        "git_blob_sha256": "f12a9f84680cd7b5ab52b4571b5f98ac668a3d41a8d81480e082209b38c51961",
+        "wheel_payload_sha256": "f12a9f84680cd7b5ab52b4571b5f98ac668a3d41a8d81480e082209b38c51961"
+      },
+      "ahrs/filters/madgwick.py": {
+        "git_blob_sha256": "bf0bed107769824ce01688ee4625fda5e0015549b0bc4fc22836f4261dcb2795",
+        "wheel_payload_sha256": "bf0bed107769824ce01688ee4625fda5e0015549b0bc4fc22836f4261dcb2795"
+      },
+      "LICENSE": "84cf146a776f4d3c5a36d54fefe00de2b5a0cc8b7dad55bf6f26a7307057f89a"
+    },
+    "provenance_notes": [
+      "The pinned wheel source payloads byte-match the v0.4.0 Git blobs.",
+      "The package is an actively maintained, independent Python implementation of the canonical algorithms; B6 does not call its update methods directly.",
+      "B6 reimplements the documented equations in float64 and is classified faithful_reimplementation, not official_unmodified."
+    ],
+    "documentation": {
+      "mahony_equations": "https://ahrs.readthedocs.io/en/v0.4.0/filters/mahony.html",
+      "madgwick_equations": "https://ahrs.readthedocs.io/en/v0.4.0/filters/madgwick.html",
+      "original_xio_algorithm_resources": "https://x-io.co.uk/open-source-imu-and-ahrs-algorithms/"
+    }
+  },
+  "fixed_variants": {
+    "mahony_reference": {
+      "variant_id": "mahony_reference_6d_ahrs_0.4.0_kp1.0_ki0.3_v1",
+      "k_p_s_inv": 1.0,
+      "k_i_s_inv2": 0.3,
+      "implementation_file": "external_benchmarks/adapters/canonical_ahrs6d_math.py",
+      "implementation_sha256": "e77d5f63144b66d437d6dd53fedb67b0bf54dfda6c1f1bc82fab75558428fc2f",
+      "adapter_file": "external_benchmarks/adapters/canonical_ahrs6d.py",
+      "adapter_sha256": "5b89688f314613657de6855d79b297a1d65a4754c936147917915bbb4b92093f"
+    },
+    "madgwick_reference": {
+      "variant_id": "madgwick_reference_6d_ahrs_0.4.0_beta0.033_v1",
+      "beta_rad_s": 0.033,
+      "implementation_file": "external_benchmarks/adapters/canonical_ahrs6d_math.py",
+      "implementation_sha256": "e77d5f63144b66d437d6dd53fedb67b0bf54dfda6c1f1bc82fab75558428fc2f",
+      "adapter_file": "external_benchmarks/adapters/canonical_ahrs6d.py",
+      "adapter_sha256": "5b89688f314613657de6855d79b297a1d65a4754c936147917915bbb4b92093f"
+    }
+  },
+  "historical_variant": {
+    "variant_id": "pr3_v5_mahony_internal_historical_v1",
+    "display_id": "mahony_internal_historical",
+    "legacy_stored_label": "mahony",
+    "source_file": "tools/pr3_evaluate_stream.cpp",
+    "source_revision": "1b2eb1119f1e55a2ed4946ee3f0239bdf39f476d",
+    "source_sha256": "2d2c2bd9e7dec4e627b166cd6be7d9d9a58081edaf053b707b498999a95ad680",
+    "fixed_parameters": {
+      "k_p_s_inv": 1.0,
+      "k_i_s_inv2": 0.05,
+      "accelerometer_min_norm_mps2": 0.0001,
+      "startup_calibration": false,
+      "heading_aid": false
+    },
+    "frozen_evidence_policy": "Do not rewrite v1-v5 artifacts; use mahony_internal_historical as the display ID in future charts."
+  },
+  "runtime_lock": {
+    "platform": "Windows x86-64",
+    "python": "3.11.4",
+    "numpy": {
+      "version": "2.3.2",
+      "wheel_sha256": "240259d6564f1c65424bcd10f435145a7644a65a6811cfc3201c4a429ba79170"
+    },
+    "ahrs": "0.4.0",
+    "docutils": {
+      "version": "0.23",
+      "wheel_sha256": "25d013af9bf23bc1c7b2b093dff4208166c53a94786c9e447808335ef1185fea"
+    },
+    "requirements_lock": "requirements-canonical-ahrs-b6-win-cp311.lock.txt"
+  },
+  "upstream_differential": {
+    "common_input_samples": 120,
+    "common_input_sha256": "b4f4e0ceda9b0e3316ba2a2d1c52c6af19c8fe18eab9be41dc6edd9f9280b2e7",
+    "mahony_max_abs_component_difference": 2.220446049250313e-16,
+    "mahony_max_geodesic_difference_rad": 3.49563998084297e-17,
+    "madgwick_max_abs_component_difference": 2.220446049250313e-16,
+    "madgwick_max_geodesic_difference_rad": 2.0600126591609917e-17,
+    "zero_gyro_edge": "Pinned ahrs 0.4.0 updateIMU early-returns when gyro norm is zero, so it does not apply otherwise valid accelerometer feedback. B6 follows the canonical equations and retains gravity correction at zero gyro."
+  },
+  "hardware_validation": false,
+  "sealed_trial_tuning": false
+}

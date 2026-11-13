@@ -295,3 +295,40 @@ summarizes same-input batch/stream differences, state/reset behavior, causality,
 quaternion checks, and desktop CPU timings. The JSON report records per-trial
 input hashes and exposure labels. These synthetic host checks are not BROAD
 scores or RP2350 latency/memory qualification.
+
+## Canonical Mahony and Madgwick 6D references (B6)
+
+B6 adds versioned causal 6D `mahony_reference` and `madgwick_reference`
+adapters using fixed, documented parameters. Their equations are faithfully
+reimplemented from the pinned maintained
+[`Mayitzin/ahrs` v0.4.0 source](https://github.com/Mayitzin/ahrs/tree/v0.4.0)
+and checked differentially on identical nonzero-rate inputs. The manifests say
+`faithful_reimplementation`; these are not described as official unmodified
+author code. See the
+[B6 fidelity report](../docs/external_benchmarks/canonical_ahrs_b6_fidelity.md)
+and [provenance lock](references/canonical_ahrs_b6_provenance_lock.json).
+
+The adapters use rad/s, m/s² specific force, uniform timing, scalar-first
+body-to-world quaternions in ENU, and an unobservable startup yaw gauge. Missing
+or near-zero acceleration skips gravity correction while gyro integration
+continues; malformed non-finite vectors fail closed. Mahony retains its
+integral gyro-bias state, while the 6D Madgwick variant does not claim one.
+
+The historical PR3 v5 label `mahony` is displayed in new comparisons as
+`mahony_internal_historical`, as mapped by
+[`mahony_variant_aliases_b6_v1.json`](adapters/mahony_variant_aliases_b6_v1.json).
+The mapping does not rewrite frozen v1–v5 evidence. The historical baseline is
+not the canonical Mahony reference.
+
+Reproduce the locked checks on Windows CPython 3.11.4:
+
+```powershell
+python -m venv .venv-canonical-ahrs-b6
+.\.venv-canonical-ahrs-b6\Scripts\Activate.ps1
+python -m pip install --require-hashes -r external_benchmarks/references/requirements-canonical-ahrs-b6-win-cp311.lock.txt
+python -m unittest tests.test_canonical_ahrs6d_adapters -v
+python scripts/run_canonical_ahrs_b6_smoke.py --output docs/external_benchmarks/canonical_ahrs_b6_smoke.json
+```
+
+The synthetic differential is a development check only. It does not tune on
+sealed trials, score BROAD, validate firmware, or claim RP2350 performance.

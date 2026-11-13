@@ -1,0 +1,37 @@
+{
+  "schema_id": "org.marcusfunt.external_benchmarks.adapter_manifest",
+  "schema_version": 1,
+  "adapter_id": "mahony_internal_historical",
+  "variant_id": "pr3_v5_mahony_internal_historical_v1",
+  "algorithm_name": "PR3 v5 repository-specific Mahony-style baseline (historical)",
+  "implementation_version": "pr3-v5-historical-replay-v1",
+  "execution_mode": "causal_online",
+  "supported_sensor_sets": ["gyro_accel_6d"],
+  "supported_aid_types": [],
+  "supported_timestamp_units": ["ns", "us"],
+  "supported_sampling_modes": ["uniform"],
+  "allowed_yaw_gauges": ["unobservable_startup"],
+  "initialization": {
+    "orientation_source": "provided_config",
+    "initial_yaw_gauge": "unobservable_startup",
+    "uses_truth": false,
+    "warmup_policy": "Historical PR3 no-startup-calibration/no-heading profile: reset to configured q and bias, seed timestamp on first sample, then apply its fixed kP=1, kI=0.05 gravity correction and quaternion exponential.",
+    "reset_clears_all_state": true
+  },
+  "output_convention": {
+    "quaternion_order": "wxyz",
+    "rotation_direction": "body_to_world",
+    "reference_world_frame": "ENU",
+    "gravity_world_mps2": [0, 0, -9.80665],
+    "accelerometer_quantity": "specific_force"
+  },
+  "source_fidelity": {
+    "classification": "internal_historical",
+    "source_uri": "https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf",
+    "source_revision": "1b2eb1119f1e55a2ed4946ee3f0239bdf39f476d",
+    "implementation_sha256": "2d2c2bd9e7dec4e627b166cd6be7d9d9a58081edaf053b707b498999a95ad680",
+    "adapter_sha256": "5b89688f314613657de6855d79b297a1d65a4754c936147917915bbb4b92093f",
+    "model_sha256": null,
+    "license": "repository source; no root license file"
+  }
+}

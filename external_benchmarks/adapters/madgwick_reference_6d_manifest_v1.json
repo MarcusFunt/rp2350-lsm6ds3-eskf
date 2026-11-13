@@ -1,0 +1,37 @@
+{
+  "schema_id": "org.marcusfunt.external_benchmarks.adapter_manifest",
+  "schema_version": 1,
+  "adapter_id": "madgwick_reference",
+  "variant_id": "madgwick_reference_6d_ahrs_0.4.0_beta0.033_v1",
+  "algorithm_name": "Madgwick gradient-descent IMU filter, 6D",
+  "implementation_version": "canonical-equations-b6-v1",
+  "execution_mode": "causal_online",
+  "supported_sensor_sets": ["gyro_accel_6d"],
+  "supported_aid_types": [],
+  "supported_timestamp_units": ["ns", "us"],
+  "supported_sampling_modes": ["uniform"],
+  "allowed_yaw_gauges": ["unobservable_startup"],
+  "initialization": {
+    "orientation_source": "provided_config",
+    "initial_yaw_gauge": "unobservable_startup",
+    "uses_truth": false,
+    "warmup_policy": "Reset to configured unit q_WB; the first timestamp seeds the clock and later samples integrate the gyroscope plus normalized 6D gradient feedback.",
+    "reset_clears_all_state": true
+  },
+  "output_convention": {
+    "quaternion_order": "wxyz",
+    "rotation_direction": "body_to_world",
+    "reference_world_frame": "ENU",
+    "gravity_world_mps2": [0, 0, -9.80665],
+    "accelerometer_quantity": "specific_force"
+  },
+  "source_fidelity": {
+    "classification": "faithful_reimplementation",
+    "source_uri": "https://github.com/Mayitzin/ahrs",
+    "source_revision": "6a94a803fdb87d7a1f757906b9282b524764a7f1",
+    "implementation_sha256": "e77d5f63144b66d437d6dd53fedb67b0bf54dfda6c1f1bc82fab75558428fc2f",
+    "adapter_sha256": "5b89688f314613657de6855d79b297a1d65a4754c936147917915bbb4b92093f",
+    "model_sha256": null,
+    "license": "MIT"
+  }
+}

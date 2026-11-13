@@ -15,6 +15,18 @@ from pathlib import Path
 
 BOOTSTRAP_SEED = 20261110
 BOOTSTRAP_REPLICATES = 10000
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+_VARIANT_ALIAS_PATH = _REPO_ROOT / "external_benchmarks/adapters/mahony_variant_aliases_b6_v1.json"
+_VARIANT_ALIAS_REGISTRY = json.loads(_VARIANT_ALIAS_PATH.read_text(encoding="utf-8"))
+_ESTIMATOR_DISPLAY_IDS = {
+    item["legacy_stored_label"]: item["display_variant_id"]
+    for item in _VARIANT_ALIAS_REGISTRY["mappings"]
+}
+
+
+def display_estimator_id(estimator):
+    """Return the versioned display ID for chart labels without rewriting source rows."""
+    return _ESTIMATOR_DISPLAY_IDS.get(estimator, estimator)
 
 
 def number(value):
@@ -182,7 +194,7 @@ def box_svg(groups, destination, subtitle):
     for i, model in enumerate(models):
         x = left + i * 190
         elements.append(f'<rect x="{x}" y="560" width="12" height="12" fill="{colors[model]}"/>')
-        elements.append(f'<text x="{x+18}" y="571" font-family="sans-serif" font-size="12">{model}</text>')
+        elements.append(f'<text x="{x+18}" y="571" font-family="sans-serif" font-size="12">{html.escape(display_estimator_id(model))}</text>')
     elements.append('<text transform="translate(22 320) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="13">Tilt RMS (degrees), conditional on valid state</text>')
     elements.append(f'<text x="90" y="602" font-family="sans-serif" font-size="10">Boxes: IQR/median; colored whiskers: min/max; black: mean and 95% Student-t CI ({sample_note}); CIs clip to axis bounds when needed.</text>')
     elements.append('</svg>')
@@ -244,7 +256,7 @@ def metric_box_svg(groups, destination, title, ylabel, subtitle, *, maximum=None
     for i, model in enumerate(models):
         x = left + i * 190
         elements.append(f'<rect x="{x}" y="560" width="12" height="12" fill="{colors[model]}"/>')
-        elements.append(f'<text x="{x+18}" y="571" font-family="sans-serif" font-size="12">{model}</text>')
+        elements.append(f'<text x="{x+18}" y="571" font-family="sans-serif" font-size="12">{html.escape(display_estimator_id(model))}</text>')
     elements.append(f'<text transform="translate(22 320) rotate(-90)" text-anchor="middle" font-family="sans-serif" font-size="13">{html.escape(ylabel)}</text>')
     elements.append(f'<text x="90" y="602" font-family="sans-serif" font-size="10">Boxes: IQR/median; colored whiskers: min/max; black: mean and 95% Student-t CI ({sample_note}); CIs clip to axis bounds when needed.</text>')
     elements.append('</svg>')
@@ -359,13 +371,15 @@ def summarize(input_path, output_dir, *, report_source=None, figure_prefix="pr3"
         "source_summary": report_source or input_path.name,
         "trial_row_count": len(rows),
         "input_stream_count": len({row["input_sha256"] for row in rows}),
+        "estimator_display_ids": _ESTIMATOR_DISPLAY_IDS,
+        "variant_alias_registry": "external_benchmarks/adapters/mahony_variant_aliases_b6_v1.json",
         "minimum_seed_count_per_factor_group": minimum_seed_count,
         "distribution_groups": distributions,
         "paired_confidence_intervals": paired,
         "incomplete_or_failed_trials": failures,
         "pr2_gate_status": "OPEN",
         "pr3_gate_status": "OPEN_FOR_FULL_FACTOR_ACCEPTANCE_AND_INDEPENDENT_REVIEW" if failures or minimum_seed_count < 100 or max(protocol_versions) >= 5 else "OPEN_INDEPENDENT_REVIEW_REQUIRED",
-        "limitations": ["Synthetic host inputs only; no physical sensor or RP2350 performance claims.", "Seed coverage is specific to each listed factor group; this report does not establish coverage for factors absent from its input CSV.", "Mahony and gyro-only are attitude-only reference estimators; navigation states, covariance, and NEES/NIS are not applicable and are explicitly marked.", "The reference Mahony uses fixed proportional and integral gains of 1.0 and 0.05; its heading correction gain is fixed at 0.25. These comparison baselines are not tuned products.", "Tilt NEES and gravity NIS are consistency diagnostics because simulator truth, propagated IMU and gravity pseudo-measurements are not fully independent."],
+        "limitations": ["Synthetic host inputs only; no physical sensor or RP2350 performance claims.", "Seed coverage is specific to each listed factor group; this report does not establish coverage for factors absent from its input CSV.", "The legacy PR3 v5 estimator stored as 'mahony' is displayed as mahony_internal_historical; it is not the canonical Mahony reference.", "The historical internal Mahony and gyro-only estimators are attitude-only baselines; navigation states, covariance, and NEES/NIS are not applicable and are explicitly marked.", "The historical PR3 Mahony uses fixed proportional and integral gains of 1.0 and 0.05; its heading correction gain is fixed at 0.25. These comparison baselines are not tuned products.", "Tilt NEES and gravity NIS are consistency diagnostics because simulator truth, propagated IMU and gravity pseudo-measurements are not fully independent."],
     }
     output_dir.mkdir(parents=True, exist_ok=True)
     figure_dir = output_dir / "figures"

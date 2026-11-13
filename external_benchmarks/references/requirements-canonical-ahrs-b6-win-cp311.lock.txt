@@ -1,0 +1,9 @@
+# Tested on Windows x86-64 with CPython 3.11.4.
+# Install with: python -m pip install --require-hashes -r this-file
+--require-hashes
+ahrs==0.4.0 \
+    --hash=sha256:7be83963d8021ae326d20b646c05a2218401e559f645bb5c2e40ff7dd54245d7
+docutils==0.23 \
+    --hash=sha256:25d013af9bf23bc1c7b2b093dff4208166c53a94786c9e447808335ef1185fea
+numpy==2.3.2 \
+    --hash=sha256:240259d6564f1c65424bcd10f435145a7644a65a6811cfc3201c4a429ba79170
