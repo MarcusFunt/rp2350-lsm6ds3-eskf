@@ -92,6 +92,59 @@ time are optional and remain absent/N/A when unavailable. `check_reset_isolation
 replays a target trial fresh and after an intervening trial, rejecting output
 differences that reveal retained state.
 
+## Independent scoring math
+
+`external_benchmarks.metrics` is pure Python host-side scoring code. It imports
+no firmware or filter code and requires no third-party runtime packages. Its
+quaternions are scalar-first `q_world_from_body` rotations into right-handed
+ENU; angular results are radians.
+
+- `gravity_tilt_error_rad` compares estimated and true gravity directions in
+  the body frame. It ignores global yaw by construction, so it is usable with
+  six-axis IMU-only estimates.
+- `geodesic_error_rad` is the sign-invariant shortest SO(3) angle. `q` and
+  `-q` represent the same rotation; identical estimate/truth scores exactly
+  zero within floating point roundoff handling.
+- `heading_rad` is the ENU azimuth of body +X; it returns `None` if that axis
+  has a singular horizontal projection. Absolute heading error requires a
+  declared reference source. With only accelerometer and gyroscope data,
+  gravity constrains tilt but not rotation about gravity; initial yaw is a
+  gauge and integrated yaw also accumulates unknown gyro bias. Such runs may
+  report `relative_heading_drift_rad`, which removes the declared startup
+  heading difference.
+- `to_project_frame` and `from_project_frame` take an explicit
+  `q_project_from_broad` mapping and compose it on the left. The improvement
+  plan describes BROAD `opt_quat` as scalar-first ENU, already the project
+  world frame; use identity for that mapping unless verified source metadata
+  says otherwise. No frame conversion is guessed.
+- `trial_score_summary` reports absolute error RMS, lower-order-statistic P95,
+  maximum, expected/valid counts, availability, longest outage, optional
+  recovery time, and the same error/availability statistics per named segment.
+  P95 uses PR3's frozen convention `sorted[int(q * (n - 1))]`. Outage duration
+  runs from the first invalid expected instant (or segment start for a leading
+  outage) through the next sample instant, or segment end for a trailing
+  outage. If no segment end is supplied, the final interval uses the median
+  observed sample spacing; a one-sample trial requires an explicit end.
+  Recovery time is measured to the start of the first valid, below-threshold
+  run whose sample instants span the requested dwell; an optional maximum gap
+  can break that run.
+- `paired_trial_statistics` accepts exactly one metric summary per independent
+  `(trial_id, seed)`, requires complete pairing and matching input SHA-256, and
+  bootstraps paired mean differences over those trial/seed units. It never
+  treats correlated samples within one trial as replicates.
+
+The tilt oracle is cross-checked against PR3's body-frame gravity-angle
+calculation and the official BROAD
+[`broad_utils.py`](https://github.com/dlaidig/broad/blob/7e2f8189bb4a3ac91eae32c69b6bc87f08a6e2ad/example_code/broad_utils.py)
+at source revision `7e2f8189bb4a3ac91eae32c69b6bc87f08a6e2ad`, specifically
+`calculateErrorQuatEarth`, `calculateInclinationError`, and
+`calculateTotalError`. BROAD optical quaternions are ENU and its reference uses
+global relative error `q_est * inverse(q_truth)`; its inclination angle equals
+the angle between gravity directions. The upstream functions were executed on
+250 deterministic synthetic quaternion pairs. This checks metric geometry; it
+does not claim BROAD dataset performance or reproduce a published aggregate
+score.
+
 `execution_mode` is part of the versioned adapter identity, never a plot label
 chosen after scoring. `run_trial` accepts only `causal_online`. An adapter
 declared `offline_batch` is rejected by the online runner and must be evaluated
