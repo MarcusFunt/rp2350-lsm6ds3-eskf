@@ -1,0 +1,262 @@
+{
+  "adapter_sha256": "4252c1a8e049d87b4b45404dba889e9fdb16cdc766a3115a12befc6027cb077e",
+  "algorithm": "official pretrained RIANN, causal 6D ONNX model",
+  "batch_session_initialization_ms": 12.0973,
+  "chunk_and_causality": {
+    "causal_prefix_211_of_900_exact_match": true,
+    "stateful_chunks_vs_single_stream_max_abs_component": 0.0,
+    "training_exposure": "BROAD_USED_IN_DEVELOPMENT"
+  },
+  "cpu_session_configuration": {
+    "execution_mode": "ORT_SEQUENTIAL",
+    "graph_optimization_level": "ORT_ENABLE_ALL",
+    "inter_op_num_threads": 1,
+    "intra_op_num_threads": 1,
+    "use_deterministic_compute": true
+  },
+  "implementation_sha256": "e7292f567630ce3b30c031c49dde9c9d1e98769efc6d513cdeb52b243743022d",
+  "input_profile": {
+    "accelerometer": "m/s^2 specific force",
+    "execution_mode": "causal_online",
+    "gyroscope": "rad/s",
+    "independent_heading_supplied": false,
+    "magnetometer_supplied": false,
+    "sampling_rate_hz": {
+      "denominator": 1,
+      "numerator": 100
+    },
+    "sensor_set": "gyro_accel_6d",
+    "timestamp_interval_ns": 10000000
+  },
+  "interpretation": {
+    "batch_vs_stream": "Official RIANN.predict_step was called once per B1 sample. Official RIANN.predict consumed the same serialized input values as a full-sequence batch. Small differences are reported as float32 execution-order effects.",
+    "scope": "Synthetic adapter fidelity and desktop CPU runtime checks only; no BROAD scoring, retraining, model conversion, or RP2350 validation.",
+    "state": "RIANN uses an explicit hidden tensor of shape (2,1,1,200); reset_state() zeros it. predict() resets for its batch call and restores the previous online hidden state.",
+    "training_exposure": "Every per-sequence result is wrapped with BROAD_USED_IN_DEVELOPMENT. BROAD is not an unseen generalization test for this pretrained model.",
+    "yaw": "Six-axis yaw is unobservable startup-gauge relative; there is no magnetic or independent heading aid."
+  },
+  "license": "Apache-2.0",
+  "model_sha256": "9a38dc4c40dd6c31ef12558337e7affa5382476bbd594fdea3c347f10a67f3d8",
+  "numpy_wheel_sha256": "240259d6564f1c65424bcd10f435145a7644a65a6811cfc3201c4a429ba79170",
+  "onnxruntime_wheel_sha256": "f28a42bb322b4ca6d255531bb334a2b3e21f172e37c1741bd5e66bc4b7b61f03",
+  "providers": [
+    "CPUExecutionProvider"
+  ],
+  "report_schema": "org.marcusfunt.riann_b5_smoke.v1",
+  "reset_and_determinism": {
+    "interleaved_reset_exact_match": true,
+    "repeated_after_reset_exact_match": true,
+    "training_exposure": "BROAD_USED_IN_DEVELOPMENT"
+  },
+  "runtime": {
+    "adapter_initialization_ms_including_two_session_constructions": 9.0987,
+    "host_platform": "Windows-10-10.0.26200-SP0",
+    "host_processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+    "official_batch_predict": {
+      "median_total_ms": 21.2262,
+      "median_us_per_sample": 14.150799999999998,
+      "repeats": 5,
+      "sequence_samples": 1500
+    },
+    "onnx_providers": [
+      "CPUExecutionProvider"
+    ],
+    "per_step": {
+      "maximum_us": 146.1,
+      "measured_samples": 1500,
+      "median_us": 54.2,
+      "p95_us": 62.705,
+      "warmup_samples_excluded": 100
+    },
+    "scope": "Desktop CPU timing only; not RP2350 latency or memory qualification."
+  },
+  "runtime_versions": {
+    "numpy": "2.3.2",
+    "onnxruntime": "1.22.1",
+    "python": "3.11.4",
+    "riann": "0.2.0"
+  },
+  "sequence_count": 7,
+  "sequences": [
+    {
+      "result": {
+        "canonical_input_sha256": "4c60db1056511e21ca38bf355c8cf0383e6479a372650295d54af062639f653f",
+        "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+        "official_batch_vs_streaming_max_abs_component": 3.0036393276408613e-07,
+        "official_batch_vs_streaming_max_geodesic_rad": 8.599425019368899e-07,
+        "same_trial_values_used_for_batch": true,
+        "sample_count": 300,
+        "sampling_rate_hz": {
+          "denominator": 1,
+          "numerator": 100
+        },
+        "sequence_id": "stationary",
+        "source_artifact_sha256": "b770fa111e5b1aa841beefdf46ac3bab4cd91207fb78509586177dff37afdffb",
+        "streaming_max_quaternion_norm_error": 2.220446049250313e-16,
+        "streaming_signed_quaternion_jumps": 0,
+        "timestamp_unit": "ns",
+        "training_exposure": "BROAD_USED_IN_DEVELOPMENT",
+        "trajectory_checks": {},
+        "trial_id": "riann-b5-stationary"
+      },
+      "schema_id": "org.marcusfunt.external_benchmarks.riann_result",
+      "schema_version": 1,
+      "training_exposure": "BROAD_USED_IN_DEVELOPMENT"
+    },
+    {
+      "result": {
+        "canonical_input_sha256": "d8456f67214f84c1a836f77c7a9f2e910e4dba90b8137a5d19d3ddfe8e0e62d7",
+        "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+        "official_batch_vs_streaming_max_abs_component": 2.056276322548456e-07,
+        "official_batch_vs_streaming_max_geodesic_rad": 5.104230002616748e-07,
+        "same_trial_values_used_for_batch": true,
+        "sample_count": 300,
+        "sampling_rate_hz": {
+          "denominator": 1,
+          "numerator": 100
+        },
+        "sequence_id": "yaw_only",
+        "source_artifact_sha256": "0b67f5e86211a14c5245b50ecf60167ed7a03228d632093c6988ef2518e3f7e5",
+        "streaming_max_quaternion_norm_error": 3.3306690738754696e-16,
+        "streaming_signed_quaternion_jumps": 0,
+        "timestamp_unit": "ns",
+        "training_exposure": "BROAD_USED_IN_DEVELOPMENT",
+        "trajectory_checks": {},
+        "trial_id": "riann-b5-yaw_only"
+      },
+      "schema_id": "org.marcusfunt.external_benchmarks.riann_result",
+      "schema_version": 1,
+      "training_exposure": "BROAD_USED_IN_DEVELOPMENT"
+    },
+    {
+      "result": {
+        "canonical_input_sha256": "873efa4cc1e9aa46aae0062a57ee747564c8df87b0cdca2e24e136c872b50db1",
+        "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+        "official_batch_vs_streaming_max_abs_component": 2.2560774015634166e-07,
+        "official_batch_vs_streaming_max_geodesic_rad": 5.571695082996159e-07,
+        "same_trial_values_used_for_batch": true,
+        "sample_count": 1000,
+        "sampling_rate_hz": {
+          "denominator": 1,
+          "numerator": 100
+        },
+        "sequence_id": "tilted_stationary",
+        "source_artifact_sha256": "b1b823c68203bb376b6a4dad09eae59ea68575b827f697a3155e28f7f10c6bf3",
+        "streaming_max_quaternion_norm_error": 2.220446049250313e-16,
+        "streaming_signed_quaternion_jumps": 0,
+        "timestamp_unit": "ns",
+        "training_exposure": "BROAD_USED_IN_DEVELOPMENT",
+        "trajectory_checks": {
+          "final_gravity_axis_error_rad": 0.0015170546295255887
+        },
+        "trial_id": "riann-b5-tilted_stationary"
+      },
+      "schema_id": "org.marcusfunt.external_benchmarks.riann_result",
+      "schema_version": 1,
+      "training_exposure": "BROAD_USED_IN_DEVELOPMENT"
+    },
+    {
+      "result": {
+        "canonical_input_sha256": "402446695a49555eb12553d7e08a4c37ae4d315d1878a2870625d4aca2734722",
+        "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+        "official_batch_vs_streaming_max_abs_component": 2.364498046802943e-07,
+        "official_batch_vs_streaming_max_geodesic_rad": 6.328073408944456e-07,
+        "same_trial_values_used_for_batch": true,
+        "sample_count": 800,
+        "sampling_rate_hz": {
+          "denominator": 1,
+          "numerator": 100
+        },
+        "sequence_id": "tilted_world_yaw",
+        "source_artifact_sha256": "0cab61de799c407984961b97f984c3177524264aedb26356c7dd0622206ab944",
+        "streaming_max_quaternion_norm_error": 2.220446049250313e-16,
+        "streaming_signed_quaternion_jumps": 0,
+        "timestamp_unit": "ns",
+        "training_exposure": "BROAD_USED_IN_DEVELOPMENT",
+        "trajectory_checks": {},
+        "trial_id": "riann-b5-tilted_world_yaw"
+      },
+      "schema_id": "org.marcusfunt.external_benchmarks.riann_result",
+      "schema_version": 1,
+      "training_exposure": "BROAD_USED_IN_DEVELOPMENT"
+    },
+    {
+      "result": {
+        "canonical_input_sha256": "22f4a94828f219cb46ae001a3a1902b6c4973ec68370b1c8c2e432e13a08a634",
+        "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+        "official_batch_vs_streaming_max_abs_component": 2.9110609317539726e-07,
+        "official_batch_vs_streaming_max_geodesic_rad": 6.705308734542595e-07,
+        "same_trial_values_used_for_batch": true,
+        "sample_count": 400,
+        "sampling_rate_hz": {
+          "denominator": 1,
+          "numerator": 100
+        },
+        "sequence_id": "constant_rotation",
+        "source_artifact_sha256": "5574a87348fc6dd4e4cb9d7dbda37b89ecf26d5fdf7288f9de6be143b9275432",
+        "streaming_max_quaternion_norm_error": 2.220446049250313e-16,
+        "streaming_signed_quaternion_jumps": 0,
+        "timestamp_unit": "ns",
+        "training_exposure": "BROAD_USED_IN_DEVELOPMENT",
+        "trajectory_checks": {},
+        "trial_id": "riann-b5-constant_rotation"
+      },
+      "schema_id": "org.marcusfunt.external_benchmarks.riann_result",
+      "schema_version": 1,
+      "training_exposure": "BROAD_USED_IN_DEVELOPMENT"
+    },
+    {
+      "result": {
+        "canonical_input_sha256": "3b232f67304d73d6b23687291ee1d05233212b7e2b8cc91b2fec508173cac71c",
+        "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+        "official_batch_vs_streaming_max_abs_component": 5.662734993937268e-07,
+        "official_batch_vs_streaming_max_geodesic_rad": 1.2675566925844487e-06,
+        "same_trial_values_used_for_batch": true,
+        "sample_count": 500,
+        "sampling_rate_hz": {
+          "denominator": 1,
+          "numerator": 100
+        },
+        "sequence_id": "slowly_varying_rate",
+        "source_artifact_sha256": "e21db708fbc59d172aa10a0f35e26613519f4da54d155521f54b74f0177f6986",
+        "streaming_max_quaternion_norm_error": 2.220446049250313e-16,
+        "streaming_signed_quaternion_jumps": 0,
+        "timestamp_unit": "ns",
+        "training_exposure": "BROAD_USED_IN_DEVELOPMENT",
+        "trajectory_checks": {},
+        "trial_id": "riann-b5-slowly_varying_rate"
+      },
+      "schema_id": "org.marcusfunt.external_benchmarks.riann_result",
+      "schema_version": 1,
+      "training_exposure": "BROAD_USED_IN_DEVELOPMENT"
+    },
+    {
+      "result": {
+        "canonical_input_sha256": "68c33e1ede17c13e044d4a2cce12096c38f781b9fdc894c3972cddb2050b3670",
+        "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+        "official_batch_vs_streaming_max_abs_component": 8.393099718215224e-07,
+        "official_batch_vs_streaming_max_geodesic_rad": 1.681097765203509e-06,
+        "same_trial_values_used_for_batch": true,
+        "sample_count": 250,
+        "sampling_rate_hz": {
+          "denominator": 1,
+          "numerator": 100
+        },
+        "sequence_id": "acceleration_pulse",
+        "source_artifact_sha256": "98a2928ace476f092608d2e485d257699416a3e420933fbd03295abc9ef7c43b",
+        "streaming_max_quaternion_norm_error": 2.220446049250313e-16,
+        "streaming_signed_quaternion_jumps": 0,
+        "timestamp_unit": "ns",
+        "training_exposure": "BROAD_USED_IN_DEVELOPMENT",
+        "trajectory_checks": {},
+        "trial_id": "riann-b5-acceleration_pulse"
+      },
+      "schema_id": "org.marcusfunt.external_benchmarks.riann_result",
+      "schema_version": 1,
+      "training_exposure": "BROAD_USED_IN_DEVELOPMENT"
+    }
+  ],
+  "source_revision": "7639f1ed2e1d48e6ed34e340ce0a6eed6e1bafa3",
+  "total_samples": 3550,
+  "training_exposure": "BROAD_USED_IN_DEVELOPMENT"
+}

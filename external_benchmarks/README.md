@@ -249,3 +249,49 @@ python scripts/run_qmt_b4_smoke.py --output docs/external_benchmarks/qmt_b4_fide
 
 The fidelity report is a deterministic synthetic/API check. It does not run
 BROAD, make real-data performance claims, tune parameters, or validate hardware.
+
+## Official pretrained RIANN causal 6D reference (B5)
+
+The optional [`official.riann` adapter](adapters/riann_pretrained_6d.py) wraps
+the official [`daniel-om-weber/riann` release `v0.2.0`](https://github.com/daniel-om-weber/riann/tree/v0.2.0)
+and its packaged `riann.onnx` weights. The source commit, wheel hash, inference
+source hashes, actual ONNX model hash, Python packages, and ONNX Runtime
+configuration are pinned in
+[`riann_b5_provenance_lock.json`](references/riann_b5_provenance_lock.json).
+The 1,471,345-byte model is installed from the official wheel and hash-checked
+at adapter initialization; no model is retrained, converted, or vendored in the
+firmware repository.
+
+The adapter calls the official `RIANN.predict_step` once for each valid sample.
+It accepts only causal, uniformly sampled 6D gyro-plus-accelerometer data at
+50–500 Hz, using m/s² specific force, rad/s, and scalar-first
+body-to-world quaternion output. It rejects heading and magnetometer aids and
+marks yaw as startup-gauge relative. ONNX Runtime is pinned to the CPU provider,
+sequential execution, one intra-op and inter-op thread, deterministic compute,
+and full graph optimization. The wrapper leaves raw quaternion values
+unchanged; it rejects non-finite or non-unit output instead of silently
+normalizing it.
+
+RIANN training exposure is recorded as
+`training_exposure=BROAD_USED_IN_DEVELOPMENT` on every B5 result envelope and
+sequence summary. The RIANN paper reports that BROAD and TUM-VI were used for
+training and hyperparameter optimization, so BROAD must not be described as an
+unseen generalization test for this model. See the [original paper](https://doi.org/10.3390/ai2030028).
+The shared B1 output record remains algorithm-neutral; RIANN-specific saved
+results use the B5 envelope to carry this mandatory exposure label.
+
+From the repository root, reproduce the pinned checks on Windows CPython 3.11:
+
+```bash
+python -m venv .venv-riann-b5
+# Activate the environment using the platform's normal command, then:
+python -m pip install -r external_benchmarks/references/requirements-riann-b5-win-cp311.lock.txt
+python -m unittest tests.test_riann_pretrained_6d_adapter -v
+python scripts/run_riann_b5_smoke.py --output docs/external_benchmarks/riann_b5_smoke.json
+```
+
+The [B5 fidelity report](../docs/external_benchmarks/riann_b5_fidelity.md)
+summarizes same-input batch/stream differences, state/reset behavior, causality,
+quaternion checks, and desktop CPU timings. The JSON report records per-trial
+input hashes and exposure labels. These synthetic host checks are not BROAD
+scores or RP2350 latency/memory qualification.

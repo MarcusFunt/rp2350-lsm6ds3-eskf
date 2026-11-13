@@ -1,0 +1,37 @@
+{
+  "schema_id": "org.marcusfunt.external_benchmarks.adapter_manifest",
+  "schema_version": 1,
+  "adapter_id": "official.riann",
+  "variant_id": "riann_pretrained_causal_6d_onnx_0.2.0_broad_exposed",
+  "algorithm_name": "RIANN pretrained recurrent IMU attitude estimator",
+  "implementation_version": "riann-0.2.0",
+  "execution_mode": "causal_online",
+  "supported_sensor_sets": ["gyro_accel_6d"],
+  "supported_aid_types": [],
+  "supported_timestamp_units": ["ns", "us"],
+  "supported_sampling_modes": ["uniform"],
+  "allowed_yaw_gauges": ["unobservable_startup"],
+  "initialization": {
+    "orientation_source": "algorithm_default",
+    "initial_yaw_gauge": "unobservable_startup",
+    "uses_truth": false,
+    "warmup_policy": "Reset the official GRU hidden state to zeros, set the declared uniform sampling rate, then call predict_step once per sample. The model emits an estimate from the first sample.",
+    "reset_clears_all_state": true
+  },
+  "output_convention": {
+    "quaternion_order": "wxyz",
+    "rotation_direction": "body_to_world",
+    "reference_world_frame": "ENU",
+    "gravity_world_mps2": [0, 0, -9.80665],
+    "accelerometer_quantity": "specific_force"
+  },
+  "source_fidelity": {
+    "classification": "official_unmodified",
+    "source_uri": "https://github.com/daniel-om-weber/riann",
+    "source_revision": "7639f1ed2e1d48e6ed34e340ce0a6eed6e1bafa3",
+    "implementation_sha256": "e7292f567630ce3b30c031c49dde9c9d1e98769efc6d513cdeb52b243743022d",
+    "adapter_sha256": "4252c1a8e049d87b4b45404dba889e9fdb16cdc766a3115a12befc6027cb077e",
+    "model_sha256": "9a38dc4c40dd6c31ef12558337e7affa5382476bbd594fdea3c347f10a67f3d8",
+    "license": "Apache-2.0"
+  }
+}

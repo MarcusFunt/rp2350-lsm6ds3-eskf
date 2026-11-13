@@ -1,0 +1,68 @@
+{
+  "algorithm": "RIANN official pretrained six-axis recurrent attitude model",
+  "variant": "riann_pretrained_causal_6d_onnx_0.2.0_broad_exposed",
+  "upstream_repository": "https://github.com/daniel-om-weber/riann",
+  "upstream_tag": "v0.2.0",
+  "upstream_commit": "7639f1ed2e1d48e6ed34e340ce0a6eed6e1bafa3",
+  "license": "Apache-2.0",
+  "training_exposure": "BROAD_USED_IN_DEVELOPMENT",
+  "training_exposure_basis": "The RIANN paper states that BROAD and TUM-VI were used for training and hyperparameter optimization. BROAD results are therefore not independent generalization evidence.",
+  "official_package": {
+    "name": "riann",
+    "version": "0.2.0",
+    "index": "https://pypi.org/project/riann/0.2.0/",
+    "wheel": {
+      "filename": "riann-0.2.0-py3-none-any.whl",
+      "sha256": "e7292f567630ce3b30c031c49dde9c9d1e98769efc6d513cdeb52b243743022d"
+    },
+    "verified_files": {
+      "riann/__init__.py_sha256": "b71764e218237ec29126a3693d4c85c68fc7b080020b0f33fc3eed4e73aafc94",
+      "riann/riann.py_sha256": "cd6708355059b0a09e6c2947da15362d8d51d334af63d2607f916f4b751a8a7c",
+      "riann/riann.onnx_sha256": "9a38dc4c40dd6c31ef12558337e7affa5382476bbd594fdea3c347f10a67f3d8"
+    },
+    "source_match": "The packaged inference Python source matches the pinned Git source; riann.onnx in the official source tree and wheel has the same SHA-256."
+  },
+  "model": {
+    "filename": "riann.onnx",
+    "package_path": "riann/riann.onnx",
+    "size_bytes": 1471345,
+    "sha256": "9a38dc4c40dd6c31ef12558337e7affa5382476bbd594fdea3c347f10a67f3d8",
+    "retrieval": "Install the pinned official riann==0.2.0 wheel; adapter verifies the packaged model digest before creating an inference session.",
+    "retrained_or_converted": false
+  },
+  "runtime": {
+    "python": "3.11.4",
+    "numpy": "2.3.2",
+    "onnxruntime": "1.22.1",
+    "onnxruntime_wheel": {
+      "filename": "onnxruntime-1.22.1-cp311-cp311-win_amd64.whl",
+      "sha256": "f28a42bb322b4ca6d255531bb334a2b3e21f172e37c1741bd5e66bc4b7b61f03"
+    },
+    "numpy_wheel": {
+      "filename": "numpy-2.3.2-cp311-cp311-win_amd64.whl",
+      "sha256": "240259d6564f1c65424bcd10f435145a7644a65a6811cfc3201c4a429ba79170"
+    },
+    "providers": ["CPUExecutionProvider"],
+    "session_options": {
+      "execution_mode": "ORT_SEQUENTIAL",
+      "intra_op_num_threads": 1,
+      "inter_op_num_threads": 1,
+      "use_deterministic_compute": true,
+      "graph_optimization_level": "ORT_ENABLE_ALL"
+    },
+    "full_dependency_lock": "requirements-riann-b5-win-cp311.lock.txt"
+  },
+  "inputs_outputs": {
+    "accelerometer": "m/s^2 specific force, x/y/z sensor axes",
+    "gyroscope": "rad/s, x/y/z sensor axes",
+    "sampling_rate": "uniform fs in Hz; dt=1/fs is supplied for every step",
+    "supported_rate_hz": {"minimum": 50, "maximum": 500},
+    "output": "scalar-first (w,x,y,z) body-to-world orientation; no magnetic or independent heading input",
+    "initial_hidden_state": "zeros with upstream shape (2,1,1,200)"
+  },
+  "source_fidelity": {
+    "official_model_and_inference_source_unmodified": true,
+    "project_changes": "Host-only wrapper validates the model SHA, uses the official RIANN.predict_step API, and replaces only the ONNX Runtime session with explicit one-thread CPU deterministic settings.",
+    "default_model_resource_note": "Adapter resolves riann/riann.onnx explicitly because RIANN() without onnx_path can fall back to current-working-directory paths when installed outside the source checkout."
+  }
+}
