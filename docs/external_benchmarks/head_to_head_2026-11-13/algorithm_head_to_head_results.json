@@ -1,0 +1,1288 @@
+{
+  "aid_types": [],
+  "algorithms": [
+    {
+      "adapter_id": "official.vqf",
+      "config": {
+        "sampling_rate_hz": {
+          "denominator": 1,
+          "numerator": 100
+        },
+        "timestamp_unit": "ns"
+      },
+      "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+      "implementation_version": "vqf-2.1.2",
+      "label": "VQF 2.1.2",
+      "runtime": {
+        "implementation": "CPython",
+        "packages": {
+          "numpy": "2.0.2",
+          "vqf": "2.1.2"
+        },
+        "python_version": "3.11.4"
+      },
+      "source_fidelity": {
+        "adapter_sha256": "299dcf2ef69b00a1619bc88b173e968c7d4a162252a81c14cd93321fc60fd766",
+        "classification": "official_unmodified",
+        "implementation_sha256": "2bf7134ffb181d518ac8c0855a239881c5a3e06e927605c351e72bbce1623233",
+        "license": "MIT",
+        "model_sha256": null,
+        "source_revision": "86ba56bdd3158b9b05f9f9fe5596866ba326438c",
+        "source_uri": "https://github.com/dlaidig/vqf"
+      },
+      "training_exposure": null,
+      "variant_id": "vqf_full_6d_causal_v2.1.2",
+      "variant_key": "vqf"
+    },
+    {
+      "adapter_id": "official.qmt.oriEstIMU",
+      "config": {
+        "parameters": {
+          "accRating": 1.0,
+          "initBias": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "initQuat": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "tauAcc": 2.0,
+          "tauMag": 2.0,
+          "zeta": 0.0
+        },
+        "sampling_rate_hz": {
+          "denominator": 1,
+          "numerator": 100
+        },
+        "timestamp_unit": "ns"
+      },
+      "config_sha256": "5998f715336dc104d884c09e97ca57354a87695091a673233533cbca1b197a83",
+      "implementation_version": "qmt-0.2.4",
+      "label": "OriEstIMU 0.2.4",
+      "runtime": {
+        "implementation": "CPython",
+        "packages": {
+          "matplotlib": "3.11.2",
+          "numpy": "1.26.4",
+          "qmt": "0.2.4",
+          "vqf": "2.1.2"
+        },
+        "python_version": "3.11.4"
+      },
+      "source_fidelity": {
+        "adapter_sha256": "d7b953173ec844fbd699f9e9368abbc8c4c47300c2c4f4725b1ce8938714d6be",
+        "classification": "official_unmodified",
+        "implementation_sha256": "27fff51c04e4cf4441764623572fa84d8f3743411e24971c44273a28db0faedc",
+        "license": "MIT",
+        "model_sha256": null,
+        "source_revision": "0fa8d32eb461e14d78e9ddbd569664ea59bcea19",
+        "source_uri": "https://github.com/dlaidig/qmt"
+      },
+      "training_exposure": null,
+      "variant_id": "seel_oriestimu_6d_causal_block_defaults_reset_v0.2.4",
+      "variant_key": "oriestimu"
+    },
+    {
+      "adapter_id": "official.riann",
+      "config": {
+        "sampling_rate_hz": {
+          "denominator": 1,
+          "numerator": 100
+        },
+        "timestamp_unit": "ns"
+      },
+      "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+      "implementation_version": "riann-0.2.0",
+      "label": "RIANN 0.2.0\u2020",
+      "runtime": {
+        "implementation": "CPython",
+        "packages": {
+          "numpy": "2.3.2",
+          "onnxruntime": "1.22.1",
+          "riann": "0.2.0"
+        },
+        "python_version": "3.11.4"
+      },
+      "source_fidelity": {
+        "adapter_sha256": "4252c1a8e049d87b4b45404dba889e9fdb16cdc766a3115a12befc6027cb077e",
+        "classification": "official_unmodified",
+        "implementation_sha256": "e7292f567630ce3b30c031c49dde9c9d1e98769efc6d513cdeb52b243743022d",
+        "license": "Apache-2.0",
+        "model_sha256": "9a38dc4c40dd6c31ef12558337e7affa5382476bbd594fdea3c347f10a67f3d8",
+        "source_revision": "7639f1ed2e1d48e6ed34e340ce0a6eed6e1bafa3",
+        "source_uri": "https://github.com/daniel-om-weber/riann"
+      },
+      "training_exposure": "BROAD_USED_IN_DEVELOPMENT",
+      "variant_id": "riann_pretrained_causal_6d_onnx_0.2.0_broad_exposed",
+      "variant_key": "riann"
+    },
+    {
+      "adapter_id": "mahony_reference",
+      "config": {
+        "accel_norm_epsilon_mps2": 1e-12,
+        "initial_gyro_bias_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "initial_quaternion_wxyz": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "initial_yaw_gauge": "unobservable_startup",
+        "k_i_s_inv2": 0.3,
+        "k_p_s_inv": 1.0,
+        "sampling_rate_hz": {
+          "denominator": 1,
+          "numerator": 100
+        },
+        "timestamp_unit": "ns"
+      },
+      "config_sha256": "4126040eb2c8b4bc7bce76e6f3f6e0aa27d017f5f876ec177759bcce4983797b",
+      "implementation_version": "canonical-equations-b6-v1",
+      "label": "Mahony reference",
+      "runtime": {
+        "implementation": "CPython",
+        "packages": {
+          "matplotlib": "3.11.2",
+          "numpy": "1.26.4",
+          "qmt": "0.2.4",
+          "vqf": "2.1.2"
+        },
+        "python_version": "3.11.4"
+      },
+      "source_fidelity": {
+        "adapter_sha256": "5b89688f314613657de6855d79b297a1d65a4754c936147917915bbb4b92093f",
+        "classification": "faithful_reimplementation",
+        "implementation_sha256": "e77d5f63144b66d437d6dd53fedb67b0bf54dfda6c1f1bc82fab75558428fc2f",
+        "license": "MIT",
+        "model_sha256": null,
+        "source_revision": "6a94a803fdb87d7a1f757906b9282b524764a7f1",
+        "source_uri": "https://github.com/Mayitzin/ahrs"
+      },
+      "training_exposure": null,
+      "variant_id": "mahony_reference_6d_ahrs_0.4.0_kp1.0_ki0.3_v1",
+      "variant_key": "mahony_reference"
+    },
+    {
+      "adapter_id": "madgwick_reference",
+      "config": {
+        "accel_norm_epsilon_mps2": 1e-12,
+        "beta_rad_s": 0.033,
+        "gradient_epsilon": 1e-15,
+        "initial_quaternion_wxyz": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "initial_yaw_gauge": "unobservable_startup",
+        "sampling_rate_hz": {
+          "denominator": 1,
+          "numerator": 100
+        },
+        "timestamp_unit": "ns"
+      },
+      "config_sha256": "d9b1d652904af87b1608afaf9a9a385b0544c2e8e57f824227199202f8762239",
+      "implementation_version": "canonical-equations-b6-v1",
+      "label": "Madgwick reference",
+      "runtime": {
+        "implementation": "CPython",
+        "packages": {
+          "matplotlib": "3.11.2",
+          "numpy": "1.26.4",
+          "qmt": "0.2.4",
+          "vqf": "2.1.2"
+        },
+        "python_version": "3.11.4"
+      },
+      "source_fidelity": {
+        "adapter_sha256": "5b89688f314613657de6855d79b297a1d65a4754c936147917915bbb4b92093f",
+        "classification": "faithful_reimplementation",
+        "implementation_sha256": "e77d5f63144b66d437d6dd53fedb67b0bf54dfda6c1f1bc82fab75558428fc2f",
+        "license": "MIT",
+        "model_sha256": null,
+        "source_revision": "6a94a803fdb87d7a1f757906b9282b524764a7f1",
+        "source_uri": "https://github.com/Mayitzin/ahrs"
+      },
+      "training_exposure": null,
+      "variant_id": "madgwick_reference_6d_ahrs_0.4.0_beta0.033_v1",
+      "variant_key": "madgwick_reference"
+    },
+    {
+      "adapter_id": "mahony_internal_historical",
+      "config": {
+        "accel_min_norm_mps2": 0.0001,
+        "initial_gyro_bias_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "initial_quaternion_wxyz": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "initial_yaw_gauge": "unobservable_startup",
+        "k_i_s_inv2": 0.05,
+        "k_p_s_inv": 1.0,
+        "sampling_rate_hz": {
+          "denominator": 1,
+          "numerator": 100
+        },
+        "timestamp_unit": "ns"
+      },
+      "config_sha256": "dd4fc625392f049db771a43bf488e49cdc64f0324fab69267d4e5a76c2f240fa",
+      "implementation_version": "pr3-v5-historical-replay-v1",
+      "label": "Mahony internal historical",
+      "runtime": {
+        "implementation": "CPython",
+        "packages": {
+          "matplotlib": "3.11.2",
+          "numpy": "1.26.4",
+          "qmt": "0.2.4",
+          "vqf": "2.1.2"
+        },
+        "python_version": "3.11.4"
+      },
+      "source_fidelity": {
+        "adapter_sha256": "5b89688f314613657de6855d79b297a1d65a4754c936147917915bbb4b92093f",
+        "classification": "internal_historical",
+        "implementation_sha256": "2d2c2bd9e7dec4e627b166cd6be7d9d9a58081edaf053b707b498999a95ad680",
+        "license": "repository source; no root license file",
+        "model_sha256": null,
+        "source_revision": "1b2eb1119f1e55a2ed4946ee3f0239bdf39f476d",
+        "source_uri": "https://github.com/MarcusFunt/rp2350-lsm6ds3-eskf"
+      },
+      "training_exposure": null,
+      "variant_id": "pr3_v5_mahony_internal_historical_v1",
+      "variant_key": "mahony_internal_historical"
+    }
+  ],
+  "evidence_class": "synthetic_development_only",
+  "figures": [
+    "figures/head_to_head_tilt_error.png",
+    "figures/head_to_head_tilt_error.svg",
+    "figures/head_to_head_heading_drift.png",
+    "figures/head_to_head_heading_drift.svg",
+    "figures/head_to_head_summary_tilt_rms.png",
+    "figures/head_to_head_summary_tilt_rms.svg",
+    "figures/head_to_head_summary_geodesic_p95.png",
+    "figures/head_to_head_summary_geodesic_p95.svg"
+  ],
+  "methodology": {
+    "geodesic": "Quaternion geodesic after aligning each estimate's startup heading to truth at sample 0. This removes the unobservable 6D initial yaw gauge.",
+    "heading": "B2 relative heading drift aligned at sample 0; no absolute yaw metric because no absolute heading aid is supplied.",
+    "orientation_truth": "Analytic quaternions for synthetic fixtures; no recorded or BROAD trial data.",
+    "parameters": "Each adapter uses its pinned documented defaults/versioned fixed configuration; no tuning on sealed trials.",
+    "same_input": "Each adapter receives the same B1 trial JSON; the input SHA-256 and sample count are checked before scoring.",
+    "statistics": "Per-trial summaries only. Within-trial samples are correlated and are not treated as independent replicates; no population confidence interval is reported.",
+    "tilt": "Gravity-axis angular error from B2; invariant to global yaw gauge.",
+    "timing": "Runtime comparisons are omitted because adapters run in separate dependency environments."
+  },
+  "not_run": [
+    {
+      "algorithm": "production RP2350 ESKF",
+      "reason": "No firmware-independent ESKF adapter is registered in the B1 benchmark API, and no C++ compiler is installed for the native PR3 runner.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "per_sample_outputs_persisted": false,
+  "report_schema": "org.marcusfunt.algorithm_head_to_head_b1.v1",
+  "runner_sha256": "73546e27fbbc54ddd76ed2f88724e416294e9d16e14ee6db376467d0ce458e11",
+  "sampling_rate_hz": 100,
+  "sensor_set": "gyro_accel_6d",
+  "title": "Causal six-axis algorithm head-to-head on deterministic synthetic streams",
+  "total_samples_per_algorithm": 4400,
+  "trial_count": 5,
+  "trials": [
+    {
+      "input_sha256": "d85f10e1336487be131230de05dfaaa35b8f0270efb2b1f2f64a6a7b43869bf7",
+      "results": [
+        {
+          "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+          "input_sha256": "d85f10e1336487be131230de05dfaaa35b8f0270efb2b1f2f64a6a7b43869bf7",
+          "label": "VQF 2.1.2",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 600,
+              "final_rad": 2.0998885182751955e-05,
+              "maximum_rad": 5.831151249357088e-05,
+              "p95_rad": 5.541006815960565e-05,
+              "rms_rad": 3.6431391442541505e-05
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 600,
+              "final_rad": 2.0998885182854686e-05,
+              "maximum_rad": 5.8311512493597e-05,
+              "p95_rad": 5.541006815966591e-05,
+              "rms_rad": 3.6431391442566306e-05
+            }
+          },
+          "orientation_valid_sample_count": 600,
+          "variant_id": "vqf_full_6d_causal_v2.1.2",
+          "variant_key": "vqf"
+        },
+        {
+          "config_sha256": "5998f715336dc104d884c09e97ca57354a87695091a673233533cbca1b197a83",
+          "input_sha256": "d85f10e1336487be131230de05dfaaa35b8f0270efb2b1f2f64a6a7b43869bf7",
+          "label": "OriEstIMU 0.2.4",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 600,
+              "final_rad": 5.346393491094155e-05,
+              "maximum_rad": 0.18052320703381045,
+              "p95_rad": 0.003946351967283867,
+              "rms_rad": 0.009852597287193964
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 600,
+              "final_rad": 5.346393491089282e-05,
+              "maximum_rad": 0.18052320703381045,
+              "p95_rad": 0.003946351967283901,
+              "rms_rad": 0.00985259728719396
+            }
+          },
+          "orientation_valid_sample_count": 600,
+          "variant_id": "seel_oriestimu_6d_causal_block_defaults_reset_v0.2.4",
+          "variant_key": "oriestimu"
+        },
+        {
+          "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+          "input_sha256": "d85f10e1336487be131230de05dfaaa35b8f0270efb2b1f2f64a6a7b43869bf7",
+          "label": "RIANN 0.2.0\u2020",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.10871567241100068,
+              "maximum_rad": 0.21867572550535025,
+              "p95_rad": 0.21279903844972617,
+              "rms_rad": 0.14314676944838617
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.10870898608002655,
+              "maximum_rad": 0.2186535492968389,
+              "p95_rad": 0.2127901481115324,
+              "rms_rad": 0.14300362074204376
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.0012286203513559983,
+              "maximum_rad": 0.13517868530707688,
+              "p95_rad": 0.003104490957092947,
+              "rms_rad": 0.006390603266422081
+            }
+          },
+          "orientation_valid_sample_count": 600,
+          "variant_id": "riann_pretrained_causal_6d_onnx_0.2.0_broad_exposed",
+          "variant_key": "riann"
+        },
+        {
+          "config_sha256": "4126040eb2c8b4bc7bce76e6f3f6e0aa27d017f5f876ec177759bcce4983797b",
+          "input_sha256": "d85f10e1336487be131230de05dfaaa35b8f0270efb2b1f2f64a6a7b43869bf7",
+          "label": "Mahony reference",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.042463755090521735,
+              "maximum_rad": 0.4363323129985824,
+              "p95_rad": 0.32019379253636837,
+              "rms_rad": 0.12566929726677453
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.04246375509052182,
+              "maximum_rad": 0.4363323129985824,
+              "p95_rad": 0.3201937925363683,
+              "rms_rad": 0.12566929726677453
+            }
+          },
+          "orientation_valid_sample_count": 600,
+          "variant_id": "mahony_reference_6d_ahrs_0.4.0_kp1.0_ki0.3_v1",
+          "variant_key": "mahony_reference"
+        },
+        {
+          "config_sha256": "d9b1d652904af87b1608afaf9a9a385b0544c2e8e57f824227199202f8762239",
+          "input_sha256": "d85f10e1336487be131230de05dfaaa35b8f0270efb2b1f2f64a6a7b43869bf7",
+          "label": "Madgwick reference",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.04996667321069992,
+              "maximum_rad": 0.4363323129985824,
+              "p95_rad": 0.4165336016850853,
+              "rms_rad": 0.2657183269206094
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.049966673210699905,
+              "maximum_rad": 0.4363323129985824,
+              "p95_rad": 0.41653360168508524,
+              "rms_rad": 0.2657183269206095
+            }
+          },
+          "orientation_valid_sample_count": 600,
+          "variant_id": "madgwick_reference_6d_ahrs_0.4.0_beta0.033_v1",
+          "variant_key": "madgwick_reference"
+        },
+        {
+          "config_sha256": "dd4fc625392f049db771a43bf488e49cdc64f0324fab69267d4e5a76c2f240fa",
+          "input_sha256": "d85f10e1336487be131230de05dfaaa35b8f0270efb2b1f2f64a6a7b43869bf7",
+          "label": "Mahony internal historical",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.01721318586940347,
+              "maximum_rad": 0.4363323129985824,
+              "p95_rad": 0.3243427404832612,
+              "rms_rad": 0.12512558637975738
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 600,
+              "final_rad": 0.017213185869403607,
+              "maximum_rad": 0.4363323129985824,
+              "p95_rad": 0.3243427404832612,
+              "rms_rad": 0.12512558637975738
+            }
+          },
+          "orientation_valid_sample_count": 600,
+          "variant_id": "pr3_v5_mahony_internal_historical_v1",
+          "variant_key": "mahony_internal_historical"
+        }
+      ],
+      "sample_count": 600,
+      "sampling_rate_hz": 100,
+      "trial_id": "static_25deg_roll",
+      "truth_note": "Constant 25 degree roll; identity startup yaw gauge; no sensor noise."
+    },
+    {
+      "input_sha256": "917449b3f71bab3391c5f17a10eff55ef6369bcac313dde09479cf7f58fc5325",
+      "results": [
+        {
+          "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+          "input_sha256": "917449b3f71bab3391c5f17a10eff55ef6369bcac313dde09479cf7f58fc5325",
+          "label": "VQF 2.1.2",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 7.771561172376096e-16,
+              "maximum_rad": 1.7208456881689926e-15,
+              "p95_rad": 1.3877787807814457e-15,
+              "rms_rad": 7.772064244600587e-16
+            }
+          },
+          "orientation_valid_sample_count": 800,
+          "variant_id": "vqf_full_6d_causal_v2.1.2",
+          "variant_key": "vqf"
+        },
+        {
+          "config_sha256": "5998f715336dc104d884c09e97ca57354a87695091a673233533cbca1b197a83",
+          "input_sha256": "917449b3f71bab3391c5f17a10eff55ef6369bcac313dde09479cf7f58fc5325",
+          "label": "OriEstIMU 0.2.4",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 3.8679281999520754e-11,
+              "maximum_rad": 8.685034913469281e-10,
+              "p95_rad": 2.7779739619759875e-10,
+              "rms_rad": 1.5746279813654058e-10
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 3.867917097721829e-11,
+              "maximum_rad": 8.685034913469281e-10,
+              "p95_rad": 2.7779728517529634e-10,
+              "rms_rad": 1.5746279248371865e-10
+            }
+          },
+          "orientation_valid_sample_count": 800,
+          "variant_id": "seel_oriestimu_6d_causal_block_defaults_reset_v0.2.4",
+          "variant_key": "oriestimu"
+        },
+        {
+          "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+          "input_sha256": "917449b3f71bab3391c5f17a10eff55ef6369bcac313dde09479cf7f58fc5325",
+          "label": "RIANN 0.2.0\u2020",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 1.5001278062105385,
+              "maximum_rad": 3.1366485847658048,
+              "p95_rad": 2.8604607959793387,
+              "rms_rad": 1.9694217775585858
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 800,
+              "final_rad": 1.5001194199683137,
+              "maximum_rad": 3.1366289579652307,
+              "p95_rad": 2.860473386112093,
+              "rms_rad": 1.9694009437089726
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.004480075338212293,
+              "maximum_rad": 0.05072132584034076,
+              "p95_rad": 0.01440584656694797,
+              "rms_rad": 0.008908852954244692
+            }
+          },
+          "orientation_valid_sample_count": 800,
+          "variant_id": "riann_pretrained_causal_6d_onnx_0.2.0_broad_exposed",
+          "variant_key": "riann"
+        },
+        {
+          "config_sha256": "4126040eb2c8b4bc7bce76e6f3f6e0aa27d017f5f876ec177759bcce4983797b",
+          "input_sha256": "917449b3f71bab3391c5f17a10eff55ef6369bcac313dde09479cf7f58fc5325",
+          "label": "Mahony reference",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.004894382169882408,
+              "maximum_rad": 0.00587445512456691,
+              "p95_rad": 0.005866113472309336,
+              "rms_rad": 0.004950459246831596
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0048943821698824806,
+              "maximum_rad": 0.005874455124566826,
+              "p95_rad": 0.005866113472309693,
+              "rms_rad": 0.004950459246831621
+            }
+          },
+          "orientation_valid_sample_count": 800,
+          "variant_id": "mahony_reference_6d_ahrs_0.4.0_kp1.0_ki0.3_v1",
+          "variant_key": "mahony_reference"
+        },
+        {
+          "config_sha256": "d9b1d652904af87b1608afaf9a9a385b0544c2e8e57f824227199202f8762239",
+          "input_sha256": "917449b3f71bab3391c5f17a10eff55ef6369bcac313dde09479cf7f58fc5325",
+          "label": "Madgwick reference",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.004058602074374337,
+              "maximum_rad": 0.004731869386337921,
+              "p95_rad": 0.004706058806701002,
+              "rms_rad": 0.004364513735330555
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.004058602074374373,
+              "maximum_rad": 0.004731869386337912,
+              "p95_rad": 0.004706058806700969,
+              "rms_rad": 0.004364513735330569
+            }
+          },
+          "orientation_valid_sample_count": 800,
+          "variant_id": "madgwick_reference_6d_ahrs_0.4.0_beta0.033_v1",
+          "variant_key": "madgwick_reference"
+        },
+        {
+          "config_sha256": "dd4fc625392f049db771a43bf488e49cdc64f0324fab69267d4e5a76c2f240fa",
+          "input_sha256": "917449b3f71bab3391c5f17a10eff55ef6369bcac313dde09479cf7f58fc5325",
+          "label": "Mahony internal historical",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.004843589391866349,
+              "maximum_rad": 0.004857283664823204,
+              "p95_rad": 0.004856910241551323,
+              "rms_rad": 0.004216980423021754
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.004843589391866379,
+              "maximum_rad": 0.004857283664823261,
+              "p95_rad": 0.00485691024155135,
+              "rms_rad": 0.004216980423021789
+            }
+          },
+          "orientation_valid_sample_count": 800,
+          "variant_id": "pr3_v5_mahony_internal_historical_v1",
+          "variant_key": "mahony_internal_historical"
+        }
+      ],
+      "sample_count": 800,
+      "sampling_rate_hz": 100,
+      "trial_id": "constant_body_roll_0p45_rad_s",
+      "truth_note": "Analytic body-x rotation; gyro and gravity-consistent specific force are noise-free."
+    },
+    {
+      "input_sha256": "a01531ed6a0fa00bee83f1cceec652d687f872e83ff6597eaee77c2837c6f399",
+      "results": [
+        {
+          "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+          "input_sha256": "a01531ed6a0fa00bee83f1cceec652d687f872e83ff6597eaee77c2837c6f399",
+          "label": "VQF 2.1.2",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 4.8520683878310674e-15,
+              "maximum_rad": 5.254827606177622e-15,
+              "p95_rad": 4.965145885080757e-15,
+              "rms_rad": 2.459093039999022e-15
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 5.772942887616317e-15,
+              "maximum_rad": 5.994987492541348e-15,
+              "p95_rad": 5.5508982826912856e-15,
+              "rms_rad": 2.689327914975038e-15
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 7.722462089771031e-16,
+              "maximum_rad": 1.2603025721566877e-15,
+              "p95_rad": 1.0221157949727887e-15,
+              "rms_rad": 5.849205520634286e-16
+            }
+          },
+          "orientation_valid_sample_count": 1200,
+          "variant_id": "vqf_full_6d_causal_v2.1.2",
+          "variant_key": "vqf"
+        },
+        {
+          "config_sha256": "5998f715336dc104d884c09e97ca57354a87695091a673233533cbca1b197a83",
+          "input_sha256": "a01531ed6a0fa00bee83f1cceec652d687f872e83ff6597eaee77c2837c6f399",
+          "label": "OriEstIMU 0.2.4",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 1.4208790997396184e-11,
+              "maximum_rad": 3.908265519322165e-09,
+              "p95_rad": 2.5672780579786677e-10,
+              "rms_rad": 2.860430458227815e-10
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 8.444134280694016e-12,
+              "maximum_rad": 4.9682924441185605e-11,
+              "p95_rad": 3.8830272330869775e-11,
+              "rms_rad": 1.5490666100925654e-11
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 1.4206946985749632e-11,
+              "maximum_rad": 3.9082655136403965e-09,
+              "p95_rad": 2.5672769943472415e-10,
+              "rms_rad": 2.860429598744481e-10
+            }
+          },
+          "orientation_valid_sample_count": 1200,
+          "variant_id": "seel_oriestimu_6d_causal_block_defaults_reset_v0.2.4",
+          "variant_key": "oriestimu"
+        },
+        {
+          "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+          "input_sha256": "a01531ed6a0fa00bee83f1cceec652d687f872e83ff6597eaee77c2837c6f399",
+          "label": "RIANN 0.2.0\u2020",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 2.530602340682594,
+              "maximum_rad": 3.1407156132486374,
+              "p95_rad": 2.975172751330707,
+              "rms_rad": 2.1743412068791197
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 2.5342583000668832,
+              "maximum_rad": 3.1413876121750506,
+              "p95_rad": 2.975419352776304,
+              "rms_rad": 2.1765603128134567
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 0.008133912121815958,
+              "maximum_rad": 0.16937914037481322,
+              "p95_rad": 0.035671787786097225,
+              "rms_rad": 0.018226729534805943
+            }
+          },
+          "orientation_valid_sample_count": 1200,
+          "variant_id": "riann_pretrained_causal_6d_onnx_0.2.0_broad_exposed",
+          "variant_key": "riann"
+        },
+        {
+          "config_sha256": "4126040eb2c8b4bc7bce76e6f3f6e0aa27d017f5f876ec177759bcce4983797b",
+          "input_sha256": "a01531ed6a0fa00bee83f1cceec652d687f872e83ff6597eaee77c2837c6f399",
+          "label": "Mahony reference",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 0.0012721689935079334,
+              "maximum_rad": 0.0027293620846103547,
+              "p95_rad": 0.0026937368243537133,
+              "rms_rad": 0.0017264936128447567
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 0.0001641533070062468,
+              "maximum_rad": 0.0019020728520828738,
+              "p95_rad": 0.0018714979353828748,
+              "rms_rad": 0.000977950803684001
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 0.0010521656822969096,
+              "maximum_rad": 0.0026318406812863597,
+              "p95_rad": 0.0025951427939102057,
+              "rms_rad": 0.0016398857521637115
+            }
+          },
+          "orientation_valid_sample_count": 1200,
+          "variant_id": "mahony_reference_6d_ahrs_0.4.0_kp1.0_ki0.3_v1",
+          "variant_key": "mahony_reference"
+        },
+        {
+          "config_sha256": "d9b1d652904af87b1608afaf9a9a385b0544c2e8e57f824227199202f8762239",
+          "input_sha256": "a01531ed6a0fa00bee83f1cceec652d687f872e83ff6597eaee77c2837c6f399",
+          "label": "Madgwick reference",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 0.0009169894641544779,
+              "maximum_rad": 0.0028573524185669975,
+              "p95_rad": 0.0027118350073446324,
+              "rms_rad": 0.001669884821795585
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 0.00045154320831764677,
+              "maximum_rad": 0.0009530900455887519,
+              "p95_rad": 0.000760422102302642,
+              "rms_rad": 0.0004084190495175205
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 0.0009169886033491695,
+              "maximum_rad": 0.002857352339700273,
+              "p95_rad": 0.0027118349372552714,
+              "rms_rad": 0.0016698846887194326
+            }
+          },
+          "orientation_valid_sample_count": 1200,
+          "variant_id": "madgwick_reference_6d_ahrs_0.4.0_beta0.033_v1",
+          "variant_key": "madgwick_reference"
+        },
+        {
+          "config_sha256": "dd4fc625392f049db771a43bf488e49cdc64f0324fab69267d4e5a76c2f240fa",
+          "input_sha256": "a01531ed6a0fa00bee83f1cceec652d687f872e83ff6597eaee77c2837c6f399",
+          "label": "Mahony internal historical",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 0.0007639132384873716,
+              "maximum_rad": 0.002221267621314965,
+              "p95_rad": 0.002192572787077685,
+              "rms_rad": 0.001412817030028091
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 0.00014656573591987517,
+              "maximum_rad": 0.0011454451916579273,
+              "p95_rad": 0.0011221516955188732,
+              "rms_rad": 0.0005445018660588674
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 1200,
+              "final_rad": 0.0007296148578262213,
+              "maximum_rad": 0.002213420699227485,
+              "p95_rad": 0.002185172063325241,
+              "rms_rad": 0.0014051973170331777
+            }
+          },
+          "orientation_valid_sample_count": 1200,
+          "variant_id": "pr3_v5_mahony_internal_historical_v1",
+          "variant_key": "mahony_internal_historical"
+        }
+      ],
+      "sample_count": 1200,
+      "sampling_rate_hz": 100,
+      "trial_id": "varying_three_axis_rotation",
+      "truth_note": "Analytic integrated three-axis body rate; ideal gyro and gravity-only specific force."
+    },
+    {
+      "input_sha256": "f7c29c9f3455cbbe6ca62c0cc6592ce6ba9ac1673da914b638b8909c9cdcbd7d",
+      "results": [
+        {
+          "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+          "input_sha256": "f7c29c9f3455cbbe6ca62c0cc6592ce6ba9ac1673da914b638b8909c9cdcbd7d",
+          "label": "VQF 2.1.2",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.15949487992742883,
+              "maximum_rad": 0.195688313072694,
+              "p95_rad": 0.1953418780790478,
+              "rms_rad": 0.1503521149592537
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.15949487992742886,
+              "maximum_rad": 0.195688313072694,
+              "p95_rad": 0.19534187807904782,
+              "rms_rad": 0.1503521149592537
+            }
+          },
+          "orientation_valid_sample_count": 1000,
+          "variant_id": "vqf_full_6d_causal_v2.1.2",
+          "variant_key": "vqf"
+        },
+        {
+          "config_sha256": "5998f715336dc104d884c09e97ca57354a87695091a673233533cbca1b197a83",
+          "input_sha256": "f7c29c9f3455cbbe6ca62c0cc6592ce6ba9ac1673da914b638b8909c9cdcbd7d",
+          "label": "OriEstIMU 0.2.4",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.2137543480513384,
+              "maximum_rad": 0.2137543480513384,
+              "p95_rad": 0.21161602210390087,
+              "rms_rad": 0.15332587758555521
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.21375434805133842,
+              "maximum_rad": 0.21375434805133842,
+              "p95_rad": 0.21161602210390085,
+              "rms_rad": 0.15332587758555524
+            }
+          },
+          "orientation_valid_sample_count": 1000,
+          "variant_id": "seel_oriestimu_6d_causal_block_defaults_reset_v0.2.4",
+          "variant_key": "oriestimu"
+        },
+        {
+          "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+          "input_sha256": "f7c29c9f3455cbbe6ca62c0cc6592ce6ba9ac1673da914b638b8909c9cdcbd7d",
+          "label": "RIANN 0.2.0\u2020",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 1.0901270371222527,
+              "maximum_rad": 1.0901270371222527,
+              "p95_rad": 1.0863310067530494,
+              "rms_rad": 0.9109839441773113
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 1.0804314427448305,
+              "maximum_rad": 1.0804314427448305,
+              "p95_rad": 1.076713054948926,
+              "rms_rad": 0.9036516407158971
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.1455168210759297,
+              "maximum_rad": 0.1455168210759297,
+              "p95_rad": 0.14477114567386112,
+              "rms_rad": 0.11619612078483046
+            }
+          },
+          "orientation_valid_sample_count": 1000,
+          "variant_id": "riann_pretrained_causal_6d_onnx_0.2.0_broad_exposed",
+          "variant_key": "riann"
+        },
+        {
+          "config_sha256": "4126040eb2c8b4bc7bce76e6f3f6e0aa27d017f5f876ec177759bcce4983797b",
+          "input_sha256": "f7c29c9f3455cbbe6ca62c0cc6592ce6ba9ac1673da914b638b8909c9cdcbd7d",
+          "label": "Mahony reference",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.0019219173669498516,
+              "maximum_rad": 0.057107275218087984,
+              "p95_rad": 0.05655586534311019,
+              "rms_rad": 0.032668614143339894
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.0019219173669498518,
+              "maximum_rad": 0.057107275218087984,
+              "p95_rad": 0.056555865343110204,
+              "rms_rad": 0.0326686141433399
+            }
+          },
+          "orientation_valid_sample_count": 1000,
+          "variant_id": "mahony_reference_6d_ahrs_0.4.0_kp1.0_ki0.3_v1",
+          "variant_key": "mahony_reference"
+        },
+        {
+          "config_sha256": "d9b1d652904af87b1608afaf9a9a385b0544c2e8e57f824227199202f8762239",
+          "input_sha256": "f7c29c9f3455cbbe6ca62c0cc6592ce6ba9ac1673da914b638b8909c9cdcbd7d",
+          "label": "Madgwick reference",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.14272569428591309,
+              "maximum_rad": 0.14272569428591309,
+              "p95_rad": 0.13541007831947885,
+              "rms_rad": 0.08210548972373596
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.14272569428591309,
+              "maximum_rad": 0.14272569428591309,
+              "p95_rad": 0.13541007831947888,
+              "rms_rad": 0.08210548972373596
+            }
+          },
+          "orientation_valid_sample_count": 1000,
+          "variant_id": "madgwick_reference_6d_ahrs_0.4.0_beta0.033_v1",
+          "variant_key": "madgwick_reference"
+        },
+        {
+          "config_sha256": "dd4fc625392f049db771a43bf488e49cdc64f0324fab69267d4e5a76c2f240fa",
+          "input_sha256": "f7c29c9f3455cbbe6ca62c0cc6592ce6ba9ac1673da914b638b8909c9cdcbd7d",
+          "label": "Mahony internal historical",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.05280295340094591,
+              "maximum_rad": 0.07133451447396669,
+              "p95_rad": 0.07122231864835532,
+              "rms_rad": 0.0614144813383326
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 1000,
+              "final_rad": 0.052802953400945915,
+              "maximum_rad": 0.0713345144739667,
+              "p95_rad": 0.07122231864835533,
+              "rms_rad": 0.061414481338332605
+            }
+          },
+          "orientation_valid_sample_count": 1000,
+          "variant_id": "pr3_v5_mahony_internal_historical_v1",
+          "variant_key": "mahony_internal_historical"
+        }
+      ],
+      "sample_count": 1000,
+      "sampling_rate_hz": 100,
+      "trial_id": "stationary_gyro_bias_0p08_rad_s",
+      "truth_note": "Stationary identity attitude with a constant synthetic body-x gyro bias."
+    },
+    {
+      "input_sha256": "bd633e3d2d8ee64087db4514fff0b68fdd3435c41e3edc1e27a5c8085d2aa5f0",
+      "results": [
+        {
+          "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+          "input_sha256": "bd633e3d2d8ee64087db4514fff0b68fdd3435c41e3edc1e27a5c8085d2aa5f0",
+          "label": "VQF 2.1.2",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.08446654167979344,
+              "maximum_rad": 0.1415313096861052,
+              "p95_rad": 0.14090946674945165,
+              "rms_rad": 0.09683935537704952
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.08446654167979346,
+              "maximum_rad": 0.14153130968610525,
+              "p95_rad": 0.14090946674945168,
+              "rms_rad": 0.09683935537704952
+            }
+          },
+          "orientation_valid_sample_count": 800,
+          "variant_id": "vqf_full_6d_causal_v2.1.2",
+          "variant_key": "vqf"
+        },
+        {
+          "config_sha256": "5998f715336dc104d884c09e97ca57354a87695091a673233533cbca1b197a83",
+          "input_sha256": "bd633e3d2d8ee64087db4514fff0b68fdd3435c41e3edc1e27a5c8085d2aa5f0",
+          "label": "OriEstIMU 0.2.4",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0453568982758265,
+              "maximum_rad": 0.15594874421740046,
+              "p95_rad": 0.14843018169011973,
+              "rms_rad": 0.08711978153027167
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0453568982758265,
+              "maximum_rad": 0.1559487442174005,
+              "p95_rad": 0.1484301816901198,
+              "rms_rad": 0.0871197815302717
+            }
+          },
+          "orientation_valid_sample_count": 800,
+          "variant_id": "seel_oriestimu_6d_causal_block_defaults_reset_v0.2.4",
+          "variant_key": "oriestimu"
+        },
+        {
+          "config_sha256": "dcce4107dab9a78352729199c402f79d768886438ccca0ce6a5d4183b86ebcc3",
+          "input_sha256": "bd633e3d2d8ee64087db4514fff0b68fdd3435c41e3edc1e27a5c8085d2aa5f0",
+          "label": "RIANN 0.2.0\u2020",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.5151077565375022,
+              "maximum_rad": 0.6893169033411757,
+              "p95_rad": 0.6814617849200539,
+              "rms_rad": 0.5451116051395983
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.5075135342731224,
+              "maximum_rad": 0.6591567878059706,
+              "p95_rad": 0.6536679400386164,
+              "rms_rad": 0.5297411162969479
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.09045331414386514,
+              "maximum_rad": 0.20704793447449293,
+              "p95_rad": 0.1988923955814034,
+              "rms_rad": 0.13181254392513572
+            }
+          },
+          "orientation_valid_sample_count": 800,
+          "variant_id": "riann_pretrained_causal_6d_onnx_0.2.0_broad_exposed",
+          "variant_key": "riann"
+        },
+        {
+          "config_sha256": "4126040eb2c8b4bc7bce76e6f3f6e0aa27d017f5f876ec177759bcce4983797b",
+          "input_sha256": "bd633e3d2d8ee64087db4514fff0b68fdd3435c41e3edc1e27a5c8085d2aa5f0",
+          "label": "Mahony reference",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.014819761754534895,
+              "maximum_rad": 0.2997454480419836,
+              "p95_rad": 0.2870862507330084,
+              "rms_rad": 0.14402419633215244
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.014819761754534897,
+              "maximum_rad": 0.2997454480419836,
+              "p95_rad": 0.2870862507330085,
+              "rms_rad": 0.14402419633215247
+            }
+          },
+          "orientation_valid_sample_count": 800,
+          "variant_id": "mahony_reference_6d_ahrs_0.4.0_kp1.0_ki0.3_v1",
+          "variant_key": "mahony_reference"
+        },
+        {
+          "config_sha256": "d9b1d652904af87b1608afaf9a9a385b0544c2e8e57f824227199202f8762239",
+          "input_sha256": "bd633e3d2d8ee64087db4514fff0b68fdd3435c41e3edc1e27a5c8085d2aa5f0",
+          "label": "Madgwick reference",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 1.2130455556013381e-05,
+              "maximum_rad": 0.16427431054068525,
+              "p95_rad": 0.151232927759554,
+              "rms_rad": 0.07511501333363982
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 1.213045555601338e-05,
+              "maximum_rad": 0.16427431054068528,
+              "p95_rad": 0.15123292775955402,
+              "rms_rad": 0.07511501333363982
+            }
+          },
+          "orientation_valid_sample_count": 800,
+          "variant_id": "madgwick_reference_6d_ahrs_0.4.0_beta0.033_v1",
+          "variant_key": "madgwick_reference"
+        },
+        {
+          "config_sha256": "dd4fc625392f049db771a43bf488e49cdc64f0324fab69267d4e5a76c2f240fa",
+          "input_sha256": "bd633e3d2d8ee64087db4514fff0b68fdd3435c41e3edc1e27a5c8085d2aa5f0",
+          "label": "Mahony internal historical",
+          "metrics": {
+            "gauge_aligned_geodesic_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.00777423399658732,
+              "maximum_rad": 0.26020617609012286,
+              "p95_rad": 0.24947494074306412,
+              "rms_rad": 0.12598128672509612
+            },
+            "relative_heading_drift_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.0,
+              "maximum_rad": 0.0,
+              "p95_rad": 0.0,
+              "rms_rad": 0.0
+            },
+            "tilt_error_rad": {
+              "available_sample_count": 800,
+              "final_rad": 0.007774233996587321,
+              "maximum_rad": 0.2602061760901229,
+              "p95_rad": 0.24947494074306414,
+              "rms_rad": 0.12598128672509615
+            }
+          },
+          "orientation_valid_sample_count": 800,
+          "variant_id": "pr3_v5_mahony_internal_historical_v1",
+          "variant_key": "mahony_internal_historical"
+        }
+      ],
+      "sample_count": 800,
+      "sampling_rate_hz": 100,
+      "trial_id": "stationary_lateral_acceleration_pulse",
+      "truth_note": "Stationary identity attitude with a 0.28 g lateral acceleration pulse from 2.0 to 4.5 s."
+    }
+  ],
+  "units": {
+    "accelerometer": "m/s^2 specific force",
+    "errors": "rad",
+    "gyroscope": "rad/s",
+    "time": "s"
+  }
+}
