@@ -1,0 +1,91 @@
+{
+  "algorithm": "Seel/Ruppin OriEstIMU",
+  "variant": "official_qmt_streaming_block_default_parameters_6d_reset_identity",
+  "upstream_repository": "https://github.com/dlaidig/qmt",
+  "upstream_tag": "v0.2.4",
+  "upstream_commit": "0fa8d32eb461e14d78e9ddbd569664ea59bcea19",
+  "license": "MIT",
+  "distribution": {
+    "name": "qmt",
+    "version": "0.2.4",
+    "official_source_distribution_sha256": "27fff51c04e4cf4441764623572fa84d8f3743411e24971c44273a28db0faedc",
+    "validated_wheel": {
+      "filename": "qmt-0.2.4-cp311-cp311-win_amd64.whl",
+      "sha256": "5c4b4f262e54aef4870823a58fd78ce9d7629914033884648f7ea5ed0f6c4355"
+    }
+  },
+  "source_file_sha256": {
+    "qmt/functions/oriest.py": "c663e9cc6ebb18ba2f82b548bbdb6f24e73f93a76f2c32c9dd8c392135f7d973",
+    "qmt/blocks/oriest.py": "27b86588fa8fa0ce0fbd7089e8c07ee81ecc91a288ed64f97fe87d7065589f9b",
+    "qmt/cpp/oriestimu.pyx": "2381cf021ca4ec911b63af232f6ef085470944262032a1d2a8c64415e6013981",
+    "qmt/cpp/oriestimu_src/CsgOriEstIMU.cpp": "4bfab54e33a023b086084b74745c1d3d6055fc6f17192c80dce89d547a220992",
+    "qmt/cpp/oriestimu_src/CsgOriEstIMU.hpp": "a420ff5fde828e7e67e975d812e33cda68f2a2743769ef91b2c7b499b2a84753",
+    "qmt/cpp/oriestimu_src/CSGutilities.cpp": "57663a4308c76da2c5dff08cf3a5425e2efeeb468050c6ff861a4e90a6bf4d66",
+    "qmt/cpp/oriestimu_src/CSGutilities.hpp": "f1da264e7a0ee021f863399481bd215d50a048139cce3318c8193690bef4784f"
+  },
+  "runtime": {
+    "python": "3.11.4",
+    "numpy": "1.26.4",
+    "vqf": "2.1.2 (qmt declared dependency; pinned for the host environment)",
+    "full_dependency_lock": "requirements-qmt-b4-win-cp311.lock.txt",
+    "qmt_declared_dependencies": [
+      "numpy",
+      "scipy>=1.8.0",
+      "matplotlib",
+      "PyYAML",
+      "transplant>=0.8.11",
+      "aiohttp>=3.8.1",
+      "aiofiles",
+      "orjson",
+      "qasync",
+      "vqf>=2.0.0"
+    ],
+    "source_build_dependencies": ["setuptools", "wheel", "Cython>=0.29.21", "numpy>=1.20.0"]
+  },
+  "documented_defaults": {
+    "oriEstIMU_function": {
+      "tauAcc": 1.0,
+      "tauMag": 3.0,
+      "accRating": 1.0,
+      "zeta": 0.0,
+      "initQuat": null,
+      "initBias": null
+    },
+    "OriEstIMUBlock_constructor": {
+      "tauAcc": 2.0,
+      "tauMag": 2.0,
+      "zeta": 0.0,
+      "accRating": 1.0
+    },
+    "selected_primary_parameters": {
+      "tauAcc": 2.0,
+      "tauMag": 2.0,
+      "zeta": 0.0,
+      "accRating": 1.0,
+      "initQuat_wxyz": [1.0, 0.0, 0.0, 0.0],
+      "initBias_rad_s": [0.0, 0.0, 0.0]
+    },
+    "parameter_notes": {
+      "Ts": "denominator/numerator seconds from trial sampling_rate_hz",
+      "tauAcc": "official accelerometer correction half-response time in seconds",
+      "tauMag": "official magnetometer correction half-response time in seconds; unused when mag is omitted",
+      "zeta": "unitless official bias-estimation strength; zero disables gyro-bias adaptation",
+      "accRating": "official raw accelerometer rating; one enables the documented behavior",
+      "initBias_sign": "qmt batch API negates initBias before passing it to the C++ reset; selected value is zero",
+      "constructor_quaternion_wxyz_before_reset": [0.5, 0.5, 0.5, 0.5],
+      "constructor_bias_rad_s_before_reset": [0.0, 0.0, 0.0],
+      "selected_initial_state": "official block command(['reset']) sets identity quaternion and zero internal bias"
+    }
+  },
+  "six_axis_path": {
+    "batch": "qmt.oriEstIMU(..., mag=None); official Cython wrapper supplies a zero magnetometer vector",
+    "streaming": "qmt.OriEstIMUBlock.step(gyr, acc, zero_mag); upstream Cython signature requires an ndarray, and the C++ source skips magnetic correction when all three components are zero",
+    "aid_source": "none",
+    "execution": "causal per-sample update; no offline OriEstIMU variant used"
+  },
+  "reset_findings": {
+    "documented_command": "['reset'] resets orientation quaternion to identity and gyro bias to zero",
+    "source_observation": "resetEstimation does not reset validAccDataCount or ratingWindow",
+    "adapter_policy": "construct a new block on every adapter reset, then call the documented reset command"
+  }
+}

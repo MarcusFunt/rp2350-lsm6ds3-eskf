@@ -198,3 +198,54 @@ python scripts/run_vqf_b3_fidelity.py --output docs/external_benchmarks/vqf_b3_f
 This optional environment does not add dependencies to the shared contract or
 firmware. The reference fixture is synthetic and is not an external performance
 benchmark.
+
+## Official Seel/OriEstIMU causal 6D reference (B4)
+
+The optional [`official.qmt.oriEstIMU` adapter](adapters/qmt_oriestimu_6d.py)
+wraps the author-maintained Seel/OriEstIMU in `dlaidig/qmt` release `v0.2.4`.
+It uses `qmt.OriEstIMUBlock` one sample at a time, with 6D gyro-plus-
+accelerometer input, no magnetic or independent heading aid, and no offline
+filter path. The [official function documentation](https://qmt.readthedocs.io/en/latest/python_functions.html)
+defines `Ts` in seconds, `tauAcc` / `tauMag` in seconds, `zeta` as the bias
+estimation strength, and `initQuat` / `initBias`; the
+[block documentation](https://qmt.readthedocs.io/en/latest/python_blocks.html)
+documents the streaming API and reset command. The implementation and artifact
+hashes are recorded in
+[`qmt_oriestimu_v0.2.4_provenance_lock.json`](references/qmt_oriestimu_v0.2.4_provenance_lock.json).
+
+The predeclared B4 parameter set uses the official streaming block's constructor
+defaults (`tauAcc=2 s`, `tauMag=2 s`, `zeta=0`, `accRating=1`), with an explicit
+identity `initQuat` and zero `initBias` applied by the documented reset. The
+official batch function has different defaults (`tauAcc=1 s`, `tauMag=3 s`),
+so those same streaming parameters are passed explicitly for parity checks.
+`tauMag` is unused in the 6D path. This set is fixed for fidelity testing and
+was not tuned against any dataset.
+
+The Cython streaming method requires a magnetometer array even in 6D mode. The
+adapter passes a zero vector: inspection of the pinned official C++ path
+confirms that this disables magnetic correction, matching the batch wrapper's
+`mag=None` behavior. The output is scalar-first body-to-world ENU, with down
+gravity and startup-gauge yaw.
+
+The pinned source's `resetEstimation` resets quaternion and bias but does not
+clear `validAccDataCount` or its acceleration-rating window. Reusing a block
+with only `command(["reset"])` therefore retains startup history. The adapter
+constructs a fresh official block on every trial reset before issuing that
+command. The measured counterexample and the adapter isolation result are in
+[`qmt_b4_fidelity.json`](../docs/external_benchmarks/qmt_b4_fidelity.json),
+with interpretation in
+[`qmt_b4_fidelity.md`](../docs/external_benchmarks/qmt_b4_fidelity.md).
+
+To create the pinned Windows CPython 3.11 environment and reproduce the B4
+checks:
+
+```bash
+python -m venv .venv-qmt-b4
+# Activate the environment using the platform's normal command, then:
+python -m pip install -r external_benchmarks/references/requirements-qmt-b4-win-cp311.lock.txt
+python -m unittest tests.test_qmt_oriestimu_6d_adapter -v
+python scripts/run_qmt_b4_smoke.py --output docs/external_benchmarks/qmt_b4_fidelity.json
+```
+
+The fidelity report is a deterministic synthetic/API check. It does not run
+BROAD, make real-data performance claims, tune parameters, or validate hardware.

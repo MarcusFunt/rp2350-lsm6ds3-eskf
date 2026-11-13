@@ -1,0 +1,37 @@
+{
+  "schema_id": "org.marcusfunt.external_benchmarks.adapter_manifest",
+  "schema_version": 1,
+  "adapter_id": "official.qmt.oriEstIMU",
+  "variant_id": "seel_oriestimu_6d_causal_block_defaults_reset_v0.2.4",
+  "algorithm_name": "Seel/Ruppin OriEstIMU (qmt official implementation)",
+  "implementation_version": "qmt-0.2.4",
+  "execution_mode": "causal_online",
+  "supported_sensor_sets": ["gyro_accel_6d"],
+  "supported_aid_types": [],
+  "supported_timestamp_units": ["ns", "us"],
+  "supported_sampling_modes": ["uniform"],
+  "allowed_yaw_gauges": ["unobservable_startup"],
+  "initialization": {
+    "orientation_source": "identity",
+    "initial_yaw_gauge": "unobservable_startup",
+    "uses_truth": false,
+    "warmup_policy": "Construct a fresh official block for each trial, issue command(['reset']) to identity quaternion/zero bias, then process every sample from the first sample with the upstream warmup ramp.",
+    "reset_clears_all_state": true
+  },
+  "output_convention": {
+    "quaternion_order": "wxyz",
+    "rotation_direction": "body_to_world",
+    "reference_world_frame": "ENU",
+    "gravity_world_mps2": [0, 0, -9.80665],
+    "accelerometer_quantity": "specific_force"
+  },
+  "source_fidelity": {
+    "classification": "official_unmodified",
+    "source_uri": "https://github.com/dlaidig/qmt",
+    "source_revision": "0fa8d32eb461e14d78e9ddbd569664ea59bcea19",
+    "implementation_sha256": "27fff51c04e4cf4441764623572fa84d8f3743411e24971c44273a28db0faedc",
+    "adapter_sha256": "d7b953173ec844fbd699f9e9368abbc8c4c47300c2c4f4725b1ce8938714d6be",
+    "model_sha256": null,
+    "license": "MIT"
+  }
+}

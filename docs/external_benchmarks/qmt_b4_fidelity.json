@@ -1,0 +1,204 @@
+{
+  "adapter_sha256": "d7b953173ec844fbd699f9e9368abbc8c4c47300c2c4f4725b1ce8938714d6be",
+  "algorithm": "official qmt Seel/Ruppin OriEstIMU, causal 6D",
+  "causal_prefix_match": true,
+  "implementation_sha256": "27fff51c04e4cf4441764623572fa84d8f3743411e24971c44273a28db0faedc",
+  "input_profile": {
+    "accelerometer_units": "m/s^2 specific force",
+    "aid_supplied": false,
+    "execution_mode": "causal_online",
+    "gyro_units": "rad/s",
+    "magnetometer_supplied": false,
+    "sampling_rate_hz": {
+      "denominator": 1,
+      "numerator": 100
+    },
+    "timestamp_interval_ns": 10000000
+  },
+  "interpretation": {
+    "batch_and_streaming": "The qmt batch function and official streaming block call the same upstream C++ step; batch receives mag=None and streaming uses the documented zero-vector no-mag sentinel.",
+    "bias": "zeta=0 is the documented default and disables gyro-bias adaptation; qmt's diagnostic bias is therefore the zero initialization for this parameterization.",
+    "initial_state": "The official streaming block reset command sets identity quaternion and zero gyro bias. A fresh block is created per trial because resetEstimation does not clear the C++ startup counter or accelerometer rating window.",
+    "quaternion": "Scalar-first orientation of the sensor frame in ENU; six-axis yaw remains startup-gauge relative.",
+    "scope": "Synthetic fidelity and API checks only; no BROAD, external performance score, estimator tuning, or hardware run."
+  },
+  "license": "MIT",
+  "numpy": "1.26.4",
+  "official_source_distribution_sha256": "27fff51c04e4cf4441764623572fa84d8f3743411e24971c44273a28db0faedc",
+  "parameter_choice": {
+    "Ts_seconds": 0.01,
+    "accRating": 1.0,
+    "initBias_rad_s": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "initQuat_wxyz": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "official_function_defaults_differ": {
+      "accRating": 1.0,
+      "initBias": null,
+      "initQuat": null,
+      "tauAcc": 1.0,
+      "tauMag": 3.0,
+      "zeta": 0.0
+    },
+    "selected_set": "OriEstIMUBlock documented constructor defaults; passed explicitly to qmt.oriEstIMU for batch parity",
+    "tauAcc_seconds": 2.0,
+    "tauMag_seconds_unused_in_6d": 2.0,
+    "tuned_parameters_used": false,
+    "zeta": 0.0
+  },
+  "python": "3.11.4",
+  "qmt_package": "0.2.4",
+  "report_schema": "org.marcusfunt.qmt_b4_fidelity.v1",
+  "reset_semantics": {
+    "adapter_recreated_reset_vs_fresh_max_abs_quaternion_component": 0.0,
+    "adapter_trial_reset_isolation_pass": true,
+    "preceding_trial_samples": 100,
+    "target_tilt_deg": 60.0,
+    "target_trial_samples": 100,
+    "upstream_command_reset_vs_fresh_block_max_geodesic_rad": 0.9423724533015375
+  },
+  "scipy": "1.17.1",
+  "sequences": [
+    {
+      "batch_input_is_reconstructed_from_same_trial": true,
+      "canonical_input_sha256": "cd62c8ede128b07784aaf5bcb37536ffa0ef3a6777463038cba1b0d1bd9ebd4b",
+      "config_sha256": "5998f715336dc104d884c09e97ca57354a87695091a673233533cbca1b197a83",
+      "sample_count": 300,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "stationary",
+      "source_artifact_sha256": "b770fa111e5b1aa841beefdf46ac3bab4cd91207fb78509586177dff37afdffb",
+      "streaming_min_scalar_component": 1.0,
+      "streaming_quaternion_max_norm_error": 0.0,
+      "streaming_vs_batch_max_abs_quaternion_component": 0.0,
+      "streaming_vs_batch_max_geodesic_rad": 0.0,
+      "timestamp_unit": "ns",
+      "trajectory_checks": {}
+    },
+    {
+      "batch_input_is_reconstructed_from_same_trial": true,
+      "canonical_input_sha256": "be52a973ae6eadf3b01999924b7cf22586c416fdb8bd505828ab55eaa7e42893",
+      "config_sha256": "5998f715336dc104d884c09e97ca57354a87695091a673233533cbca1b197a83",
+      "sample_count": 300,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "yaw_only",
+      "source_artifact_sha256": "0b67f5e86211a14c5245b50ecf60167ed7a03228d632093c6988ef2518e3f7e5",
+      "streaming_min_scalar_component": 0.9305076219123138,
+      "streaming_quaternion_max_norm_error": 0.0,
+      "streaming_vs_batch_max_abs_quaternion_component": 0.0,
+      "streaming_vs_batch_max_geodesic_rad": 0.0,
+      "timestamp_unit": "ns",
+      "trajectory_checks": {
+        "yaw_integration_error_rad": 2.4424906541753444e-15
+      }
+    },
+    {
+      "batch_input_is_reconstructed_from_same_trial": true,
+      "canonical_input_sha256": "b739825e7f6754effdd71e595092fa624f6377aad3f242f90aecabe123daf864",
+      "config_sha256": "5998f715336dc104d884c09e97ca57354a87695091a673233533cbca1b197a83",
+      "sample_count": 1000,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "tilted_stationary",
+      "source_artifact_sha256": "b1b823c68203bb376b6a4dad09eae59ea68575b827f697a3155e28f7f10c6bf3",
+      "streaming_min_scalar_component": 0.9537196675040457,
+      "streaming_quaternion_max_norm_error": 1.1102230246251565e-16,
+      "streaming_vs_batch_max_abs_quaternion_component": 0.0,
+      "streaming_vs_batch_max_geodesic_rad": 0.0,
+      "timestamp_unit": "ns",
+      "trajectory_checks": {
+        "final_geodesic_to_synthetic_attitude_rad": 1.806945358176095e-05,
+        "final_gravity_axis_error_rad": 1.8069456751000878e-05
+      }
+    },
+    {
+      "batch_input_is_reconstructed_from_same_trial": true,
+      "canonical_input_sha256": "274f8c9a91bbfd546b405533ec8216d549851e3b26a8265d544b01515cd8aff6",
+      "config_sha256": "5998f715336dc104d884c09e97ca57354a87695091a673233533cbca1b197a83",
+      "sample_count": 800,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "tilted_world_yaw",
+      "source_artifact_sha256": "0cab61de799c407984961b97f984c3177524264aedb26356c7dd0622206ab944",
+      "streaming_min_scalar_component": 0.1621014850447878,
+      "streaming_quaternion_max_norm_error": 2.220446049250313e-16,
+      "streaming_vs_batch_max_abs_quaternion_component": 0.0,
+      "streaming_vs_batch_max_geodesic_rad": 1.2412670766236368e-16,
+      "timestamp_unit": "ns",
+      "trajectory_checks": {}
+    },
+    {
+      "batch_input_is_reconstructed_from_same_trial": true,
+      "canonical_input_sha256": "eabb4ff0ab8a938f82531422e6851d10f509a16d0e089bd0ccf15aaa7ee3cdb6",
+      "config_sha256": "5998f715336dc104d884c09e97ca57354a87695091a673233533cbca1b197a83",
+      "sample_count": 400,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "constant_rotation",
+      "source_artifact_sha256": "5574a87348fc6dd4e4cb9d7dbda37b89ecf26d5fdf7288f9de6be143b9275432",
+      "streaming_min_scalar_component": 0.806940684741871,
+      "streaming_quaternion_max_norm_error": 2.220446049250313e-16,
+      "streaming_vs_batch_max_abs_quaternion_component": 0.0,
+      "streaming_vs_batch_max_geodesic_rad": 1.1102230246251563e-16,
+      "timestamp_unit": "ns",
+      "trajectory_checks": {}
+    },
+    {
+      "batch_input_is_reconstructed_from_same_trial": true,
+      "canonical_input_sha256": "d7ab7d43ac4d31fa402491c0ef8ca72f683c27985a9112fdda51f08e35b7d81b",
+      "config_sha256": "5998f715336dc104d884c09e97ca57354a87695091a673233533cbca1b197a83",
+      "sample_count": 500,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "slowly_varying_rate",
+      "source_artifact_sha256": "e21db708fbc59d172aa10a0f35e26613519f4da54d155521f54b74f0177f6986",
+      "streaming_min_scalar_component": 0.8443498848447963,
+      "streaming_quaternion_max_norm_error": 1.1102230246251565e-16,
+      "streaming_vs_batch_max_abs_quaternion_component": 0.0,
+      "streaming_vs_batch_max_geodesic_rad": 1.1102230246251565e-16,
+      "timestamp_unit": "ns",
+      "trajectory_checks": {}
+    },
+    {
+      "batch_input_is_reconstructed_from_same_trial": true,
+      "canonical_input_sha256": "e8a86baf2aa3a8028e4918e2597fa9ae98eca710fc1e691f08062ce9243d4f24",
+      "config_sha256": "5998f715336dc104d884c09e97ca57354a87695091a673233533cbca1b197a83",
+      "sample_count": 250,
+      "sample_rate_hz": {
+        "denominator": 1,
+        "numerator": 100
+      },
+      "sequence_id": "acceleration_pulse",
+      "source_artifact_sha256": "c1576e987f0ae402d5fae873a1f332f3f500fd1b71b33c1e2a5a111564504ec6",
+      "streaming_min_scalar_component": 0.8774068694377679,
+      "streaming_quaternion_max_norm_error": 1.1102230246251565e-16,
+      "streaming_vs_batch_max_abs_quaternion_component": 0.0,
+      "streaming_vs_batch_max_geodesic_rad": 1.3660947373317353e-17,
+      "timestamp_unit": "ns",
+      "trajectory_checks": {}
+    }
+  ],
+  "upstream_revision": "0fa8d32eb461e14d78e9ddbd569664ea59bcea19",
+  "validated_wheel_sha256": "5c4b4f262e54aef4870823a58fd78ce9d7629914033884648f7ea5ed0f6c4355",
+  "vqf_dependency": "2.1.2"
+}
