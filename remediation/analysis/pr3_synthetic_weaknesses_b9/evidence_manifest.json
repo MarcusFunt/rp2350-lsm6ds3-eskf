@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "report_schema": "org.marcusfunt.pr3_synthetic_weakness_atlas.b9.v1",
+  "archive_sha256": "ad73e542d57d43fc4a707a82b9011dfc5ece30a44313574b49dbea14eeaee755",
+  "archive_manifest_sha256": "394278986dd83fad6f43799194d0ec4f3f407381eb5b761aa1ac5a22ffd2d22c",
+  "protocol_sha256": "1318acff98ac2641383ef6a568986e912020a6d4c6debeb145a9abf0f8fa4800",
+  "source_hashes": {
+    "protocol_source_sha256": "1318acff98ac2641383ef6a568986e912020a6d4c6debeb145a9abf0f8fa4800",
+    "archive_sha256": "ad73e542d57d43fc4a707a82b9011dfc5ece30a44313574b49dbea14eeaee755",
+    "archive_manifest_sha256": "394278986dd83fad6f43799194d0ec4f3f407381eb5b761aa1ac5a22ffd2d22c",
+    "generator_source_sha256": "7e159c915412039da66048d1ee7f80a39c9c03f91f88f40033de112ac0513843",
+    "evaluator_source_sha256": "2d2c2bd9e7dec4e627b166cd6be7d9d9a58081edaf053b707b498999a95ad680",
+    "filter_header_sha256": "05a6b4de9a85abf8f85a8a0c4d24dfe058dda75f4ed4791584a8cc3e7dd84b61"
+  },
+  "replay_metric_checks": "all five estimators in each selected run matched frozen archive fields",
+  "selected_streams": 6,
+  "selected_trace_samples_including_counterfactual": 26624,
+  "files": {
+    "PR3_SYNTHETIC_WEAKNESSES_B9.md": "9fdd689030f9bb9db40e7ac98bdec241f6d2a2dd70103bd0da879f51143c1b2a",
+    "evidence_manifest.json": "00469c9384da7f40888a464713f395a8782cd4c14e325c7a5ce4004128283336",
+    "figures/compound_motion_mechanism.svg": "bc29aa3fd8cf9aab26b1041691b5f30c132a0ca0679fbed8f8e061ca8a75fedd",
+    "figures/maneuver_mechanism.svg": "1706b59769557e28e1f028b0dd0a10d012e2b6dcba7ff4c64a1f88b3e15089f6",
+    "figures/timing_jitter_counterfactual.svg": "f973711bc423ee202c736179e0f66d3811cf3ad908637cad381db881c63238d5",
+    "figures/timing_jitter_mechanism.svg": "efa144a989f0304bc696dcbe43741d3e47606d99eebbe384c2101552f8325361",
+    "pr3_synthetic_weakness_results.json": "702d604c24fb70f52eda1e37327ad8c27674ba89298a90fe1c41a97a55448866",
+    "pr3_synthetic_weakness_summary.csv": "414bdb60b1d820aabb70a2be21c452401adfb33e327484195ddf2c00495fe990",
+    "timing_jitter_counterfactual_summary.csv": "c82d6c17b3eb51b289e4621289e660a5db2f338b18b3b048adfe3a029da4d044",
+    "traces/pr3_synthetic_weaknesses_seed4001.csv.gz": "26cb5c641644ef8a69ecdea234fb70f028edb641b93de26510ba887cd4969aba"
+  }
+}
