@@ -75,6 +75,7 @@ struct ImuSample {
     float ax, ay, az;    // m/s^2
     float gx, gy, gz;    // rad/s
     uint32_t sequence;
+    inertial::SensorRangeStatus sensor_range_status;
 };
 
 struct FusionEstimate {
@@ -319,6 +320,10 @@ int16_t le_i16(const uint8_t *p) {
 
 bool calibrate_sample(ImuSample &s) {
     inertial::Imu raw{s.timestamp_us,{s.ax,s.ay,s.az},{s.gx,s.gy,s.gz}};
+    raw.sensor_range_status=lsm6ds3_config::sensor_range_exceeded(
+        raw,lsm6ds3_config::kActiveRange)
+        ? inertial::SensorRangeStatus::Exceeded
+        : inertial::SensorRangeStatus::WithinRange;
     inertial::Imu calibrated{};
     // Temperature cannot be assumed. It is not read by this firmware yet;
     // calibration with temperature_compensation=true therefore rejects input.
@@ -328,6 +333,7 @@ bool calibrate_sample(ImuSample &s) {
     }
     s.ax=calibrated.accel_mps2.x;s.ay=calibrated.accel_mps2.y;s.az=calibrated.accel_mps2.z;
     s.gx=calibrated.gyro_rps.x;s.gy=calibrated.gyro_rps.y;s.gz=calibrated.gyro_rps.z;
+    s.sensor_range_status=calibrated.sensor_range_status;
     return true;
 }
 #ifdef RP2350_USE_FIFO
@@ -474,6 +480,7 @@ void emit_binary_sample(const ImuSample &s,bool timestamp_backfilled=false) {
         (timestamp_backfilled?2u:0u);
     record.dropped_records_before=g_binary_pending_drops;
     record.accel_mps2={s.ax,s.ay,s.az};record.gyro_rps={s.gx,s.gy,s.gz};
+    record.sensor_range_status=s.sensor_range_status;
     imu_log::encode_record(record,bytes);
     if(emit_binary_bytes(bytes,sizeof(bytes))) g_binary_pending_drops=0;
     else {count_binary_drop();g_binary_header_sent=false;}
@@ -495,6 +502,7 @@ void core1_fusion() {
         input.timestamp_us = sample.timestamp_us;
         input.accel_mps2 = {sample.ax, sample.ay, sample.az};
         input.gyro_rps = {sample.gx, sample.gy, sample.gz};
+        input.sensor_range_status=sample.sensor_range_status;
         const uint64_t exec_start_us=time_us_64();
         const bool predicted=filter.process(input);
         const uint32_t exec_us=static_cast<uint32_t>(time_us_64()-exec_start_us);

@@ -18,7 +18,6 @@
   "selected_trace_samples_including_counterfactual": 26624,
   "files": {
     "PR3_SYNTHETIC_WEAKNESSES_B9.md": "9fdd689030f9bb9db40e7ac98bdec241f6d2a2dd70103bd0da879f51143c1b2a",
-    "evidence_manifest.json": "00469c9384da7f40888a464713f395a8782cd4c14e325c7a5ce4004128283336",
     "figures/compound_motion_mechanism.svg": "bc29aa3fd8cf9aab26b1041691b5f30c132a0ca0679fbed8f8e061ca8a75fedd",
     "figures/maneuver_mechanism.svg": "1706b59769557e28e1f028b0dd0a10d012e2b6dcba7ff4c64a1f88b3e15089f6",
     "figures/timing_jitter_counterfactual.svg": "f973711bc423ee202c736179e0f66d3811cf3ad908637cad381db881c63238d5",

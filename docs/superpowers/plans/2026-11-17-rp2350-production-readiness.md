@@ -33,7 +33,7 @@
 
 | Area | Current evidence | Gate status |
 |---|---|---|
-| Host software and target builds | Bundle A/B/C checks and pinned Pico SDK 2.2.0 builds passed in recorded CI; direct-register, FIFO, and binary-log variants built. | Historical pass; rerun on the frozen release candidate. |
+| Host software and target builds | Candidate engineering source SHA `38403245e71a7eee987f8779b61f7a38bc779ac4` passed Bundle A/B/C, sanitizer and protocol checks plus pinned Pico SDK 2.2.0 direct-register, FIFO and binary-log/FIFO builds in CI run `44130832213`. | Engineering build pass; physical device qualification remains open. |
 | Synthetic coverage | PR3 v5 full-factor development, held-out, and final sets cover eight scenarios, three rates, two stress modes, and seven profiles. Every expected covariance check passed. | Coverage pass; accuracy/consistency and independent review remain open. |
 | Estimator choice | VQF beat ESKF tilt RMS on all 39 BROAD trials (mean 0.69° vs 4.27° using BROAD-specific range settings). VQF’s small synthetic head-to-head showed 8.615° on stationary gyro bias and 5.548° on lateral acceleration. | Promising, not a universal winner; require product-relevant paired acceptance before promotion. |
 | ESKF gravity-gate candidate | The 0.48 rad/s / 7-sample relaxation regressed held-out mean tilt RMS by 1.399°; maneuver, timing-jitter, and stop/start regressed substantially. | Rejected; retain production gate. |
@@ -41,7 +41,7 @@
 | Calibration | Firmware uses identity calibration and `calibration_id=0`. | Open; runtime output is intentionally not production-calibrated. |
 | Acquisition and timing | Direct-register DMA is default; FIFO is opt-in. Physical SPI/DRDY/FIFO captures and loss measurements are absent. | Hardware blocked. |
 | Resource budget | Prior image sizes and stack-use reports exist. ESKF’s largest individual frame is 9,496 B against a 16,384 B core-1 stack; call-chain and on-device high-water are unknown. | Build evidence only; define budgets and measure on device. |
-| Source/evidence baseline | The workspace has uncommitted range-configuration changes and related tests/evidence. Some historical status text conflicts on whether the target build was run. | Reconcile and freeze before release work. Preserve all current local changes. |
+| Source/evidence baseline | Engineering baseline commit `38403245e71a7eee987f8779b61f7a38bc779ac4` contains the range profile, regression, B9/gravity-gate evidence and current production-gate documents. Experiment manifests remain bound to their recorded earlier baseline. | Engineering source snapshot is frozen and CI-verified; product limits, calibration, physical evidence and release approval remain open. |
 
 ## Tasks
 
@@ -75,10 +75,10 @@
 
 - [x] Inventory the current worktree and attribute each existing modification/untracked file; preserve it and do not silently reset, overwrite, or include unrelated work.
 - [x] Rerun Bundle A/B/C host checks on the current candidate worktree; record toolchain and results.
-- [ ] Run pinned target CI against the exact candidate SHA; record SDK, build variants, artifacts, and hashes.
+- [x] Run pinned target CI against exact engineering baseline SHA `38403245e71a7eee987f8779b61f7a38bc779ac4`; record SDK, build variants, artifacts, and hashes.
 - [x] Include `tests/test_lsm6ds3_config.cpp` in `tools/run_bundle_c_checks.sh` with the repository include path so range/register/conversion coupling is exercised in normal and sanitizer CI.
 - [x] Resolve stale or conflicting status statements. Keep historical reports immutable and add a current summary that distinguishes historical build passes from the current release candidate.
-- [ ] Freeze a baseline tag/commit only after the range configuration and tests are reviewed and the full source/evidence manifest is consistent.
+- [x] Freeze engineering source/evidence baseline commit `38403245e71a7eee987f8779b61f7a38bc779ac4` after reviewing the range configuration, tests, and evidence manifests. No production release tag is created.
 
 **Acceptance:** all release artifacts identify the same source SHA; every gate is `PASS`, `OPEN`, or `BLOCKED` with evidence and an owner.
 
@@ -155,7 +155,7 @@
 - Consumes: selected algorithm, acquisition mode, SDK/toolchain, and Task 1 deadlines.
 - Produces: release-specific flash/RAM/stack/timing budget and on-device measurements.
 
-- [ ] Build the frozen release SHA with pinned Pico SDK 2.2.0 and ARM toolchain for the production mode and required diagnostic variants; retain ELF/UF2, map, `.su`, and resource report.
+- [x] Build engineering baseline SHA `38403245e71a7eee987f8779b61f7a38bc779ac4` with pinned Pico SDK 2.2.0 and ARM toolchain for direct-register, FIFO, and binary-log/FIFO variants; retain and hash ELF/UF2, map, `.su`, and resource reports. Production mode remains unselected.
 - [ ] Measure core-0 and core-1 stack high-water, complete call-chain margin, fusion p50/p95/p99/max, end-to-end sample age, queue peaks/drops, missed deadlines, and idle/load behavior on hardware.
 - [ ] Address the current ESKF estimate of a 9,496 B largest frame against a 16,384 B core-1 stack; static frame subtraction is not a whole-call-chain guarantee. Recompute budgets for the selected estimator.
 - [ ] Run a temperature-aware, multi-hour soak with production logging configuration and verify reset, disconnect/reconnect, watchdog, and overload behavior.
@@ -205,3 +205,17 @@
 ## Completion Gate
 
 The current project is **not production-ready**. The gate can change to `PASS` only after requirements are numeric and owned; selected estimator evidence passes fresh held-out and recorded-data acceptance; calibration is measured and versioned; physical acquisition/timestamps and resource margins pass on the exact board/sensor; fault/stale/reset behavior passes on device; all required builds and independent reviews pass; and the release package is reproducible. Controller/actuator use requires the additional system gate described above.
+
+## Native execution status — 2026-11-17
+
+| Task | Status | Evidence / remaining work |
+|---|---|---|
+| 1. Product requirements | `OPEN` | Two-stage boundary and output observability are recorded. Numeric limits, exact user/environment, and named approvals remain open. |
+| 2. Evidence baseline | `PASS` for engineering source baseline | Commit `38403245e71a7eee987f8779b61f7a38bc779ac4`; host/sanitizer and exact-source pinned target CI passed. No production release tag. |
+| 3. Estimator selection | `OPEN` | Existing BROAD and synthetic evidence is characterized; product limits and selection acceptance are still open, so no estimator is promoted. |
+| 4. Estimator software gaps | `OPEN` | Existing targeted regressions pass; ESKF is not selected for production and independent mathematical/code review remains outstanding. |
+| 5. Calibration | `BLOCKED_HARDWARE` | No validated physical device calibration or verified sensor identity/calibration ID. |
+| 6. Acquisition | `BLOCKED_HARDWARE` | No production board/logic-analyzer capture or physical loss/timestamp evidence recorded. |
+| 7. Resources and timing | `OPEN` build / `BLOCKED_HARDWARE` measurement | CI artifacts and estimates are recorded; stack high-water, end-to-end timing, queue margins, and soak require device measurements and product limits. |
+| 8. Fault/recovery | `OPEN` host / `BLOCKED_HARDWARE` device | Host lifecycle protections remain and tests pass; physical injection and consumer behavior remain unverified. |
+| 9. Release handoff | `OPEN` | Draft checklist exists; independent review, signoffs, final package, calibration and device evidence remain. Stage 2 is separate if controller/actuator use applies. |

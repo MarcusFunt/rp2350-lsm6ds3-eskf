@@ -1,4 +1,5 @@
 #include "lsm6ds3_config.hpp"
+#include "calibration.hpp"
 
 #include <cmath>
 #include <cstdio>
@@ -56,6 +57,51 @@ int main() {
                       "ESKF gyro limit follows a changed profile");
     failures += check(!unsupported_config.supported,
                       "unsupported full-scale selections are rejected");
+
+    inertial::SensorCalibration rotation{};
+    constexpr float c45=0.70710678118f;
+    rotation.body_from_sensor.v[0][0]=c45;
+    rotation.body_from_sensor.v[0][1]=-c45;
+    rotation.body_from_sensor.v[1][0]=c45;
+    rotation.body_from_sensor.v[1][1]=c45;
+    inertial::Imu raw{};
+    raw.accel_mps2={0.735f*active_config.max_accel_axis_mps2,
+                    0.735f*active_config.max_accel_axis_mps2,inertial::kGravity};
+    raw.gyro_rps={0.735f*active_config.max_gyro_axis_rps,
+                  0.735f*active_config.max_gyro_axis_rps,0};
+    raw.sensor_range_status=lsm6ds3_config::sensor_range_exceeded(raw,active_config)
+        ? inertial::SensorRangeStatus::Exceeded : inertial::SensorRangeStatus::WithinRange;
+    inertial::Imu body{};
+    failures += check(!lsm6ds3_config::sensor_range_exceeded(raw,active_config),
+                      "valid sub-limit sensor-axis readings are not flagged before calibration");
+    failures += check(rotation.apply(raw,NAN,body),
+                      "non-identity sensor-to-body rotation applies");
+    failures += check(std::fabs(body.accel_mps2.y)>active_config.max_accel_axis_mps2
+                          && std::fabs(body.gyro_rps.y)>active_config.max_gyro_axis_rps,
+                      "calibration can rotate valid raw axes above a body-axis full-scale bound");
+    failures += check(body.sensor_range_status==inertial::SensorRangeStatus::WithinRange,
+                      "calibration preserves the pre-transform sensor range result");
+
+    inertial::SensorCalibration scaled=rotation;
+    for(int axis=0;axis<3;axis++) {
+        scaled.accel_correction.v[axis][axis]=0.5f;
+        scaled.gyro_correction.v[axis][axis]=0.5f;
+    }
+    inertial::Imu clipped{};
+    clipped.accel_mps2={1.02f*active_config.max_accel_axis_mps2,0,0};
+    clipped.gyro_rps={1.02f*active_config.max_gyro_axis_rps,0,0};
+    failures += check(lsm6ds3_config::sensor_range_exceeded(clipped,active_config),
+                      "raw sensor clipping is detected before a scale correction");
+    clipped.sensor_range_status=lsm6ds3_config::sensor_range_exceeded(clipped,active_config)
+        ? inertial::SensorRangeStatus::Exceeded : inertial::SensorRangeStatus::WithinRange;
+    inertial::Imu scaled_body{};
+    failures += check(scaled.apply(clipped,NAN,scaled_body),
+                      "scale correction applies to a clipped raw sample for the regression");
+    failures += check(std::fabs(scaled_body.accel_mps2.x)<active_config.max_accel_axis_mps2
+                          && std::fabs(scaled_body.gyro_rps.x)<active_config.max_gyro_axis_rps,
+                      "scale correction can hide clipping from a calibrated-axis comparison");
+    failures += check(scaled_body.sensor_range_status==inertial::SensorRangeStatus::Exceeded,
+                      "calibration preserves a raw clipping fault after scale correction");
 
     if (failures == 0) std::puts("PASS LSM6DS3 register, decoder and ESKF ranges share one profile");
     return failures == 0 ? 0 : 1;

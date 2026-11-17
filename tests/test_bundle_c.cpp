@@ -217,18 +217,36 @@ static void test_log(){
     bytes[17]^=1;assert(!imu_log::decode_header(bytes,imu_log::kHeaderSize,hout));
     imu_log::Record r{};r.capture_us=100;r.publication_us=140;r.sequence=5;
     r.accel_mps2={1,2,3};r.gyro_rps={4,5,6};
+    r.sensor_range_status=SensorRangeStatus::WithinRange;
     imu_log::encode_record(r,bytes);
     imu_log::Record y{};assert(imu_log::decode_record(bytes,imu_log::kRecordSize,y));
     assert(y.sequence==5 && near(y.accel_mps2.y,2));
+    assert(y.sensor_range_status==SensorRangeStatus::WithinRange);
+    r.sensor_range_status=SensorRangeStatus::Exceeded;
+    r.accel_mps2={0.5f*kGravity,0,kGravity};r.gyro_rps={0.5f*245.0f*kPi/180.0f,0,0};
+    imu_log::encode_record(r,bytes);
+    assert(imu_log::decode_record(bytes,imu_log::kRecordSize,y));
+    assert(y.sensor_range_status==SensorRangeStatus::Exceeded);
+    Settings settings{};Eskf15 replay(settings);
+    for(unsigned i=1;i<=120;i++) replay.process({uint64_t(i)*5000,{0,0,kGravity},{0,0,0}});
+    Imu replayed{replay.state_timestamp_us()+5000,y.accel_mps2,y.gyro_rps};
+    replayed.sensor_range_status=y.sensor_range_status;
+    assert(!replay.process(replayed));
+    assert(replay.saturation_count()==1 && replay.reset_required());
     uint8_t legacy[imu_log::kRecordSize]{};std::memcpy(legacy,bytes,sizeof(legacy));
     imu_log::u32(legacy,0x314d5549u);imu_log::u16(legacy+4,imu_log::kLegacyVersion);
     imu_log::u16(legacy+6,0);imu_log::u32(legacy+28,0x12345678u);
     imu_log::u32(legacy+60,imu_log::crc32(legacy,60));
     imu_log::Record old{};assert(imu_log::decode_record(legacy,sizeof(legacy),old));
     assert(old.version==imu_log::kLegacyVersion && old.flags==0x12345678u && old.dropped_records_before==0);
+    assert(old.sensor_range_status==SensorRangeStatus::Unchecked);
+    uint8_t invalid_range_flags[imu_log::kRecordSize]{};std::memcpy(invalid_range_flags,bytes,sizeof(bytes));
+    imu_log::u16(invalid_range_flags+6,imu_log::r16(invalid_range_flags+6)&~imu_log::kFlagSensorRangeChecked);
+    imu_log::u32(invalid_range_flags+60,imu_log::crc32(invalid_range_flags,60));
+    assert(!imu_log::decode_record(invalid_range_flags,sizeof(invalid_range_flags),y));
     bytes[44]^=4;assert(!imu_log::decode_record(bytes,imu_log::kRecordSize,y));
     assert(!imu_log::decode_record(bytes,18,y));
-    std::cout<<"PASS binary log roundtrip, CRC and short-record rejection\n";
+    std::cout<<"PASS binary log range-status roundtrip, CRC and short-record rejection\n";
 }
 template<class T,class=void> struct HasLogLossMetadata:std::false_type{};
 template<class T> struct HasLogLossMetadata<T,std::void_t<
@@ -252,7 +270,7 @@ template<class T> static void test_log_loss_metadata_impl(){
 static void test_log_loss_metadata(){
     assert(imu_log::kVersion==2);
     test_log_loss_metadata_impl<imu_log::Record>();
-    std::cout<<"PASS binary log version-2 loss metadata and sequence provenance\n";
+    std::cout<<"PASS binary log version-2 loss metadata, sequence provenance and range-status compatibility\n";
 }
 static void test_runtime_metrics(){
 #if TEST_HAS_RUNTIME_METRICS

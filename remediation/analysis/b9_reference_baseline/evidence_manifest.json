@@ -1,8 +1,8 @@
 {
   "baseline_commit": "630e0d8c33ef1ee2bf744a1e84b80b1fafcde973",
   "files": {
-    "B9_REFERENCE_BASELINE.md": "845391b431054bbeccaa19d3beb413a1b4ffe6fd341356d91068b915f59d0250",
-    "b9_reference_baseline.json": "b4eddb8663eeb10b74a808e7a3ded7383ce8f9fb9ff40940a03299cefa93d83f"
+    "B9_REFERENCE_BASELINE.md": "69ff8d8bd4bbd48dae848d6be1e005f1a4ae0da063830dcf4186ae6a16122a7b",
+    "b9_reference_baseline.json": "7c2f47216ec1c7b9460f405bcbdad2e03e08fb980a0c1951f215dff36a79d92d"
   },
   "reference_artifact_hashes": {
     "broad_evidence_manifest": {
@@ -23,7 +23,7 @@
     },
     "synthetic_evidence_manifest": {
       "path": "remediation/analysis/pr3_synthetic_weaknesses_b9/evidence_manifest.json",
-      "sha256": "6787f7f1534c2b57c954b72c361e166af1ed22c0ac8bbbf2dbff00f487be21f3"
+      "sha256": "c488d56b4edc51476e995273c7deba0ff08e56f2b252040a89de767fc465832e"
     },
     "synthetic_report": {
       "path": "remediation/analysis/pr3_synthetic_weaknesses_b9/PR3_SYNTHETIC_WEAKNESSES_B9.md",

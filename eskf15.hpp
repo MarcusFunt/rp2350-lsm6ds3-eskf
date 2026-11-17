@@ -79,10 +79,16 @@ inline float wrap_pi(float r) {
     return r;
 }
 
+enum class SensorRangeStatus : uint8_t { Unchecked=0, WithinRange=1, Exceeded=2 };
+
 struct Imu {
     uint64_t timestamp_us=0;
     Vec3 accel_mps2{};
     Vec3 gyro_rps{};
+    // Firmware may check raw sensor axes before calibration and carry the
+    // result through a body-frame rotation/scale. Host samples default to
+    // Unchecked and use the configured per-axis limits directly.
+    SensorRangeStatus sensor_range_status=SensorRangeStatus::Unchecked;
 };
 
 // Gravity direction is only a valid absolute tilt observation when linear
@@ -121,8 +127,8 @@ struct Settings {
     unsigned init_accel_step_window_samples=8; // average white noise before step gating
     uint32_t expected_period_us=4808; // 208Hz; used for missing-sample detection
     float period_gap_ratio=1.70f;
-    float max_accel_axis_mps2=0.98f*4.0f*kGravity; // actual +/-4g setting
-    float max_gyro_axis_rps=0.98f*245.0f*(kPi/180.0f);
+    float max_accel_axis_mps2=0.98f*4.0f*kGravity; // raw sensor-axis +/-4g threshold
+    float max_gyro_axis_rps=0.98f*245.0f*(kPi/180.0f); // raw sensor-axis +/-245dps threshold
     float gap_unmodeled_accel_mps2=3.0f; // outage covariance inflation bounds, tune
     float gap_unmodeled_rate_rps=1.0f;
     float max_continuous_predict_dt_s=0.025f; // a longer gap must explicitly reset
@@ -665,6 +671,8 @@ private:
     }
     void degrade() { if(health_!=Health::Fault) health_=Health::Degraded; }
     bool saturated(const Imu &im) const {
+        if(im.sensor_range_status==SensorRangeStatus::Exceeded) return true;
+        if(im.sensor_range_status==SensorRangeStatus::WithinRange) return false;
         const float a=config_.max_accel_axis_mps2,g=config_.max_gyro_axis_rps;
         return std::fabs(im.accel_mps2.x)>=a||std::fabs(im.accel_mps2.y)>=a||
                std::fabs(im.accel_mps2.z)>=a||std::fabs(im.gyro_rps.x)>=g||

@@ -10,6 +10,8 @@
 namespace imu_log {
 constexpr uint16_t kLegacyVersion=1;
 constexpr uint16_t kVersion=2;
+constexpr uint16_t kFlagSensorRangeChecked=1u<<3;
+constexpr uint16_t kFlagSensorRangeExceeded=1u<<4;
 constexpr std::size_t kHeaderSize=32,kRecordSize=64;
 struct Header {
     uint32_t source_id=0;
@@ -22,11 +24,12 @@ struct Record {
     uint64_t capture_us=0;
     uint64_t publication_us=0;
     uint32_t sequence=0;
-    uint32_t flags=0; // bit0 FIFO, bit1 timestamp backfilled, bit2 invalid
+    uint32_t flags=0; // bits0..2 FIFO/backfilled/invalid; bits3..4 encode range status
     uint16_t version=kVersion;
     uint32_t dropped_records_before=0;
     inertial::Vec3 accel_mps2{},gyro_rps{};
     float temperature_c=NAN; // NaN=temperature not sampled or unavailable
+    inertial::SensorRangeStatus sensor_range_status=inertial::SensorRangeStatus::Unchecked;
 };
 inline void u16(uint8_t *p,uint16_t v){p[0]=uint8_t(v);p[1]=uint8_t(v>>8);}
 inline void u32(uint8_t *p,uint32_t v){for(int i=0;i<4;i++)p[i]=uint8_t(v>>(8*i));}
@@ -65,7 +68,13 @@ inline bool decode_header(const uint8_t *p,std::size_t n,Header &h){
 inline void encode_record(const Record &r,uint8_t out[kRecordSize]){
     std::memset(out,0,kRecordSize);
     u32(out,0x324d5549u); // 'IUM2' bytes, fixed record marker
-    u16(out+4,kVersion);u16(out+6,static_cast<uint16_t>(r.flags));
+    uint16_t flags=static_cast<uint16_t>(r.flags)
+        & static_cast<uint16_t>(~(kFlagSensorRangeChecked|kFlagSensorRangeExceeded));
+    if(r.sensor_range_status==inertial::SensorRangeStatus::WithinRange)
+        flags|=kFlagSensorRangeChecked;
+    else if(r.sensor_range_status==inertial::SensorRangeStatus::Exceeded)
+        flags|=kFlagSensorRangeChecked|kFlagSensorRangeExceeded;
+    u16(out+4,kVersion);u16(out+6,flags);
     u64(out+8,r.capture_us);u64(out+16,r.publication_us);
     u32(out+24,r.sequence);u32(out+28,r.dropped_records_before);
     f32(out+32,r.accel_mps2.x);f32(out+36,r.accel_mps2.y);f32(out+40,r.accel_mps2.z);
@@ -82,8 +91,18 @@ inline bool decode_record(const uint8_t *p,std::size_t n,Record &r){
     r.version=version;
     r.capture_us=r64(p+8);r.publication_us=r64(p+16);
     r.sequence=r32(p+24);
-    if(version==kLegacyVersion){r.flags=r32(p+28);r.dropped_records_before=0;}
-    else {r.flags=r16(p+6);r.dropped_records_before=r32(p+28);}
+    if(version==kLegacyVersion){
+        r.flags=r32(p+28);r.dropped_records_before=0;
+        r.sensor_range_status=inertial::SensorRangeStatus::Unchecked;
+    } else {
+        r.flags=r16(p+6);r.dropped_records_before=r32(p+28);
+        const bool range_checked=(r.flags&kFlagSensorRangeChecked)!=0;
+        const bool range_exceeded=(r.flags&kFlagSensorRangeExceeded)!=0;
+        if(range_exceeded&&!range_checked) return false;
+        r.sensor_range_status=range_exceeded ? inertial::SensorRangeStatus::Exceeded
+            : (range_checked ? inertial::SensorRangeStatus::WithinRange
+                             : inertial::SensorRangeStatus::Unchecked);
+    }
     r.accel_mps2={rf32(p+32),rf32(p+36),rf32(p+40)};
     r.gyro_rps={rf32(p+44),rf32(p+48),rf32(p+52)};
     r.temperature_c=rf32(p+56);

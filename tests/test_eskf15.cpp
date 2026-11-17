@@ -148,6 +148,38 @@ static void test_gap_faults() {
     check_cov(f);
     std::puts("PASS duplicate timestamp, missing data uncertainty, saturation fault");
 }
+static void test_calibrated_body_axes_do_not_trip_sensor_range_gate() {
+    Settings settings{};
+    Eskf15 f(settings);
+    unsigned k=0;
+    init(f,k);
+    // A proper 45-degree sensor-to-body rotation maps two raw sensor-axis
+    // values at 0.735 of their configured limit to 1.04 on one body axis.
+    Imu body_frame_sample=at(++k,
+        {1.04f*settings.max_accel_axis_mps2,0,kGravity},
+        {1.04f*settings.max_gyro_axis_rps,0,0});
+    body_frame_sample.sensor_range_status=SensorRangeStatus::WithinRange;
+    assert(f.process(body_frame_sample));
+    assert(f.saturation_count()==0 && f.health()==Health::Nominal);
+    assert(f.control_state_valid() && !f.reset_required());
+    std::puts("PASS calibrated body axes are not compared against raw sensor range");
+}
+static void test_raw_range_fault_survives_calibration_scaling() {
+    Settings settings{};
+    Eskf15 f(settings);
+    unsigned k=0;
+    init(f,k);
+    // A scale correction can move a clipped raw sensor value below the body
+    // axis threshold. The pre-calibration range result must still latch fault.
+    Imu scaled=at(++k,
+        {0.50f*settings.max_accel_axis_mps2,0,kGravity},
+        {0.50f*settings.max_gyro_axis_rps,0,0});
+    scaled.sensor_range_status=SensorRangeStatus::Exceeded;
+    assert(!f.process(scaled));
+    assert(f.saturation_count()==1 && f.health()==Health::Fault);
+    assert(f.reset_required() && !f.control_state_valid());
+    std::puts("PASS raw sensor clipping remains faulted after calibration scaling");
+}
 static void test_missing_single_frame() {
     Eskf15 f;unsigned k=0;init(f,k);
     for(int i=0;i<4;i++) f.process(at(++k));
@@ -212,7 +244,9 @@ int main() {
     test_initialization_and_tilt();test_initialization_rejects_slowly_changing_specific_force();
     test_yaw_and_heading();test_static_noise_bias();
     test_slow_yaw();test_gravity_normalization();test_aiding_contract();
-    test_gap_faults();test_missing_single_frame();test_replay_determinism();
+    test_gap_faults();test_raw_range_fault_survives_calibration_scaling();
+    test_calibrated_body_axes_do_not_trip_sensor_range_gate();
+    test_missing_single_frame();test_replay_determinism();
     test_tilted_yaw_gauge();test_outage_contract();
     std::puts("All report-revision ESKF host tests passed.");
 }

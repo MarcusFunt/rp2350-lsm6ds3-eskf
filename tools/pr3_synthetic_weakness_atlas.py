@@ -151,6 +151,16 @@ def validate_trace_alignment(
                 raise ValueError("sample and gravity trace physical timestamp alignment mismatch")
 
 
+def manifest_file_hashes(output_dir: Path) -> dict[str, str]:
+    """Hash output artifacts without trying to self-hash the root manifest."""
+    manifest_path = output_dir / "evidence_manifest.json"
+    return {
+        file.relative_to(output_dir).as_posix(): sha256_file(file)
+        for file in sorted(output_dir.rglob("*"))
+        if file.is_file() and file != manifest_path
+    }
+
+
 def _load_archive_rows(path: Path) -> list[dict[str, str]]:
     import gzip as _gzip
 
@@ -907,14 +917,13 @@ def run_atlas(output_dir: Path, *, cxx: str, overwrite: bool = False) -> dict[st
         json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8", newline="\n"
     )
     (output_dir / "PR3_SYNTHETIC_WEAKNESSES_B9.md").write_text(_markdown_report(report), encoding="utf-8", newline="\n")
-    files = [file for file in output_dir.rglob("*") if file.is_file()]
     manifest = {
         "schema_version": 1, "status": "PASS", "report_schema": report["report_schema"],
         "archive_sha256": archive_hash, "archive_manifest_sha256": archive_manifest_hash,
         "protocol_sha256": protocol_hash, "source_hashes": source_hashes,
         "replay_metric_checks": "all five estimators in each selected run matched frozen archive fields",
         "selected_streams": len(replayed), "selected_trace_samples_including_counterfactual": len(joined_rows),
-        "files": {file.relative_to(output_dir).as_posix(): sha256_file(file) for file in sorted(files)},
+        "files": manifest_file_hashes(output_dir),
     }
     (output_dir / "evidence_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
     return report

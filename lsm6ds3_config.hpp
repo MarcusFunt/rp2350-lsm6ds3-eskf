@@ -2,6 +2,7 @@
 
 #include "eskf15.hpp"
 
+#include <cmath>
 #include <cstdint>
 
 namespace lsm6ds3_config {
@@ -102,6 +103,22 @@ constexpr inertial::Settings eskf_settings(const RangeConfig &range) {
     settings.max_accel_axis_mps2 = range.max_accel_axis_mps2;
     settings.max_gyro_axis_rps = range.max_gyro_axis_rps;
     return settings;
+}
+
+// Full-scale clipping is defined in the sensor-axis frame. Check samples
+// before fixed calibration can rotate them or scale clipped values downward.
+inline bool sensor_range_exceeded(const inertial::Imu &sensor_axes,
+                                  const RangeConfig &range) {
+    if (!range.supported) return true;
+    const auto exceeds = [](float value, float limit) {
+        return !std::isfinite(value) || std::fabs(value) >= limit;
+    };
+    return exceeds(sensor_axes.accel_mps2.x,range.max_accel_axis_mps2)
+        || exceeds(sensor_axes.accel_mps2.y,range.max_accel_axis_mps2)
+        || exceeds(sensor_axes.accel_mps2.z,range.max_accel_axis_mps2)
+        || exceeds(sensor_axes.gyro_rps.x,range.max_gyro_axis_rps)
+        || exceeds(sensor_axes.gyro_rps.y,range.max_gyro_axis_rps)
+        || exceeds(sensor_axes.gyro_rps.z,range.max_gyro_axis_rps);
 }
 
 } // namespace lsm6ds3_config

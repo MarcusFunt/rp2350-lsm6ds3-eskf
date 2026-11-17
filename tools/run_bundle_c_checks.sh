@@ -9,6 +9,8 @@ FLAGS=(-std=c++17 -UNDEBUG -O2 -Wall -Wextra -Wpedantic)
 if [[ "${BUNDLE_C_SANITIZERS:-0}" == 1 ]]; then FLAGS+=(-fsanitize=address,undefined -fno-omit-frame-pointer -O1 -g); fi
 "$CXX" "${FLAGS[@]}" tests/test_bundle_c.cpp -o "$OUT/test_bundle_c"
 "$OUT/test_bundle_c"
+"$CXX" "${FLAGS[@]}" tests/test_b9_fault_recovery.cpp -o "$OUT/test_b9_fault_recovery"
+"$OUT/test_b9_fault_recovery"
 "$CXX" "${FLAGS[@]}" -I. tests/test_lsm6ds3_config.cpp -o "$OUT/test_lsm6ds3_config"
 "$OUT/test_lsm6ds3_config"
 "$CXX" "${FLAGS[@]}" tools/binary_log_tool.cpp -o "$OUT/binary_log_tool"
@@ -20,6 +22,7 @@ from pathlib import Path
 rows=list(csv.DictReader(open(sys.argv[1],newline='')))
 assert len(rows)==1200,len(rows)
 assert sum(int(r['valid']) for r in rows)>1000
+assert all(r['range_status']=='1' for r in rows),rows[:3]
 assert rows[600]['sequence_gap_before']=='1',rows[600]
 assert rows[600]['dropped_records_before']=='1',rows[600]
 assert sum(int(r['sequence_gap_before']) for r in rows)==1
@@ -39,7 +42,10 @@ for offset in range(32,len(legacy),64):
     struct.pack_into('<I',record,60,zlib.crc32(record[:60]) & 0xffffffff)
     legacy[offset:offset+64]=record
 legacy_path=f.with_suffix('.v1.bin');legacy_path.write_bytes(legacy)
-legacy_summary=subprocess.run([exe,'replay',str(legacy_path),'1234'],capture_output=True,text=True,check=True).stderr
+legacy_replay=subprocess.run([exe,'replay',str(legacy_path),'1234'],capture_output=True,text=True,check=True)
+legacy_rows=list(csv.DictReader(legacy_replay.stdout.splitlines()))
+assert all(r['range_status']=='0' for r in legacy_rows),legacy_rows[:3]
+legacy_summary=legacy_replay.stderr
 assert 'replayed=1200' in legacy_summary and 'sequence_gaps=1' in legacy_summary and 'explicit_drops=0' in legacy_summary,legacy_summary
 wrong_version=bytearray(legacy)
 struct.pack_into('<H',wrong_version,8,2)

@@ -2,7 +2,15 @@
 
 from __future__ import annotations
 
+import hashlib
+import sys
+import tempfile
 import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from tools.pr3_synthetic_weakness_atlas import (
     REQUIRED_GRAVITY_FIELDS,
@@ -11,6 +19,7 @@ from tools.pr3_synthetic_weakness_atlas import (
     validate_archive_rows,
     validate_paired_archive_rows,
     validate_trace_alignment,
+    manifest_file_hashes,
 )
 
 
@@ -47,6 +56,17 @@ def archive_row(scenario: str, stress: str, estimator: str, digest: str) -> dict
 
 
 class PR3SyntheticWeaknessContractTests(unittest.TestCase):
+    def test_manifest_hashes_exclude_the_manifest_itself(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            (output / "result.json").write_bytes(b'{"ok":true}\n')
+            (output / "evidence_manifest.json").write_text("old manifest", encoding="utf-8")
+            (output / "nested").mkdir()
+            (output / "nested" / "evidence_manifest.json").write_text("nested artifact", encoding="utf-8")
+            hashes = manifest_file_hashes(output)
+        self.assertEqual(set(hashes), {"result.json", "nested/evidence_manifest.json"})
+        self.assertEqual(hashes["result.json"], hashlib.sha256(b'{"ok":true}\n').hexdigest())
+
     def test_selection_covers_the_three_requested_scenarios(self) -> None:
         self.assertEqual(SCENARIOS, ("maneuver", "timing_jitter", "compound_motion"))
 

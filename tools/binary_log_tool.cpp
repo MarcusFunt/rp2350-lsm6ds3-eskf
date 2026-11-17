@@ -27,6 +27,7 @@ int main(int argc,char **argv){
             r.dropped_records_before=(i==600)?1u:0u;
             r.accel_mps2={0,0,9.80665f};
             r.gyro_rps={0,0,i<200?0.0f:0.1f};
+            r.sensor_range_status=inertial::SensorRangeStatus::WithinRange;
             imu_log::encode_record(r,b);out.write(reinterpret_cast<char*>(b),imu_log::kRecordSize);
         }
         return out ? 0:3;
@@ -44,7 +45,7 @@ int main(int argc,char **argv){
     inertial::Eskf15 filter(cfg);
     uint64_t previous=0;uint32_t previous_sequence=0;
     std::size_t count=0,valid=0;uint64_t sequence_gaps=0,dropped_records=0;
-    std::cout<<"timestamp_us,sequence,sequence_gap_before,dropped_records_before,yaw_rad,health,valid\n";
+    std::cout<<"timestamp_us,sequence,sequence_gap_before,dropped_records_before,range_status,yaw_rad,health,valid\n";
     for(;;){
         in.read(reinterpret_cast<char*>(b),imu_log::kRecordSize);
         if(in.gcount()==0&&in.eof())break;
@@ -67,9 +68,12 @@ int main(int argc,char **argv){
         previous=r.capture_us;count++;
         previous_sequence=r.sequence;
         sequence_gaps+=sequence_gap;dropped_records+=r.dropped_records_before;
-        const bool ok=filter.process({r.capture_us,r.accel_mps2,r.gyro_rps});
+        inertial::Imu sample{r.capture_us,r.accel_mps2,r.gyro_rps};
+        sample.sensor_range_status=r.sensor_range_status;
+        const bool ok=filter.process(sample);
         valid+=ok?1:0;
         std::cout<<r.capture_us<<','<<r.sequence<<','<<sequence_gap<<','<<r.dropped_records_before<<','
+                 <<unsigned(r.sensor_range_status)<<','
                  <<std::setprecision(9)<<filter.state().orientation.yaw()<<','
                  <<unsigned(filter.health())<<','<<unsigned(ok)<<'\n';
     }

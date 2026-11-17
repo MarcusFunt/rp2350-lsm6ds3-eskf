@@ -72,6 +72,6 @@ All six cells use development seed 4001 and protocol v5 at uniform 208 Hz. These
 | `remediation/analysis/pr3_synthetic_weaknesses_b9/pr3_synthetic_weakness_results.json` | `702d604c24fb70f52eda1e37327ad8c27674ba89298a90fe1c41a97a55448866` |
 | `remediation/analysis/pr3_synthetic_weaknesses_b9/pr3_synthetic_weakness_summary.csv` | `414bdb60b1d820aabb70a2be21c452401adfb33e327484195ddf2c00495fe990` |
 | `remediation/analysis/pr3_synthetic_weaknesses_b9/traces/pr3_synthetic_weaknesses_seed4001.csv.gz` | `26cb5c641644ef8a69ecdea234fb70f028edb641b93de26510ba887cd4969aba` |
-| `remediation/analysis/pr3_synthetic_weaknesses_b9/evidence_manifest.json` | `6787f7f1534c2b57c954b72c361e166af1ed22c0ac8bbbf2dbff00f487be21f3` |
+| `remediation/analysis/pr3_synthetic_weaknesses_b9/evidence_manifest.json` | `c488d56b4edc51476e995273c7deba0ff08e56f2b252040a89de767fc465832e` |
 
 B9 reports, CSVs, traces, and figures remain unchanged. This directory is the reference lock and provenance record.
