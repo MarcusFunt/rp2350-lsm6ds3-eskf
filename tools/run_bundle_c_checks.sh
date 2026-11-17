@@ -9,6 +9,8 @@ FLAGS=(-std=c++17 -UNDEBUG -O2 -Wall -Wextra -Wpedantic)
 if [[ "${BUNDLE_C_SANITIZERS:-0}" == 1 ]]; then FLAGS+=(-fsanitize=address,undefined -fno-omit-frame-pointer -O1 -g); fi
 "$CXX" "${FLAGS[@]}" tests/test_bundle_c.cpp -o "$OUT/test_bundle_c"
 "$OUT/test_bundle_c"
+"$CXX" "${FLAGS[@]}" -I. tests/test_lsm6ds3_config.cpp -o "$OUT/test_lsm6ds3_config"
+"$OUT/test_lsm6ds3_config"
 "$CXX" "${FLAGS[@]}" tools/binary_log_tool.cpp -o "$OUT/binary_log_tool"
 "$OUT/binary_log_tool" generate "$OUT/fixture.bin"
 "$OUT/binary_log_tool" replay "$OUT/fixture.bin" 1234 > "$OUT/replayed.csv"

@@ -1,0 +1,47 @@
+{
+  "baseline_commit": "630e0d8c33ef1ee2bf744a1e84b80b1fafcde973",
+  "files": {
+    "B9_REFERENCE_BASELINE.md": "845391b431054bbeccaa19d3beb413a1b4ffe6fd341356d91068b915f59d0250",
+    "b9_reference_baseline.json": "b4eddb8663eeb10b74a808e7a3ded7383ce8f9fb9ff40940a03299cefa93d83f"
+  },
+  "reference_artifact_hashes": {
+    "broad_evidence_manifest": {
+      "path": "remediation/analysis/b9_broad_failure_atlas/evidence_manifest.json",
+      "sha256": "a87e995deb9ae04bdbc7fa63aa0fda04aae4b588971b8de1a1cdf69462cffeee"
+    },
+    "broad_report": {
+      "path": "remediation/analysis/b9_broad_failure_atlas/B9_BROAD_FAILURE_ATLAS.md",
+      "sha256": "54ca6a19c04828729872b424512aa9968c0e0a5993f9b7af75f081fbbe051126"
+    },
+    "broad_results": {
+      "path": "remediation/analysis/b9_broad_failure_atlas/b9_broad_results.json",
+      "sha256": "746930b472a2af64802cbce09642411c1509c2de40068f6a8265070038f10e32"
+    },
+    "broad_summary": {
+      "path": "remediation/analysis/b9_broad_failure_atlas/b9_broad_summary.csv",
+      "sha256": "646554dd3a5592153f6c76aa8d4236846be907ed5a67d117cc0c0a02b0c2c420"
+    },
+    "synthetic_evidence_manifest": {
+      "path": "remediation/analysis/pr3_synthetic_weaknesses_b9/evidence_manifest.json",
+      "sha256": "6787f7f1534c2b57c954b72c361e166af1ed22c0ac8bbbf2dbff00f487be21f3"
+    },
+    "synthetic_report": {
+      "path": "remediation/analysis/pr3_synthetic_weaknesses_b9/PR3_SYNTHETIC_WEAKNESSES_B9.md",
+      "sha256": "9fdd689030f9bb9db40e7ac98bdec241f6d2a2dd70103bd0da879f51143c1b2a"
+    },
+    "synthetic_results": {
+      "path": "remediation/analysis/pr3_synthetic_weaknesses_b9/pr3_synthetic_weakness_results.json",
+      "sha256": "702d604c24fb70f52eda1e37327ad8c27674ba89298a90fe1c41a97a55448866"
+    },
+    "synthetic_summary": {
+      "path": "remediation/analysis/pr3_synthetic_weaknesses_b9/pr3_synthetic_weakness_summary.csv",
+      "sha256": "414bdb60b1d820aabb70a2be21c452401adfb33e327484195ddf2c00495fe990"
+    },
+    "synthetic_trace": {
+      "path": "remediation/analysis/pr3_synthetic_weaknesses_b9/traces/pr3_synthetic_weaknesses_seed4001.csv.gz",
+      "sha256": "26cb5c641644ef8a69ecdea234fb70f028edb641b93de26510ba887cd4969aba"
+    }
+  },
+  "schema_version": 1,
+  "status": "PASS"
+}

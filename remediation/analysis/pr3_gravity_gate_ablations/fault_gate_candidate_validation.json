@@ -1,0 +1,30 @@
+{
+  "baseline_assertion_group_count": 5,
+  "baseline_assertion_groups": [
+    "PASS short gap propagates but remains non-nominal until reset",
+    "PASS duplicate timestamp can resume propagation but requires reset to restore nominal output availability",
+    "PASS range fault latches, suppresses stale output, and needs reset plus reinitialization",
+    "PASS BROAD full-scale configuration accepts 500 deg/s without latching",
+    "PASS long gaps and non-finite samples stay latched until reset"
+  ],
+  "candidate_assertion_group_count": 5,
+  "candidate_assertion_groups": [
+    "PASS short gap propagates but remains non-nominal until reset",
+    "PASS duplicate timestamp can resume propagation but requires reset to restore nominal output availability",
+    "PASS range fault latches, suppresses stale output, and needs reset plus reinitialization",
+    "PASS BROAD full-scale configuration accepts 500 deg/s without latching",
+    "PASS long gaps and non-finite samples stay latched until reset"
+  ],
+  "candidate_settings": {
+    "static_gyro_limit_rad_s": 0.48,
+    "static_min_samples": 7
+  },
+  "candidate_test_source_sha256": "9b6c243fdc14c3f433b9782b07398f4a265fd03bfb7818bc99d3797d99fc86a2",
+  "compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "fault_latch_modified": false,
+  "production_filter_modified": false,
+  "schema": "b9.fault_gate_candidate_validation.v1",
+  "stale_output_safeguards_modified": false,
+  "status": "PASS",
+  "test_source_sha256": "0d83d57381fc039878ca355a082e2fa11deebce1a411aa5256ba589e6e013276"
+}

@@ -19,6 +19,7 @@
 #include "hardware/sync.h"
 #include "drdy_period.pio.h"
 #include "eskf15.hpp"
+#include "lsm6ds3_config.hpp"
 #include "calibration.hpp"
 #include "aiding.hpp"
 #include "runtime_health.hpp"
@@ -254,16 +255,14 @@ void imu_init() {
     spi_write_reg(REG_CTRL1_XL, 0x00);
     spi_write_reg(REG_CTRL2_G, 0x00);
     spi_write_reg(REG_CTRL3_C, 0x44); // BDU=1, IF_INC=1, four-wire SPI
-    // Both sensors at 208 Hz; accel +/-4g, gyro +/-245 deg/s.
-    // Accelerometer 4 g sensitivity: 0.122 mg/LSB.
-    // Gyro 245 dps sensitivity: 8.75 mdps/LSB.
-    spi_write_reg(REG_CTRL1_XL, 0x58);
-    spi_write_reg(REG_CTRL2_G, 0x50);
+    // ODR, full-scale ranges, raw sensitivities, and ESKF limits share this profile.
+    spi_write_reg(REG_CTRL1_XL, lsm6ds3_config::kActiveRange.ctrl1_xl_value);
+    spi_write_reg(REG_CTRL2_G, lsm6ds3_config::kActiveRange.ctrl2_g_value);
     spi_write_reg(REG_INT1_CTRL, 0x02); // INT1_DRDY_G (gyro is ready after XL)
     sleep_ms(70);
 
-    if (spi_read_reg(REG_CTRL1_XL) != 0x58 ||
-        spi_read_reg(REG_CTRL2_G) != 0x50 ||
+    if (spi_read_reg(REG_CTRL1_XL) != lsm6ds3_config::kActiveRange.ctrl1_xl_value ||
+        spi_read_reg(REG_CTRL2_G) != lsm6ds3_config::kActiveRange.ctrl2_g_value ||
         spi_read_reg(REG_INT1_CTRL) != 0x02) {
         panic("LSM6DS3 configuration readback mismatch");
     }
@@ -333,8 +332,8 @@ bool calibrate_sample(ImuSample &s) {
 }
 #ifdef RP2350_USE_FIFO
 ImuSample decode_fifo_frame(const lsm6ds3::Frame &f,uint64_t timestamp_us,uint32_t sequence) {
-    constexpr float ACCEL_TO_MSS=0.000122f*G0;
-    constexpr float GYRO_TO_RADS=0.00875f*(PI_F/180.0f);
+    constexpr float ACCEL_TO_MSS=lsm6ds3_config::kActiveRange.accel_mps2_per_lsb;
+    constexpr float GYRO_TO_RADS=lsm6ds3_config::kActiveRange.gyro_rad_s_per_lsb;
     ImuSample s{};
     s.timestamp_us=timestamp_us;s.sequence=sequence;
     s.gx=f.gyro[0]*GYRO_TO_RADS;s.gy=f.gyro[1]*GYRO_TO_RADS;s.gz=f.gyro[2]*GYRO_TO_RADS;
@@ -346,8 +345,8 @@ ImuSample decode_fifo_frame(const lsm6ds3::Frame &f,uint64_t timestamp_us,uint32
 ImuSample decode_sample(const EdgeEvent &e) {
     // g_rx[0] is received during the register address command; ignore it.
     const uint8_t *b = g_rx + 1;
-    constexpr float ACCEL_TO_MSS = 0.000122f * G0;
-    constexpr float GYRO_TO_RADS = 0.00875f * (PI_F / 180.0f);
+    constexpr float ACCEL_TO_MSS = lsm6ds3_config::kActiveRange.accel_mps2_per_lsb;
+    constexpr float GYRO_TO_RADS = lsm6ds3_config::kActiveRange.gyro_rad_s_per_lsb;
     ImuSample s{};
     s.timestamp_us = (e.t_quarter_us + 2u) / 4u;
     s.sequence = e.sequence;
@@ -483,7 +482,7 @@ void emit_binary_sample(const ImuSample &s,bool timestamp_backfilled=false) {
 
 void core1_fusion() {
     // Static storage keeps the 15x15 covariance off the small default core stack.
-    static inertial::Eskf15 filter;
+    static inertial::Eskf15 filter(lsm6ds3_config::eskf_settings(lsm6ds3_config::kActiveRange));
     uint32_t successful_updates = 0;
     uint32_t max_process_us = 0;
     while (true) {

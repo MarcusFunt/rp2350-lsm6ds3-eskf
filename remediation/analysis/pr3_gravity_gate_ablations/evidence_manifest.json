@@ -1,0 +1,50 @@
+{
+  "b9_reference_lock_sha256": "b4eddb8663eeb10b74a808e7a3ded7383ce8f9fb9ff40940a03299cefa93d83f",
+  "baseline_commit": "630e0d8c33ef1ee2bf744a1e84b80b1fafcde973",
+  "files": {
+    "PR3_GRAVITY_GATE_ABLATIONS.md": {
+      "bytes": 11887,
+      "sha256": "a44806badf2a6add225e90e165892a152c0e2807aa018ed11cc8273c6a5c41ab"
+    },
+    "candidate_policy_diagnostics.csv": {
+      "bytes": 8197,
+      "sha256": "5cacff51262d75f5d4db6b3960c1988c47b590c57c201c6bd2dc69c594a706bc"
+    },
+    "candidate_policy_diagnostics.json": {
+      "bytes": 22025,
+      "sha256": "291d0b87775946df214e301edee3d05c69f3805ef16fc1d2094afd3a5f22ae50"
+    },
+    "evaluation_gate_ablation_diagnostics.csv": {
+      "bytes": 17312,
+      "sha256": "e40dce38763448c32293d76fe7eca9a6e8c011194ff332a09654e8262fdd48ae"
+    },
+    "evaluation_gate_ablation_diagnostics.json": {
+      "bytes": 59147,
+      "sha256": "32fef64bc22e741dca87684cf712fa26b67c43fc852f22a1506714c38315a5d1"
+    },
+    "pr3_gravity_gate_ablation_results.json": {
+      "bytes": 169844,
+      "sha256": "8e67c7e50330394b50cdab7ef4968f4eb7ce8638820bfaee835d0927f65c6a28"
+    },
+    "pr3_gravity_gate_ablation_summary.csv": {
+      "bytes": 13983,
+      "sha256": "a2c608d9711718ee51ec347f9dc01b9b6230245d25432e7245049b92d04c948a"
+    },
+    "run_gate_ablation.py": {
+      "bytes": 17276,
+      "sha256": "39f65cb2b907d597820a4121749b65bd9679baaa3f8d00f6682d8c46f9735874"
+    },
+    "summarize_gate_ablation.py": {
+      "bytes": 17460,
+      "sha256": "5776f30e37569833273a3a86f4e8361a29e6b37a3762e5e27f6bca7ef74d61fb"
+    },
+    "traces/gravity_gate_candidate_seed4001.csv.gz": {
+      "bytes": 12511164,
+      "sha256": "4749f533b4b660d6252003e8c64a60061a53d189adcc1681c9c13d212141df5b"
+    }
+  },
+  "report_schema": "org.marcusfunt.pr3_gravity_gate_ablations.v1",
+  "result_count": 44,
+  "schema_version": 1,
+  "status": "PASS"
+}

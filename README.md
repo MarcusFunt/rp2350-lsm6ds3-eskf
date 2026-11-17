@@ -4,6 +4,8 @@
 
 **Status:** Bundle A/B/C host checks pass for the current source. Real calibration, electrical timing and hardware-in-the-loop validation **have not been performed**. The simulator is synthetic-only and does not certify firmware accuracy or safety.
 
+**Production readiness:** this firmware remains experimental. See the [product requirements register](docs/production/PRODUCT_REQUIREMENTS.md), [two-stage production gate](docs/production/PRODUCTION_GATE.md), [evidence ledger](docs/production/EVIDENCE_LEDGER.md), and [release checklist](docs/production/RELEASE_CHECKLIST.md) for current limits, evidence, and blockers.
+
 ## Files
 
 | File | Purpose |

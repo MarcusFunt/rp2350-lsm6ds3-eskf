@@ -31,3 +31,9 @@ benchmarks/scenarios/pr2_confirmation_protocol_v3.json text eol=lf
 remediation/*.md text eol=lf
 remediation/evidence/*.md text eol=lf
 remediation/evidence/*.log text eol=lf
+remediation/analysis/b9_broad_failure_atlas/** text eol=lf
+remediation/analysis/b9_reference_baseline/** text eol=lf
+remediation/analysis/pr3_synthetic_weaknesses_b9/** text eol=lf
+remediation/analysis/pr3_gravity_gate_ablations/** text eol=lf
+*.gz -text !eol
+docs/superpowers/specs/*.md text eol=lf
